@@ -1,4 +1,4 @@
 app
 ===
 
-Schooltrix mail app
+Schooltrix app
