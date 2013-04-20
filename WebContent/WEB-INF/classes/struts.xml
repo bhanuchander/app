@@ -218,7 +218,7 @@
  			<interceptor-ref name="defaultStack"></interceptor-ref>
 		    <interceptor-ref name="fileUpload"></interceptor-ref> 
 				<result name="success" type="redirectAction">
-							 <param name="actionName">Access</param>
+							 <param name="actionName">StudentXLStatus</param>
 			    		     <param name="p1">studentMaster</param>
 			    		     <param name="p2">SA_inst2</param>
 					</result>
@@ -227,6 +227,10 @@
 			    		     <param name="p1">studentMaster</param>
 			    		     <param name="p2">SA_inst2</param>
 				</result>
+		</action>
+	
+		<action name="StudentXLStatus" >
+			<result  type="tiles" >/StudentXLStatusDef</result>
 		</action>
 		
 		<action name="sectionMasterXL" class="com.schooltrix.actions.SectionMasterUploadAction" >
@@ -243,6 +247,8 @@
 			    		     <param name="p2">SA_inst2</param>
 				</result>
 		</action>
+		
+		
 		
 	   <action name="download" class="com.schooltrix.actions.DownloadAction">      
 	       <result name="success" type="stream">  

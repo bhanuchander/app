@@ -30,5 +30,7 @@ public interface UserMasterDAO extends Serializable {
 
 	public List findByPropertyList2(final String filed,final String value,final String filed1,final String value1)throws Exception ;
 	
+	public List uniqueIDCheck(final String filed,final String value,final String filed1,final String value1) throws Exception;
+	
 	public List findAll()throws Exception ;
 }

@@ -1,5 +1,7 @@
 package com.schooltrix.TestTemp;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import java.util.List;
@@ -13,10 +15,13 @@ import com.schooltrix.daos.BranchMasterDAO;
 import com.schooltrix.daos.InstitutionMasterDAO;
 import com.schooltrix.daos.SchoolMasterDAO;
 import com.schooltrix.daos.SectionMasterDAO;
+import com.schooltrix.daos.UserMasterDAO;
 import com.schooltrix.hibernate.BranchMaster;
 import com.schooltrix.hibernate.InstitutionMaster;
 import com.schooltrix.hibernate.SchoolMaster;
 import com.schooltrix.hibernate.SectionMaster;
+import com.schooltrix.hibernate.UserMaster;
+import com.schooltrix.managers.ServiceFinder;
 
 //import com.schooltrix.daos.InstitutionMasterDao;
 //import com.schooltrix.daos.SchoolMasterDAO;
@@ -25,7 +30,8 @@ import com.schooltrix.hibernate.SectionMaster;
 
 public class HiberDaoSupportTest {
 
-	ApplicationContext context = new FileSystemXmlApplicationContext("F:/Forceites/SchoolTrixWorkSpace/Schooltrix/WebContent/WEB-INF/applicationContext-hibernate.xml");
+//	ApplicationContext context = new FileSystemXmlApplicationContext("F:/Forceites/SchoolTrixWorkSpace/Schooltrix/WebContent/WEB-INF/applicationContext-hibernate.xml");
+	ApplicationContext context = new FileSystemXmlApplicationContext("C:/Program Files/Apache Software Foundation/Tomcat 7.0/webapps/Schooltrix/WEB-INF/applicationContext-hibernate.xml");
 	public HiberDaoSupportTest() {
 		// TODO Auto-generated constructor stub
 	}
@@ -204,12 +210,12 @@ public class HiberDaoSupportTest {
 		//hdst.Test1();
 		//hdst.Test2();
 		//hdst.Test3();
-		hdst.TestStruts();
+		//hdst.TestStruts();
 		//hdst.Test2();
 		//hdst.Test2();
 		//hdst.Test2();
-		
-		
+		//String userType,String fName,String lName,String imId
+		hdst.getIdPassword("Par","Raresh12","chandra12","3");
 		
 /*		
 		SchoolMaster sm = new SchoolMaster();
@@ -275,6 +281,83 @@ public class HiberDaoSupportTest {
 		//System.out.println(im.getImAdress());
 		//System.out.println("size::"+l.size());
 		
+	}
+
+
+private String getIdPassword(String userType,String fName,String lName,String imId) {
+		
+		if(userType != null){
+			try {
+				String userPass = "";
+				String userID = null;
+				
+				StringBuffer uu = new StringBuffer();
+				uu.append(userType);
+				
+				
+				if (fName.length()>2) {
+					uu.append(fName.substring(0, 3));
+				}else{
+					uu.append(fName);
+				}
+				
+				if (lName.length()>2) {
+					uu.append(lName.substring(0, 3));
+				}else{
+					uu.append(lName);
+				}
+				
+				userID = uu+"";			
+				UserMasterDAO userMasterDao = (UserMasterDAO)context.getBean("UserMasterHibernateDao");
+				System.out.println("userID--"+userID+"-imId-"+imId);
+				List userlist = userMasterDao.uniqueIDCheck("userId", userID,  "imId", imId);
+				
+				p:if (userlist.size()>0) {
+					for (int k = 1; k < 100; k++) {
+						 String modUserId = userID+k;
+						int count =0;
+						for (int i = 0; i < userlist.size(); i++) {
+							UserMaster um = (UserMaster)userlist.get(i);
+							if (modUserId.equalsIgnoreCase(um.getUserId())) {
+								count++;
+							}
+						}
+					if (count == 0) {
+						userID = modUserId;
+						break p;
+					}
+					
+					}
+				}
+				
+				//code to shuffle password
+				StringBuffer stringBuffer=new StringBuffer();
+				List<String> list=new ArrayList<String>();
+				list.add("t");
+				list.add("r");
+				list.add("i");
+				list.add("x");
+	
+				Collections.shuffle(list);  			  	
+				Iterator<String> iterator		= list.iterator();	   		
+				while(iterator.hasNext()){
+					stringBuffer.append(iterator.next());
+				}	   		
+		  userPass							= stringBuffer.toString()+"1234";
+		  System.out.println(userID+"-----"+userPass);
+		  return userID+"~"+userPass;
+			} catch (BeansException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}	
+		}else{
+		return null;
+		  }
 	}
 
 }

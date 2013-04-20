@@ -25,6 +25,11 @@
     <definition name="/studentMaster" extends="baseLayout">
         <put-attribute name="body" value="/jsp/StudentMaster.jsp" />
     </definition>
+
+    <definition name="/StudentXLStatusDef" extends="baseLayout">
+        <put-attribute name="body" value="/jsp/StuUploadXlStatus.jsp" />
+    </definition>
+    
   <definition name="/sectionMaster" extends="baseLayout">
         <put-attribute name="body" value="/jsp/SectionMaster.jsp" />
     </definition>

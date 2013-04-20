@@ -9,8 +9,8 @@
 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>/WEB-INF/jdbc.properties</value> 
-	<!-- 		<value>F:/Forceites/SchoolTrixWorkSpace/Schooltrix/WebContent/WEB-INF/jdbc.properties</value>-->
+			 <value>/WEB-INF/jdbc.properties</value>
+ 		<!--<value>C:/Program Files/Apache Software Foundation/Tomcat 7.0/webapps/Schooltrix/WEB-INF/jdbc.properties</value>  -->
 		</property>
 	</bean>
 
@@ -114,6 +114,7 @@
 				<value>com/schooltrix/hibernate/SentEmail.hbm.xml</value>
 				<value>com/schooltrix/hibernate/UploadDocuments.hbm.xml</value>
 				<value>com/schooltrix/hibernate/DomainControl.hbm.xml</value>
+				<value>com/schooltrix/hibernate/StudentSectionMap.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

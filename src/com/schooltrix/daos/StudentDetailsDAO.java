@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.schooltrix.hibernate.ParentStudentMap;
 import com.schooltrix.hibernate.StudentDetails;
+import com.schooltrix.hibernate.StudentSectionMap;
 
 /**
  * @author bhanu
@@ -32,5 +33,8 @@ public interface StudentDetailsDAO extends Serializable {
 	public List findAll()throws Exception ;
 
 	public boolean saveStudentParentMap(ParentStudentMap transientInstance) throws Exception ;
+
+	public boolean insertStudentSectionMap(StudentSectionMap ssm);
+	
 
 }

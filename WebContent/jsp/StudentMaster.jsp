@@ -51,7 +51,7 @@ System.out.println("msg"+msg);
 	    
 		   try{
 		   
-					alert("onload school master");
+					//alert("onload school master");
 						var listofschools = document.getElementById('schoolNames');					
 	
 						    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -89,7 +89,7 @@ System.out.println("msg"+msg);
 		   try{
 		
 		   	
-					alert("based school master getting branch master list--"+schoolID);
+				//	alert("based school master getting branch master list--"+schoolID);
 						var listofbranchs = document.getElementById('branchNames');					
 	
 						    BranchMasterDWR.getBranchMasterList(schoolID,function(data){

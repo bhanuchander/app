@@ -18,6 +18,7 @@ import com.schooltrix.hibernate.ParentStudentMap;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentDetails;
+import com.schooltrix.hibernate.StudentSectionMap;
 
 public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements StudentDetailsDAO{
 	
@@ -142,8 +143,15 @@ public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements Stud
 			throws Exception {
 		// TODO Auto-generated method stub
 
-		getHibernateTemplate().saveOrUpdate(transientInstance);
+		getHibernateTemplate().save(transientInstance);
 		System.out.println("in saveee");
 		return false;
+	}
+	@Override
+	public boolean insertStudentSectionMap(StudentSectionMap ssm) {
+		// TODO Auto-generated method stub
+		getHibernateTemplate().save(ssm);
+		System.out.println("in saveee");
+		return true;
 	}
 }

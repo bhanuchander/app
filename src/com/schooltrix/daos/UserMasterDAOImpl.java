@@ -96,7 +96,7 @@ public class UserMasterDAOImpl extends STHibernateDAOSupport implements UserMast
 	public List findByPropertyList2(final String filed,final String value,final String filed1,final String value1) throws Exception {
 		List UserMasterList=null;
 		try {
-			System.out.println(filed+"--"+value+"--imId-"+filed1+"--"+value1);
+			//System.out.println(filed+"--"+value+"--imId-"+filed1+"--"+value1);
 			UserMasterList = (List) getHibernateTemplate().execute(
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)throws HibernateException, SQLException {
@@ -114,7 +114,27 @@ public class UserMasterDAOImpl extends STHibernateDAOSupport implements UserMast
 		return UserMasterList;
 	}
 	
-	
+	@Override
+	public List uniqueIDCheck(final String filed,final String value,final String filed1,final String value1) throws Exception {
+		List UserMasterList=null;
+		try {
+			//System.out.println(filed+"--"+value+"--imId-"+filed1+"--"+value1);
+			UserMasterList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							Criteria crit = session.createCriteria(UserMaster.class);
+							crit.add(Restrictions.like(filed, value+"%"));
+							crit.add(Restrictions.eq(filed1, new Long(value1)));
+							//crit.addOrder(Order.desc("sno"));
+							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return UserMasterList;
+	}
 	
 	@Override
 	public UserMaster findById(java.lang.Long id) throws Exception {
