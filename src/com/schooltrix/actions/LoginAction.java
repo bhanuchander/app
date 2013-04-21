@@ -186,7 +186,7 @@ public class LoginAction extends ActionSupport implements SessionAware,ServletRe
 					session.put("stateID", staffDetails.getState());
 					
 					//return "";	yet to decided
-					return "AddNonAdminUserTemp";
+					return "AddSchool";
 				}else if(userTypeString.equalsIgnoreCase("ST")){
 					
 					hibernateDaoType = "StudentDetailsHibernateDao";

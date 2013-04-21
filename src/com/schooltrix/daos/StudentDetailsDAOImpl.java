@@ -6,8 +6,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -19,6 +22,8 @@ import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentSectionMap;
+import com.schooltrix.hibernate.StudentxlErrorTemp;
+import com.sun.istack.internal.FinalArrayList;
 
 public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements StudentDetailsDAO{
 	
@@ -154,4 +159,53 @@ public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements Stud
 		System.out.println("in saveee");
 		return true;
 	}
+	@Override
+	public boolean insertStudentErrorLog(StudentxlErrorTemp setemp) throws Exception{
+		// TODO Auto-generated method stub
+		getHibernateTemplate().saveOrUpdate(setemp);
+		return true;
+	}
+
+	@Override
+	public int deleteStudentErrorLog(final String um_id) throws Exception {
+
+		
+		Integer deletedData = (Integer)getHibernateTemplate().execute(new HibernateCallback () {
+		    public Object doInHibernate(Session session) throws HibernateException, SQLException {
+		        // delete the data
+		    	Query hqlQuery = session.createQuery("DELETE FROM StudentxlErrorTemp WHERE umId=?");
+		    	hqlQuery.setString(0, um_id);
+		        int updated = hqlQuery.executeUpdate();
+		        return updated;
+		    }
+		});
+		
+				return 0;
+	}
+	
+	@Override
+	public List getStudentErrorLog(final String um_id) throws Exception{
+		// TODO Auto-generated method stub
+	
+		List StudentDetailsList=null;
+		try {
+			System.out.println("in getStudentErrorLog-----"+um_id);
+			StudentDetailsList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							Criteria crit = session.createCriteria(StudentxlErrorTemp.class);
+							crit.add(Restrictions.eq("umId", um_id));
+							//crit.addOrder(Order.desc("sno"));
+							System.out.println(crit.list().size()+"^^^^^^^^");
+							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return StudentDetailsList;
+	
+	}
+	
 }

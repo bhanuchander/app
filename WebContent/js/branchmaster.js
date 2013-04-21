@@ -1,8 +1,19 @@
 		
 	function copyFromSchoolCall(){	
 	
+		
 		if (!document.getElementById("br_chkbox").checked) {
-		alert("checkkk");
+			
+			var schoolNames = jQuery("#sm_id_list").val();
+			
+			
+			if(schoolNames=="-1"){
+				alertDialog('Please select  School');
+				jQuery("#sm_id_list").focus();
+				return false;
+			}
+			
+			
 		var sm_sname			= document.getElementById("sm_id_list").value;
 		BranchMasterDWR.copyfromSchool(sm_sname, function(data){
 			
@@ -11,7 +22,7 @@
 			}else{
 				
 				 var actnData = data.split("~");
-				 alert(actnData[3]+"----");
+			// alert(actnData[3]+"----");
 				document.getElementById("br_address").value=actnData[0];
 				document.getElementById("br_city").value=actnData[1];
 				document.getElementById('br_country').value = actnData[2];	
@@ -104,10 +115,10 @@
 				}if(!sm_ssname){
 					alertDialog('Please enter valid Branch short name');
 					return false;
-				}if(!sm_address){
+				}/*if(!sm_address){
 					alertDialog('Please enter valid address');
 					return false;
-				}if(!sm_city){
+				}*/if(!sm_city){
 					alertDialog('Please enter valid city');
 					return false;
 				}if(!sm_country){
@@ -172,10 +183,12 @@
 			var br_mobile			= document.getElementById("br_mobile").value;
 			var br_landline			= document.getElementById("br_landline").value;
 			var isactive 			= document.getElementById("br_active").checked;
-			BranchMasterDWR.saveBranchMaster(schoolID,br_sname, br_ssname,   br_address,  br_city,   br_country, 	br_state, br_cperson,br_email,br_mobile, br_landline,   isactive,function(data){	
+			BranchMasterDWR.saveBranchMaster(schoolID,br_sname, br_ssname,   br_address,  br_city,   br_country, 	br_state, br_cperson,br_email,br_mobile, br_landline,   isactive,
+					function(data){				
 				alertDialog(data);
 				document.getElementById("br_sname").value='';
 				document.getElementById("br_ssname").value='';
+				document.getElementById("br_chkbox").checked = false;
 				document.getElementById("br_address").value='';
 				document.getElementById("br_city").value='';
 				document.getElementById("br_cperson").value='';

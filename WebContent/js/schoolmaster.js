@@ -93,10 +93,10 @@ function validateSchoolMasterForm(){
 		}if(!sm_ssname){
 			alertDialog('Enter valid school short name');
 			return false;
-		}if(!sm_address){
+		}/*if(!sm_address){
 			alertDialog('Please enter valid address');
 			return false;
-		}if(!sm_city){
+		}*/if(!sm_city){
 			alertDialog('Please enter valid city');
 			return false;
 		}if(sm_state=="-1"){

@@ -9,6 +9,7 @@ import java.util.List;
 import com.schooltrix.hibernate.ParentStudentMap;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentSectionMap;
+import com.schooltrix.hibernate.StudentxlErrorTemp;
 
 /**
  * @author bhanu
@@ -35,6 +36,11 @@ public interface StudentDetailsDAO extends Serializable {
 	public boolean saveStudentParentMap(ParentStudentMap transientInstance) throws Exception ;
 
 	public boolean insertStudentSectionMap(StudentSectionMap ssm);
+
+	public boolean insertStudentErrorLog(StudentxlErrorTemp setemp) throws Exception;
 	
+	public List getStudentErrorLog(final String um_id) throws Exception;
+	
+	public int deleteStudentErrorLog(final String um_id) throws Exception;
 
 }

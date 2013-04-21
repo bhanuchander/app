@@ -131,19 +131,20 @@ function tellMeMore(call){
 		function previewEmailValidate1(){
 
 
-	var patEmail	= /^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$/;					
-	var body =/^[A-Za-z0-9].+$/;
-	
-	var frmmail			= jQuery("#frmmail").val().match(patEmail);
-	var subj			=  jQuery("#subj").val().match(body);
-		if(!frmmail){
-			alertDialog('Please enter valid from mail');
-			return false;
-		}if(!subj){
-			alertDialog('Please enter valid subject');
-			return false;
-		}
-//alert('All validations cleared');
+			var patEmail	= /^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$/;					
+			var body =/^[A-Za-z0-9].+$/;
+			
+			var frmmail			= jQuery("#frmmail").val().match(patEmail);
+			var subj			=  jQuery("#subj").val().match(body);
+				if(!frmmail){
+					alertDialog('Please enter valid from mail');
+					return false;
+				}if(!subj){
+					alertDialog('Please enter valid subject');
+					return false;
+				}
+		//one more required 2013-04-22
+		//empty subject or empty body u want to submit
 
 	}
 	function okAlertDialog () {
@@ -183,11 +184,12 @@ function alertDialog (prompt) {
                 <td colspan="1"><label style="color:#000;"><b>Email Body</b></label></td>
 
 				<!-- <td><textarea style="width:96%;" rows="8"  name="comment" id="comment"  wrap="physical"></textarea></td> -->  
-				<td><div id="comment" style="width: 600px;height: 600px;"></div>
+				<td><div id="comment" style="width: 600px;height: 600px; border: 1px;border-style: solid;"></div>
 				</td>
 		 </tr>
         <tr>
         </tr>
+        <tr><td>&nbsp;</td></tr>
          <tr>
              <td><label style="color:#000;"><b>No of Emails to be sent</b></label></td>
 			 <td><input class="span4" type="text" style="width:55px;"  placeholder="" disabled="disabled" name="sent_Sms_Count" id="sent_Sms_Count" value="<%=emailCount %>">

@@ -30,9 +30,9 @@
 	    		     <param name="p1">SA_inst1</param>
 	    		     <param name="p2">SA_inst2</param>
 				</result>
-				<result name="AddNonAdminUserTemp" type="redirectAction">
+				<result name="AddSchool" type="redirectAction">
 					 <param name="actionName">Access</param>
-	    		     <param name="p1">AddNonAdminUser</param>
+	    		     <param name="p1">schoolMaster</param>
 	    		     <param name="p2">SA_inst2</param>
 				</result>			
 				<result name="parentViewTemp" type="redirectAction">

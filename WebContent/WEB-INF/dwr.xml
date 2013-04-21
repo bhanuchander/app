@@ -51,5 +51,9 @@
 		<param name="class" value="com.schooltrix.dwr.SchoolMasterDWR"/>
     </create>
     
+    <create creator="new" javascript="StudentDWR">
+		<param name="class" value="com.schooltrix.dwr.StudentDWR"/>
+    </create>
+    
   </allow>
 </dwr>

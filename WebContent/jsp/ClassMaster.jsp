@@ -51,7 +51,7 @@ System.out.println("msg"+msg);
 	    
 		   try{
 		   
-					alert("onload school master");
+					//alert("onload school master");
 						var listofschools = document.getElementById('schoolNames');					
 	
 						    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -89,7 +89,7 @@ System.out.println("msg"+msg);
 		   try{
 		
 		   	
-					alert("based school master getting branch master list--"+schoolID);
+					//alert("based school master getting branch master list--"+schoolID);
 						var listofbranchs = document.getElementById('branchNames');					
 	
 						    BranchMasterDWR.getBranchMasterList(schoolID,function(data){
@@ -149,25 +149,66 @@ System.out.println("msg"+msg);
 		}
 
 		
+
+		
+	function validate(){
+		
+		var schoolNames = jQuery("#schoolNames").val();
+		var branchNames = jQuery("#branchNames").val();
+		
+		
+		if(schoolNames=="-1"){
+			alert('Please select valid School');
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchNames=="-1"){
+			alert('Please select valid Branch');
+			jQuery("#branchNames").focus();
+			return false;
+		}
+		
+			var file1  = jQuery("#fileUP").val();
+		
+	//	alert(file1);
+		if(file1 == "" || file1 == undefined  || file1 == "undefined"){		
+			alert("Please select a file");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+	
+		var extension = file1.split('.').pop().toLowerCase();
+		var allowed = ['txt','csv'];
+		
+		if(allowed.indexOf(extension) === -1) {
+		    // Not valid.
+			alert("Your selected "+ file1+"  extension wrong");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+		
+		}
+		
 		
 	    </script>
 
 
 
   
- <div style="height:80px;"></div>
+ <div style="height:50px;"></div>
 	<div class="reg_mainCon">
 
      <fieldset>
 	    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Class Master</legend>
-	  <form  method="post"  action="classmasterXL.action" enctype="multipart/form-data"  >
+	  <form  method="post"  action="classmasterXL.action" enctype="multipart/form-data" onsubmit="return validate(this)" >
 	    <div style="padding:20px;">
 	          <label style="color:#000;"></label>
 	 
 	   <table width="100%" border="0" cellspacing="0" cellpadding="0">
 		           <tr>
                 <td><label style="color:#000;"><b>Select School</b></label></td>
-                <td><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value)">
+                <td><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value);">
                         <option value="-1" selected="selected">Select</option>                       
                        </select>                   
                  </td>

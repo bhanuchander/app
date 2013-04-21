@@ -124,11 +124,9 @@
 	var body =/^[A-Za-z0-9].+$/;
 	var subj			=  jQuery("#sms_body").val().match(body);
 		if(!subj){
-			alertDialog('Please enter valid subject');
+			alertDialog('Please enter valid SMS text');
 			return false;
 		}
-		alertDialog('All validations cleared');
-
 	}
 	
 	   function sendSmS(){
@@ -143,7 +141,7 @@
 		var dtt = '<%=userdata%>';
 		var performence_json	=  jQuery.parseJSON(dtt);
 	
-		var innerHtmlone='<table width="100%" cellspacing="1" cellpadding="0" border="0"><tr><th width="15%" style="font-size:12px;border:1px solid #d7d7d7; background:#d7d7d7;line-height:25px;text-align:left; padding-left:5px"><strong>Name</strong></th><th width="15%" style="font-size:12px;border:1px solid #d7d7d7;background:#d7d7d7;line-height:25px;text-align:left;"><div align="center"><strong>Phone Number</strong></div></th></tr>';
+		var innerHtmlone='<table width="100%" cellspacing="1" cellpadding="0" border="0"><tr><th width="15%" style="font-size:12px;border:1px solid #d7d7d7; background:#d7d7d7;line-height:25px;text-align:center; padding-left:5px"><strong>Name</strong></th><th width="15%" style="font-size:12px;border:1px solid #d7d7d7;background:#d7d7d7;line-height:25px;text-align:center;"><div align="center"><strong>Mobile Number</strong></div></th></tr>';
 	
 	for ( var i = 0; i < performence_json.length; i++) {
  		 	var obj = performence_json[i];
@@ -213,14 +211,14 @@
 					                                   SM_ID,					                                 
 					                                   function(data){
 					                                   if (data =='success') {
-					                                   alert("Success");
+					                                   alertDialog("Success");
 													document.location ="Access.action?p1=UserSMS";
 												
 														} else if (data =='No Users'){
 														document.location ="Access.action?p1=UserSMS";
-						                                   alert("No Users");
+						                                   alertDialog("No Users");
 														}else{
-						                                   alert("Server Error");
+						                                   alertDialog("Server Error");
 						                                   document.location ="Access.action?p1=UserSMS";
 														}
 					                                   }
@@ -232,7 +230,7 @@
 	        	     } 		
 				 	
 			    }else{
-			    alert("Thanx");
+			    alertDialog("Thanx");
 			    document.location ="Access.action?p1=UserSMS";
 			    }									
 				

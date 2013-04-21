@@ -251,6 +251,23 @@
 	var num			= /^[0-9]{8,15}$/;
 	var body =/^[A-Za-z0-9].+$/;
 	
+	var schoolNames = jQuery("#schoolNames").val();
+		var branchNames = jQuery("#branchNames").val();
+		
+		
+		if(schoolNames=="-1"){
+			alertDialog('Please select valid School');
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchNames=="-1"){
+			alertDialog('Please select valid Branch');
+			jQuery("#branchNames").focus();
+			return false;
+		}
+	
+	
 	var frmmail			= jQuery("#frmmail").val().match(patEmail);
 	var subj			=  jQuery("#subj").val().match(body);
 //	var ebody			=  jQuery("#ebody").val().match(patBody);
@@ -273,7 +290,7 @@
 	alertDialog('please select send to option');
 	return false;
 	}else if(i==2 && selectClass=="-1"){
-	alertDialog('please select select option');
+	alertDialog('please select parent of select option');
 	return false;
 	} 
 	
@@ -393,7 +410,7 @@ function alertDialog (prompt) {
   <div id="idAlertDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
             <img src="img/alert.gif" width="34" height="28" alt="alert icon">
             <h3 id="idAlertDialogPrompt"></h3>
-            <a href="#" class="btn btn-primary" onclick="okAlertDialog ();">OK</a>
+            <a href="#" class="btn btn-primary"  style="margin-top: 50px"  onclick="okAlertDialog ();">OK</a>
             </div>
 <script type="text/javascript">
 onloadmethods();

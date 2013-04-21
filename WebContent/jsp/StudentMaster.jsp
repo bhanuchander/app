@@ -148,7 +148,44 @@ System.out.println("msg"+msg);
 			
 		}
 
+		function validate(){
 		
+		var schoolNames = jQuery("#schoolNames").val();
+		var branchNames = jQuery("#branchNames").val();
+		
+		
+		if(schoolNames=="-1"){
+			alert('Please select valid School');
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchNames=="-1"){
+			alert('Please select valid Branch');
+			jQuery("#branchNames").focus();
+			return false;
+		}
+		
+			var file1  = jQuery("#fileUP").val();
+		
+	//	alert(file1);
+		if(file1 == "" || file1 == undefined  || file1 == "undefined"){		
+			alert("Please select a file");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+	
+		var extension = file1.split('.').pop().toLowerCase();
+		var allowed = ['txt','csv'];
+		
+		if(allowed.indexOf(extension) === -1) {
+		    // Not valid.
+			alert("Your selected "+ file1+"  extension wrong");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+		
+		}
 		
 	    </script>
 
@@ -160,7 +197,7 @@ System.out.println("msg"+msg);
 
      <fieldset>
 	    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Student Master</legend>
-	  <form  method="post"  action="studentMasterXL.action" enctype="multipart/form-data"  >
+	  <form  method="post"  action="studentMasterXL.action" enctype="multipart/form-data"  onsubmit="return validate(this)" >
 	    <div style="padding:20px;">
 	          <label style="color:#000;"></label>
 	 

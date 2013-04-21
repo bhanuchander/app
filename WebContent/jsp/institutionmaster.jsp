@@ -148,7 +148,7 @@
 				                                   insActive,
 				                                   function(data){
 				                                   if (data =='saved') {
-				                                   alert("save::"+data);
+				                                   //alertDialog("save");
 													if(flag == 2){
 				                                       document.location ="Access.action?p1=AddAdminUser";
 				                                       }else if(flag ==1){
@@ -157,11 +157,9 @@
 				                                     }
 				                                       
 													}else {
-					                                   alert("exception::"+data);
-	
+					                                   alert("exception::"+data);	
 													}
-					                                   alert("data::"+data);
-					                                   }
+					       						}
 				                              ) ;    
 				 }catch(e){
 				 alert("incatch::"+e);

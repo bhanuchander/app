@@ -115,6 +115,7 @@
 				<value>com/schooltrix/hibernate/UploadDocuments.hbm.xml</value>
 				<value>com/schooltrix/hibernate/DomainControl.hbm.xml</value>
 				<value>com/schooltrix/hibernate/StudentSectionMap.hbm.xml</value>
+				<value>com/schooltrix/hibernate/StudentxlErrorTemp.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

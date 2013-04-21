@@ -6,7 +6,7 @@
 			display: inline-block;
 		}
 		</style>
-	    <script src="js/bootstrap-jquery.js"></script>
+
 	    <script type="text/javascript" src="js/bootstrap-radio.js"></script>
 	    
 	      <script 	src="<%=request.getContextPath()%>/dwr/interface/SMSCreditsDWR.js"></script>
@@ -286,51 +286,67 @@
 	function previewSmS(){
 	alert('preview');
 	}
-	function previewSMSValidate1(){
-	var body =/^[A-Za-z0-9].+$/;
-	var subj			=  jQuery("#smsbody").val().match(body);
-	var selectAll			=  jQuery("#selectAll").val();
-	var selectClass			=  jQuery("#selectClass").val();
-	var radios = document.getElementsByName("radio1");
-    var formValid = false;
-     var i = 0;
-    while (!formValid && i < radios.length) {
-        if (radios[i].checked) formValid = true;
-        i++;     
-          
-    }
-    if (!formValid){ 
-    alertDialog("Must check send to or select!");
-    return false;
-    }
-    if(i==1 && selectAll=="-1"){
-	alertDialog('please select send to option');
-	return false;
-	}else if(i==2 && selectClass=="-1"){
-	alertDialog('please select select option');
-	return false;
-	} 
+	function previewSMSValidate(){
+			var body =/^[A-Za-z0-9].+$/;
+			var subj			=  jQuery("#smsbody").val().match(body);
+			var selectAll			=  jQuery("#selectAll").val();
+			var selectClass			=  jQuery("#selectClass").val();
+			var radios = document.getElementsByName("radio1");
+		    var formValid = false;
+		     var i = 0;
+		   	var schoolNames = jQuery("#schoolNames").val();
+			var branchNames = jQuery("#branchNames").val();	
+		
+			if(schoolNames=="-1"){
+				alertDialog('Please select valid School');
+				jQuery("#schoolNames").focus();
+				return false;
+			}
+			
+			if(branchNames=="-1"){
+				alertDialog('Please select valid Branch');
+				jQuery("#branchNames").focus();
+				return false;
+			}    
+		     
+		    while (!formValid && i < radios.length) {
+		        if (radios[i].checked) formValid = true;
+		        i++;     
+		          
+		    }
+		    if (!formValid){ 
+			    alertDialog("Must check send to or select!");
+			    return false;
+		    }
+		    if(i==1 && selectAll=="-1"){
+				alertDialog('please select send to option');
+				return false;
+			}else if(i==2 && selectClass=="-1"){
+				alertDialog('please select parent of select option');
+				return false;
+			}
 	
 		if(!subj){
-			alertDialog('Please enter valid subject');
+			alertDialog('Please enter sms text');
 			return false;
 		}
 		//alertDialog('All validations cleared');
 
 	}
+	
 	function okAlertDialog () {
-	$("#idAlertDialog").modal ('hide'); 
+		$("#idAlertDialog").modal ('hide'); 
 	};
-function alertDialog (prompt) {
-	document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
-	$("#idAlertDialog").modal ("show");
+	function alertDialog (prompt) {
+		document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
+		$("#idAlertDialog").modal ("show");
 	}
 	    
 	
 	
 	   </script>
 	
-	<div style="height:80px;"></div>
+	<div style="height:50px;"></div>
 <div class="reg_mainCon">
 
   <form action="previewSMS.action"	method="post"  name="smsForm"  onsubmit="return previewSMSValidate(this)">

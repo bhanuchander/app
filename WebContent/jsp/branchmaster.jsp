@@ -100,7 +100,7 @@ span.mandatory {
 	   	    function getSchoolMaster(){
 				//Process DWR/AJAX request here
 				try{
-				alert("in alrttt--getInstitutionMaster");
+				//alert("in alrttt--getInstitutionMaster");
 					var listofschools = document.getElementById('sm_id_list');
 					
 					    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -142,7 +142,7 @@ span.mandatory {
 			
 </script>
 
-<div style="height:80px;"></div>
+<div style="height:50px;"></div>
 <div class="reg_mainCon">
   <form action="school.action" method="post">
     <fieldset>

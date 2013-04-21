@@ -34,6 +34,7 @@ import com.schooltrix.hibernate.SectionMaster;
 import com.schooltrix.hibernate.StateMaster;
 import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.StudentSectionMap;
+import com.schooltrix.hibernate.StudentxlErrorTemp;
 import com.schooltrix.hibernate.UserMaster;
 import com.schooltrix.managers.ServiceFinder;
 
@@ -62,6 +63,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 		String BM_ID = request.getParameter("branchNames");
 		
 		String institutionName = (String)session.get("IM_SN");
+		String UM_ID = (String)session.get("UM_ID");
 		String IM_ID = (String)session.get("IM_ID");
 		
 		System.out.println(SM_ID+"-BM_ID-"+BM_ID+"--IM_ID-"+IM_ID+"-institutionName-"+institutionName);
@@ -76,6 +78,9 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 			int ignoredCount = 0;
 			int insertedCount = 0;
 			int totalRecords = 0;
+			
+			//delete old error log before new errorlog create...may or maynot create a log every time..bcz..create log only in error
+			deleteStudentError(UM_ID);
 			
 		while ((inpLine = inpReader.readLine()) != null) {
 			if ((inpLine == null || inpLine == "" ) && atWhatline == 1) {
@@ -125,6 +130,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 						if (fields.length != format.length) {
 						//I --reason to fail-error
 							//insert into DB--Error
+							saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,fields,"column count does't match");
 							errorCount++;
 							break M;
 						}else{
@@ -139,6 +145,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 							 		boolean check =  doInsertIntoDB(fields,IM_ID,SM_ID,BM_ID);//main operations*********************************************************
 							 		if (!check) {
 							 			//insert into DB--Error
+							 			saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,fields,"column validation failed *");
 							 			errorCount++;
 										break M;
 									}else{
@@ -155,6 +162,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 															
 							} else {
 								//insert into DB----error
+								saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,fields,"column validation failed");
 								errorCount++;
 								break M;
 							}
@@ -168,12 +176,15 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 					System.out.println("line is empty222");
 					//session.put("msg", "File is empty");
 				//insert into DB----error
+					saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,fields,"empty row");
 					errorCount++;
 					break M;	  
 				}
 			
 			 } catch (Exception e) {
 				// TODO Auto-generated catch block
+				 //inpLine
+				 saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,new String[]{"some"},"some other");
 				e.printStackTrace();
 				//insert into DB----error
 				errorCount++;
@@ -182,7 +193,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 		}//while############################################3
 		
 		session.put("msg", "Student File Upload Success");
-		session.put("result", errorCount+"~"+ignoredCount+"~"+insertedCount+"~"+totalRecords);
+		session.put("result", errorCount+"~"+ignoredCount+"~"+(insertedCount)+"~"+(totalRecords-1));
 		System.out.println("errorCount**"+errorCount);
 		System.out.println("ignoredCount**"+ignoredCount);
 		System.out.println("insertedCount**"+insertedCount);
@@ -477,7 +488,51 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 		}		
 	
 	}
+	
+	public void saveStudentErrorLog(String iM_ID, String sM_ID, String bM_ID, String uM_ID, String[] fields, String reason) {
+		
+		 StudentDetailsDAO studentDetailsDao = (StudentDetailsDAO)ServiceFinder.getContext(request).getBean("StudentDetailsDAO");
+		 //delete old error log for same um_id
+		 
+		 StudentxlErrorTemp setemp = new StudentxlErrorTemp();
+		 setemp.setBmId(bM_ID);
+		 setemp.setImId(iM_ID);
+		 setemp.setReason(reason);
+		 setemp.setSmId(sM_ID);
+		 setemp.setUmId(uM_ID);
+		 
+		 
+		 StringBuffer sb = new StringBuffer();
+		 for (int i = 0; i < fields.length; i++) {
+			sb.append(fields[i]);
+		}
+		 String line = sb.toString();
+		 System.out.println(iM_ID+"--"+sM_ID+"--"+bM_ID+"--"+uM_ID+"--"+fields+"--"+reason+"--"+line);
 
+		 setemp.setErrorline(line);
+		 
+		 try {
+			studentDetailsDao.insertStudentErrorLog(setemp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
+	}
+
+
+	public void deleteStudentError(String uM_ID) {
+		System.out.println("in deleet logggg----------");
+		 StudentDetailsDAO studentDetailsDao = (StudentDetailsDAO)ServiceFinder.getContext(request).getBean("StudentDetailsDAO");
+		 try {
+			int  u = studentDetailsDao.deleteStudentErrorLog(uM_ID);
+			System.out.println(u+"**^^^^^^^^*");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void setSession(Map session) {
 		// TODO Auto-generated method stub

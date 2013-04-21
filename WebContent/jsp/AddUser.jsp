@@ -188,7 +188,7 @@
 	    function getUserTypeMaster(){
 		//Process DWR/AJAX request here
 		try{
-		alert("in alrttt--getUserTypeMaster");
+		//alert("in alrttt--getUserTypeMaster");
 			var dd = document.getElementById('userRights');
 		     /*    UserTypeMasterDWR.userTypeMaster(function(data){
 			                                   if (data ==null) {														
@@ -218,7 +218,7 @@
 	    function getInstitutionMaster(){
 				//Process DWR/AJAX request here
 				try{
-				alert("in alrttt--getInstitutionMaster");
+				//alert("in alrttt--getInstitutionMaster");
 					var listofInsit = document.getElementById('im_id_list');
 					
 					    UserTypeMasterDWR.getInstitutionMasterList(function(data){
@@ -226,7 +226,7 @@
 					                                  alert("error");
 					                                 
 													} else {				
-													alert(data+":::"+data.length+data[1]);	                                 
+												//	alert(data+":::"+data.length);	                                 
 					                               for(var i = 0; i < data.length; i++) {
 														  var opt = document.createElement("option");
 														    var temp = data[i];
@@ -398,7 +398,6 @@
 				alertDialog('please select State');
 				return false;
 				}
-				alert('All validations cleared');
 				//return false;
 				
 				    
