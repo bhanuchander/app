@@ -10,7 +10,7 @@
     </create>
      -->
       <create creator="new" javascript="InstitutionMasterDWR">
-		<param name="class" value="com.schooltrix.actions.InstitutionMasterAction"/>
+		<param name="class" value="com.schooltrix.dwr.InstitutionMasterDWR"/>
     </create>
     
      <create creator="new" javascript="UserTypeMasterDWR">
@@ -54,6 +54,7 @@
     <create creator="new" javascript="StudentDWR">
 		<param name="class" value="com.schooltrix.dwr.StudentDWR"/>
     </create>
+
     
   </allow>
 </dwr>

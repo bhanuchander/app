@@ -116,6 +116,7 @@
 				<value>com/schooltrix/hibernate/DomainControl.hbm.xml</value>
 				<value>com/schooltrix/hibernate/StudentSectionMap.hbm.xml</value>
 				<value>com/schooltrix/hibernate/StudentxlErrorTemp.hbm.xml</value>
+				<value>com/schooltrix/hibernate/FranchiseMaster.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

@@ -13,12 +13,13 @@ public class InstitutionMaster implements java.io.Serializable {
 	private String shortName;
 	private String address;
 	private String city;
-	private Long stateId;
+	private String stateId;
 	private String contactPerson;
 	private String emailId;
 	private String mobile;
 	private String landline;
 	private String active;
+	private String franchiseId;
 
 	// Constructors
 
@@ -27,16 +28,24 @@ public class InstitutionMaster implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public InstitutionMaster(String name, String shortName, Long stateId) {
+	public InstitutionMaster(String name, String shortName, String address,
+			String city, String stateId, String contactPerson, String emailId,
+			String mobile, String active) {
 		this.name = name;
 		this.shortName = shortName;
+		this.address = address;
+		this.city = city;
 		this.stateId = stateId;
+		this.contactPerson = contactPerson;
+		this.emailId = emailId;
+		this.mobile = mobile;
+		this.active = active;
 	}
 
 	/** full constructor */
 	public InstitutionMaster(String name, String shortName, String address,
-			String city, Long stateId, String contactPerson, String emailId,
-			String mobile, String landline, String active) {
+			String city, String stateId, String contactPerson, String emailId,
+			String mobile, String landline, String active, String franchiseId) {
 		this.name = name;
 		this.shortName = shortName;
 		this.address = address;
@@ -47,6 +56,7 @@ public class InstitutionMaster implements java.io.Serializable {
 		this.mobile = mobile;
 		this.landline = landline;
 		this.active = active;
+		this.franchiseId = franchiseId;
 	}
 
 	// Property accessors
@@ -91,11 +101,11 @@ public class InstitutionMaster implements java.io.Serializable {
 		this.city = city;
 	}
 
-	public Long getStateId() {
+	public String getStateId() {
 		return this.stateId;
 	}
 
-	public void setStateId(Long stateId) {
+	public void setStateId(String stateId) {
 		this.stateId = stateId;
 	}
 
@@ -137,6 +147,14 @@ public class InstitutionMaster implements java.io.Serializable {
 
 	public void setActive(String active) {
 		this.active = active;
+	}
+
+	public String getFranchiseId() {
+		return this.franchiseId;
+	}
+
+	public void setFranchiseId(String franchiseId) {
+		this.franchiseId = franchiseId;
 	}
 
 }

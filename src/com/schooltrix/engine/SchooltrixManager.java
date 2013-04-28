@@ -98,7 +98,12 @@ public class SchooltrixManager {
 				String ShortName = getInstitutionShortName(result.getString(2).trim());
 				
 				flag_records++;
-				proceessFiletoSend(ShortName,result.getInt(1),result.getString(2).trim(),result.getString(5).trim(),result.getString(7).trim());
+				try {
+					proceessFiletoSend(ShortName,result.getInt(1),result.getString(2).trim(),result.getString(5).trim(),result.getString(7).trim());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			
 			}
 			if(flag_records<1){
@@ -272,7 +277,12 @@ public class SchooltrixManager {
 				
 			System.out.println("sno--"+result.getInt(1));
 				flag_records++;
-				proceessEmailFiletoSend(ShortName,result.getInt(1),result.getString(2).trim(),result.getString(5).trim(),result.getString(6).trim(),result.getString(7).trim(),result.getString(9).trim());
+				try {
+					proceessEmailFiletoSend(ShortName,result.getInt(1),result.getString(2).trim(),result.getString(5).trim(),result.getString(6).trim(),result.getString(7).trim(),result.getString(9).trim());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			if(flag_records<1){
 				System.out.println("Nothing is processed");
@@ -305,10 +315,13 @@ public class SchooltrixManager {
 			    String lastName = item.getString("Last_Name");
 			    String firstName = item.getString("First_Name");
 			   emailIDs[i]	=	item.getString("Email");
-			    System.out.println("-->"+lastName+"::"+firstName+"::"+item.getString("Email"));			    			    
+			    System.out.println("-->"+lastName+"::"+firstName+"::"+item.getString("Email"));			 
+			    
+			    
 			}			
 			
-//			sendEmail(emailIDs,emailSubj, emailBody,new String[1],"Schooltrix.com");//from email body with names here ....further
+			sendEmail(emailIDs,emailSubj, emailBody,new String[1]);
+			//sendEmail(emailIDs,emailSubj, emailBody,new String[1]);//from email body with names here ....further
 			
 			try {
 				Connection con		= this.conn;
@@ -362,12 +375,17 @@ public class SchooltrixManager {
 		return "";
 	}
 		//	sendEmail(emailIDs,emailSubj, emailBody,attch[],"Schooltrix.com");
-	private void sendEmail(String recipients[],String emailSubj,String emailBody,String[] attachements ,String from) {
+	private void sendEmail(String recipients[],String emailSubj,String emailBody,String[] attachements) {
 		//sendMail(String recipients[], String subject, String message,String attachments[], String from)
 		
-			ProcessEmail pmsg = new ProcessEmail();	
-			pmsg.sendMail(recipients, emailSubj, emailBody, attachements, from);
-			System.out.println("emailsent::");
+			try {
+				ProcessEmail pmsg = new ProcessEmail();	
+				pmsg.sendMail(recipients, emailSubj, emailBody, attachements);
+				System.out.println("emailsent::");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	

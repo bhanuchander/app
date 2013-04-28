@@ -39,11 +39,11 @@
 	function schoolMasterList(){
 	    
 		   try{
-		 		  	var im_id = "<%=session.getAttribute("IM_ID")%>";					
+		 		  	var im_id = "<%=session.getAttribute("IM_ID")%>";			//not req			
 					var sm_id = "<%=session.getAttribute("SM_ID")%>";		//not req		
 					var bm_id = "<%=session.getAttribute("BM_ID")%>";	//not req
 		   
-					alert("onload school master"+im_id);
+				//	alert("onload school master"+im_id);
 						var listofschools = document.getElementById('schoolNames');					
 	
 						    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -74,16 +74,17 @@
 		 
 	function selectSchoolforBranches(val){
 	   
+		removeAllOptions("branchNames");
+		removeAllOptions("selectClass");
 	   if(val != '-1'){	   
 	   var schoolID = jQuery("#schoolNames").val();
 
-		removeAllOptions("branchNames");
 					  
 		if(val != '-1'){	   
 		   try{
 		   	var im_id = "<%=session.getAttribute("IM_ID")%>";	
 		   	
-					alert("based school master getting branch master list--"+schoolID);
+					//alert("based school master getting branch master list--"+schoolID);
 						var listofbranchs = document.getElementById('branchNames');					
 	
 						    BranchMasterDWR.getBranchMasterList(schoolID,function(data){
@@ -121,18 +122,26 @@
 		 
 	function selectBranchesforClasses(val){
 	   
-	 if(val != '-1'){	   
-	   var branchID = jQuery("#branchNames").val();
 	   var schoolID = jQuery("#schoolNames").val();
+	   
+		removeAllOptions("selectClass");
+		 if(val != '-1'){
+		 
+		    if (schoolID == "-1") {		
+		     setError("schoolNames","Please select School name");
+	               jQuery("#schoolNames").focus();
+					return false;	   
+		}
+	 
+	   var branchID = jQuery("#branchNames").val();
 
-		removeAllOptions("selectGrades");
 					  
 		if(val != '-1'){	   
 		   try{
 		   	var im_id = "<%=session.getAttribute("IM_ID")%>";	
 		   	
-					alert("based school master getting branch master list--"+branchID+"--"+schoolID);
-						var listofclasses = document.getElementById('selectGrades');					
+				//	alert("based school master getting branch master list--"+branchID+"--"+schoolID);
+						var listofclasses = document.getElementById('selectClass');					
 	
 						    ClassMasterDWR.getClassMasterList(schoolID,branchID,function(data){
 						                                if (data == null) {													
@@ -190,15 +199,15 @@
 	   			
 				var listofSubjects =  document.getElementById("selectSubject");
 			
-				var classID = jQuery("#selectGrades").val();
+				var classID = jQuery("#selectClass").val();
 				
-						alert(listofSubjects+":::"+im_id+"--"+schoolID+"--"+branchID);
+					//	alert(listofSubjects+":::"+im_id+"--"+schoolID+"--"+branchID);
 				     ClassMasterDWR.getSubjectMasterList(schoolID,branchID,classID,function(data){
 					                                if (data == null) {												
 					                                  alert("error");
 					                                 
 													} else {		
-													alert(data+":::")	;	
+												//	alert(data+":::")	;	
 													//   removeAllOptions();   
 					                           for(var i = 0; i < data.length; i++) {
 														    var opt = document.createElement("option");
@@ -230,16 +239,14 @@
 		
 	   function resultPopUp(){
 	    	var msg = "<%=session.getAttribute("msg")%>";
-	    	alert("msg--"+msg);
-	    	
-	    	alert("active--"+"<%=session.getAttribute("active")%>"+":::"+"<%=session.getAttribute("fName")%>");
-	    	//testingggg-
-	    	
 	    	
 		    if(msg == null || msg == "null"){
 		    // alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> Success.<br/> Your ID : "+"TH676767676"+"<br/>Password : "+"yu76767hhgh6"+"</div>");
 		    }else{
-		  	    alert(msg);
+		     setError("schoolNames",msg);
+		      jQuery("#schoolNames").focus();
+		        resetForm($('#uploaddocForm')); // by id, recommended
+		  	  //  alert(msg);
 /* 		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".<br/></div>"); */
 		    }
 		     if(msg != null){
@@ -247,44 +254,6 @@
 		     }
 	    }
 		
-	
-		function classMaster(){
-			//Process DWR/AJAX request here
-				try{
-				//alert("in alrttt--SMSCredits");	jQuery("#addr2").val();	
-				
-					var im_id = "<%=session.getAttribute("IM_ID")%>";					
-					var sm_id = "<%=session.getAttribute("SM_ID")%>";				
-					var bm_id = "<%=session.getAttribute("BM_ID")%>";				
-					
-				var listofClasses =  document.getElementById("selectGrades");
-					alert(listofClasses+":::"+im_id+"--"+sm_id+"--"+bm_id);
-				     ClassMasterDWR.getClassMasterList(im_id,sm_id,bm_id,function(data){
-					                                if (data == null) {														
-					                                  alert("error");
-					                                 
-													} else {				
-													alert(data+":::")	;	   
-					                               for(var i = 0; i < data.length; i++) {
-														    var opt = document.createElement("option");
-														    var temp = data[i];
-														    opt.value = temp[0];
-														    opt.innerHTML = temp[1];
-														    listofClasses.appendChild(opt);
-														}		                          
-													}
-					                         }
-					      ) ;   
-								      
-					 }catch(e){
-					 alert("incatch::"+e);
-					        jQuery.log.info(e.message);
-					        jQuery("#infoError").html("&nbsp;");
-	        	     } 
-	
-	
-	}
-	
 		function removeAllOptions(whichOption)
 		{
 	//	var listofSubjects =  document.getElementById("selectSubject");
@@ -298,7 +267,14 @@
 			
 			 var opt = document.createElement("option");
 		    opt.value = "-1";
-		    opt.innerHTML = "Select";
+		    if (whichOption == "branchNames") {
+		    opt.innerHTML = "Select Branch";
+			}else if (whichOption == "selectClass") {
+		    opt.innerHTML = "Select Class";
+			}else if (whichOption == "selectSubject") {
+		    opt.innerHTML = "Select Subject";
+			}
+		    
 		    listofSubjects.appendChild(opt);
 			
 			 var opt = document.createElement("option");
@@ -309,32 +285,124 @@
 		}
 	
 
+	function validateForm(){
 	
+		var schoolNames = jQuery("#schoolNames").val();
+		var branchNames = jQuery("#branchNames").val();
+		var selectClass = jQuery("#selectClass").val();
+		var selectType = jQuery("#selectType").val();
+		var uploadType = jQuery("#uploadType").val();
+		
+		
+		if(schoolNames=="-1"){
+		 setError("schoolNames","Please select valid School(s)");
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchNames=="-1"){
+			 setError("branchNames","Please select  Branch(s)");
+			jQuery("#branchNames").focus();
+			return false;
+		}
+		
+		if(selectClass=="-1"){
+			 setError("selectClass","Please select  Class(s)");
+			jQuery("#selectClass").focus();
+			return false;
+		}
+		if(selectType=="-1"){
+			 setError("selectType","Please select  Parent/Student/All");
+			jQuery("#selectType").focus();
+			return false;
+		}
+		
+	if(uploadType=="-1"){
+			 setError("uploadType","Please select  Upload type");
+			jQuery("#uploadType").focus();
+			return false;
+		}
+		
+		if (uploadType == "Assignments") {
+			var assignmentType = jQuery("#assignmentType").val();
+			var selectSubject = jQuery("#selectSubject").val();
+				if (assignmentType == "-1") {
+						setError("assignmentType","Please select Assignment Type");
+						jQuery("#assignmentType").focus();
+			return false;
+				}			
+				if (selectSubject == "-1") {
+						setError("selectSubject","Please select Subject(s)");
+						jQuery("#selectSubject").focus();
+			return false;
+				}			
+			
+		}
+			
+			var file1  = jQuery("#fileUP").val();
+		if(file1 == "" || file1 == undefined  || file1 == "undefined"){		
+			setError("branchNames","Please select a file");
+				jQuery("#fileUP").focus();
+			return false;
+		}
 	
-	 function validateForm() {
-		
-		var file1  = jQuery("#fileUP").val();
-		
-	//	alert(file1);
 		var extension = file1.split('.').pop().toLowerCase();
 		var allowed = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt','ppt','pptx','gif','csv','png','jpg','jpeg','dot','dotx','html','odm','ott','odt','rtf','xps'];
 		
 		if(allowed.indexOf(extension) === -1) {
 		    // Not valid.
-			alert("Your selected "+ file1+"  extension wrong");
+			setError("branchNames","Your selected "+ file1+"  extension wrong");
+				jQuery("#fileUP").focus();
 			return false;
-		}else{
-		return true;
 		}
+		
+		}
+		
+			var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
 
-	}
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	    
+	 function resetForm($form) {
+		    $form.find('input:text, input:password, input:file, textarea').val('');
+		       jQuery("#schoolNames").val('Select School');
+		       jQuery("#branchNames").val('Select Branch');
+		       jQuery("#selectClass").val('Select Class');
+		       jQuery("#selectType").val('Select');
+		       jQuery("#uploadType").val('Select');
+		       jQuery("#assignmentType").val('Select');
+		       jQuery("#selectSubject").val('Select Subject');
+		 /*    
+		    $form.find('input:radio, input:checkbox')
+		         .removeAttr('checked').removeAttr('selected'); */
+		}
 
 
     </script>
    
     <div style="height:50px;"></div>
 <div class="reg_mainCon">
-   <form  method="post"  action="uploadDocActionName.action" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+   <form  method="post"  action="uploadDocActionName.action" name="uploaddocForm" enctype="multipart/form-data" onsubmit="return validateForm()"> 
     <fieldset>
     <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Upload Documents</legend>
     <div style="padding:20px;">
@@ -344,31 +412,31 @@
            <tr>
              <td colspan="3" style="text-align:right;"><button type="button" class="btn" onclick="editPreviousUploads(); return false;">Edit previous uploads</button> </td>
         </tr>
-  
+   <tr><td colspan="4" style="text-align: center;"><span id ="errorspan" style="color:red;font-size: 14px;" ></span>&nbsp;</td></tr>
         <tr>
                 <td colspan="3"><label style="color:#000;"><b>Select Audience</b></label></td>
         </tr>
           <tr>
                 <td><label style="color:#000;"><b>Display to</b></label></td>
-                <td><select class="span4"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value)">
-                        <option value="-1" selected="selected">Select</option>
+                <td><select class="span4"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value);">
+                        <option value="-1" selected="selected">Select School</option>
                         <option value="0">ALL</option>
                        </select>                   
                  </td>
-                <td><select class="span4" name="branchNames" id="branchNames" onchange="selectBranchesforClasses(this.value)">
-                        <option value="-1" selected="selected">Select</option>
+                <td><select class="span4" name="branchNames" id="branchNames" onchange="return selectBranchesforClasses(this.value);">
+                        <option value="-1" selected="selected">Select Branch</option>
                         <option value="0">All</option>
                        </select>                   
                  </td>
         </tr>
         <tr>
                 <td></td>
-                <td><select class="span4"  name="selectGrades" id="selectGrades" onchange="selectGradeSubject(this.value)">
-                        <option value="-1"   selected="selected">Select</option>
+                <td><select class="span4"  name="selectClass" id="selectClass" onchange="return selectGradeSubject(this.value);">
+                        <option value="-1"   selected="selected">Select Class</option>
                         <option value="0">ALL</option>
                        </select>                   
                  </td>
-                <td><select class="span4" name="selectAll" id="selectAll" >
+                <td><select class="span4" name="selectType" id="selectType" >
                         <option value="-1">Select</option>
                         <option value="All"   selected="selected">All</option>
                         <option value="Parents"> Parents</option>
@@ -406,7 +474,7 @@
           <tr>
          <td><label style="color:#000;"><b>Subject</b></label></td>
                 <td><select class="span4"  name="selectSubject" id="selectSubject" disabled="disabled">
-                        <option value="-1"  selected="selected">Select</option>
+                        <option value="-1"  selected="selected">Select Subject</option>
                       </select>                   
                  </td>
                 <td>&nbsp;</td>

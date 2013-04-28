@@ -41,7 +41,7 @@ public class ProcessEmail {
 	 * @param attachments
 	 * @param from
 	 */
-	public void sendMail(String recipients[], String subject, String message,String attachments[], String from)
+	public void sendMail(String recipients[], String subject, String message,String attachments[])
 	{
 		try	{
 			Properties props = new Properties();
@@ -52,13 +52,15 @@ public class ProcessEmail {
 			SMTP_AUTH_USER= (String) props.getProperty("SMTP_AUTH_USER");
 			SMTP_AUTH_PWD= (String) props.getProperty("SMTP_AUTH_PWD");
 			SMTP_PORT=(String) props.getProperty("SMTP_PORT");
+			
+			String from = (String) props.getProperty("fromEmailIDs");
 			System.out.println("SMTP_HOST_NAME."+SMTP_HOST_NAME);
 			System.out.println("SMTP_AUTH_USER."+SMTP_AUTH_USER);
 			System.out.println("SMTP_AUTH_PWD."+SMTP_AUTH_PWD);
 			System.out.println("SMTP_PORT."+SMTP_PORT);
 			//Set the host smtp address
 			props.put("mail.smtp.host", SMTP_HOST_NAME);
-			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.auth", "false");
 			props.put("mail.smtp.port", SMTP_PORT);
 			Authenticator auth = new SMTPAuthenticator();
 			// Get session
@@ -96,10 +98,9 @@ public class ProcessEmail {
 			BodyPart mainbody = new  MimeBodyPart();
 			String content="";
 					
-			content=content+"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" /><title> :Vantagetrade : </title></head><body style=\"margin:0px;\"><table style=\"width:98%;border:#CCCCCC 1px solid;font-family:\"Trebuchet MS\", \"Times New Roman\", Tahoma;font-size:11px;color:#000000;margin:1%;\">" +
-			"<tr><td><img src=\"http://www.vantagetrade.com/images/spacer.gif\" alt=\"Buy and Sell Signals\" width=\"99%\" height=\"15\"/></td></tr><tr><td style=\"margin-left:5px;\">" +
-			"<img src=\"http://www.vantagetrade.com/images/TermHederLogo.gif\" alt=\"Buy and Sell Signals\" width=\"156\" height=\"47\" /></td></tr><tr><td style=\"padding:10px; border-left:#CCCCCC 1px solid; border-right:#CCCCCC 1px solid;border-bottom:#CCCCCC 1px solid;\">" +
-			""+message+"</td></tr></table><body></html>";
+			content=content+"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" /><title> :SchoolTrix : </title></head><body style=\"margin:0px;\"><table style=\"width:98%;font-family:\"Trebuchet MS\", \"Times New Roman\", Tahoma;font-size:11px;color:#000000;margin:1%;\">" +
+					"<tr><td style=\"padding:10px;\">" +
+					""+message+"</td></tr></table><body></html>";
 			String content_prototype="";		
 			mainbody.setContent(content,"text/html");
 			mainbody.setDisposition(Part.INLINE);  				
@@ -158,7 +159,7 @@ public class ProcessEmail {
 			System.out.println("SMTP_PORT."+SMTP_PORT);*/
 			//Set the host smtp address
 			props.put("mail.smtp.host", SMTP_HOST_NAME);
-			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.auth", "false");
 			props.put("mail.smtp.port", SMTP_PORT);
 			Authenticator auth = new SMTPAuthenticator();
 			// Get session
@@ -238,21 +239,17 @@ public class ProcessEmail {
 				*/
 				messageBodyPart.setFileName("Upload Document"+today+"."+extn);
 				multipart.addBodyPart(messageBodyPart);		
-				// Put parts in message
-				
+				// Put parts in message		
 		
-				// Send the message
-				
-				
+				// Send the message						
 			}
 			mainbody.setContent(content,"text/html");
 			multipart.addBodyPart(mainbody);
 			messageObj.setHeader("<b style=\"width:98%;border:#CCCCCC 1px solid;font-family:\"Italic\", \"Italic\", Tahoma;font-size:11px;color:#000000;margin:1%;\">" 
 		+"This is an auto generated email. Please do not reply</b>", "text/html");
-			messageObj.setContent(multipart);
-			
+			messageObj.setContent(multipart);			
 			System.out.println(messageObj.getContent()+"---");
-			//Transport.send(messageObj);		
+			Transport.send(messageObj);		
 		}
 		catch(Exception e)
 		{

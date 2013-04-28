@@ -66,25 +66,27 @@ public class EmailCampaignSession {
 			if ("AllParents".equalsIgnoreCase(toAll)) {
 				quWhere = "Par%";
 				tablename = "parent_details";
+				query = "select First_Name,Last_Name,Email from " + tablename + " where um_id in (select um_id from user_master where IM_ID='" + emailDto.getIM_ID() + "' and BM_ID='" + emailDto.getBM_ID() + "' and UT_ID = '2' and Active='Y') and isDefault='Y' and Active='Y'";
 			}else if ("AllTeachingStaff".equalsIgnoreCase(toAll)) {
 				quWhere = "TH%";				
 				tablename = "staff_details";
+				query = "select First_Name,Last_Name,Email from " + tablename + " where um_id in (select um_id from user_master where IM_ID='" + emailDto.getIM_ID() + "' and BM_ID='" + emailDto.getBM_ID() + "' and User_ID like '" + quWhere + "' and Active='Y') and Active='Y'";
 			}else if ("AllNonTeachingStaff".equalsIgnoreCase(toAll)) {
 				quWhere = "NTH%";				
 				tablename = "staff_details";
+				query = "select First_Name,Last_Name,Email from " + tablename + " where um_id in (select um_id from user_master where IM_ID='" + emailDto.getIM_ID() + "' and BM_ID='" + emailDto.getBM_ID() + "' and User_ID like '" + quWhere + "' and Active='Y') and Active='Y'";
 			}
 			if(emailDto.getIM_ID() == null)
 			{
 				//emailDto.setIM_ID("1");
 			}
-			
-		  query = "select First_Name,Last_Name,Email from " + tablename + " where um_id in (select um_id from user_master where IM_ID='" + emailDto.getIM_ID() + "' and BM_ID='" + emailDto.getBM_ID() + "' and User_ID like '" + quWhere + "' and Active='Y') and Active='Y'";
+			//for mother & father ,we have only one record in user_master table
 		
 		} else if ((toClass != null) && (toClass != "null")) {
 			toWhome = toClass;
 			System.out.println("in class section");
 	
-			query = "select First_Name,Last_Name,Email from parent_details where Active='Y' and PD_ID in ( select pd_id from parent_student_map where Active='Y' and Stu_id in (select Stu_ID from student_section_map where Active='Y' and IM_ID='" +
+			query = "select First_Name,Last_Name,Email from parent_details where Active='Y' and isDefault='Y'  and PD_ID in ( select pd_id from parent_student_map where Active='Y' and Stu_id in (select Stu_ID from student_section_map where Active='Y' and IM_ID='" +
 			emailDto.getIM_ID() + "' and SM_ID='" + emailDto.getSM_ID() + "' and BM_ID='" + emailDto.getBM_ID() + "' and SCM_ID in " +
 			"( SELECT SCM_ID FROM section_class_map WHERE Active='Y' and CM_ID = " + toClass + " and bm_id = " + emailDto.getBM_ID() + ") ))";
 		}

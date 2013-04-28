@@ -194,7 +194,7 @@ span.mandatory {
                      <td>&nbsp;</td>
                 <td>
                     <label style="color:#000;"><b>Country</b></label>
-                    <select class="span4" type="text" placeholder=""  name="br_country" id="br_country"  > <!--  onchange="changeCountry(this.value)" -->
+                    <select style="width: 315px;" type="text" placeholder=""  name="br_country" id="br_country"  > <!--  onchange="changeCountry(this.value)" -->
                     <option value="Abkhazia">Abkhazia</option>
                      <option value="India" selected="selected">India</option>
                     </select>                </td>

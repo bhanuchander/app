@@ -88,7 +88,20 @@ public class Access extends ActionSupport implements ServletRequestAware,Session
 								
 					boolean validAdmin = institutionAdminCheck();
 					if(validAdmin){		
-						return "adminNonAddUser";						
+						//this is for ravi sir..more links
+						if (p2.equalsIgnoreCase("uts")) {
+							session.put("pageTO", "uts");
+							return "adminNonAddUser_uts";						
+						} else if (p2.equalsIgnoreCase("ffats")) {
+							session.put("pageTO", "ffats");
+							return "adminNonAddUser_ffats";						
+						} else if (p2.equalsIgnoreCase("rap")) {
+							session.put("pageTO", "rap");
+							return "adminNonAddUser_rap";						
+						} else{
+							return "unauthorised";		
+						}
+						
 					}else{			
 						return "unauthorised";		
 					}

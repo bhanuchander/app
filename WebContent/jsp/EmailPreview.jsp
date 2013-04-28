@@ -3,11 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	    pageEncoding="ISO-8859-1"%>
 <%@page import ="java.util.*" %>   
-	    <link href="css/bootstrap.css" rel="stylesheet">
-	    <script type="text/javascript" src="js/engine.js"></script>
-<script type="text/javascript" src="js/util.js"></script>
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/SentEmailDWR.js"></script>
-
 	<%
 	EmailCapmaignDto dto = (EmailCapmaignDto) request.getAttribute("EmailDto");
 	
@@ -136,6 +132,15 @@ function tellMeMore(call){
 			
 			var frmmail			= jQuery("#frmmail").val().match(patEmail);
 			var subj			=  jQuery("#subj").val().match(body);
+			var sent_Sms_Count			=  jQuery("#sent_Sms_Count").val();
+				if (sent_Sms_Count <=0) {
+					alertDialog('No Recipients');
+					//setTimeout(document.location ="Access.action?p1=UserEmail", 300000);
+					setTimeout(function() { document.location ="Access.action?p1=UserEmail";}, 3000);
+					 //document.location ="Access.action?p1=UserEmail";
+					return false;
+				}
+						
 				if(!frmmail){
 					alertDialog('Please enter valid from mail');
 					return false;

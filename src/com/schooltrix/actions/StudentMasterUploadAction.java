@@ -8,12 +8,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -30,6 +34,7 @@ import com.schooltrix.daos.UserMasterDAO;
 import com.schooltrix.hibernate.ClassMaster;
 import com.schooltrix.hibernate.ParentDetails;
 import com.schooltrix.hibernate.ParentStudentMap;
+import com.schooltrix.hibernate.SectionClassMap;
 import com.schooltrix.hibernate.SectionMaster;
 import com.schooltrix.hibernate.StateMaster;
 import com.schooltrix.hibernate.StudentDetails;
@@ -46,8 +51,11 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	private String fileUPContentType;
 	private String fileUPFileName;
 	public HttpServletRequest request ;
+	private String stateID ;
+	private String sectionID ;
+	private String classCurID ;
+	private String classAdmitID ;
 	
-
 	public String execute() {		
 
 		if(fileUPFileName==null){
@@ -89,6 +97,13 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				return INPUT;	
 			}
 			
+			//for next record global values to set to null****************
+			classAdmitID = null;
+			classCurID	=	null;
+			sectionID	=	null;
+			stateID = null;
+			//*********************************
+			
 			totalRecords++;//for total records uploaded-result
 				System.out.println("innnnnnnnnnnn");
 			  M:{
@@ -110,7 +125,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 					String[] format = {"Student_First_Name","Student_Last_Name","DOB","Admission_Number","Admission_Date","Class_Admitted_in","Current_Class","Current_Section","Gender",
 							"Father_First_Name","Father_Last_Name","DOB","Mother_First_Name","Mother_Last_Name","DOB","Primary_Email","Primary_Mobile","Landline","Address1","Address2","City","State"};
 				
-					System.out.println(fields.length+"**********"+format.length);
+					System.out.println(fields.length+"**********"+format.length+"-------"+atWhatline);
 					
 					if ((atWhatline==1)) {
 						 for (int j = 0; j < fields.length; j++) {//bcz upload txt may have more colums
@@ -138,11 +153,14 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 							boolean validLine = isValidLine(fields);//main is field validation						
 							
 							
-							if (isValidLine(fields)) {
+							if (validLine) {
 								//check for admission number already exist or not ---this is for ignored records
 							 	if (!isAdmissionNumberExist(IM_ID,fields[3])) {
 							 		System.out.println("in admission false--");
 							 		boolean check =  doInsertIntoDB(fields,IM_ID,SM_ID,BM_ID);//main operations*********************************************************
+							 	
+							 		//		 		testing purpose~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							 		//boolean check =  true;//doInsertIntoDB(fields,IM_ID,SM_ID,BM_ID);//main operations*********************************************************
 							 		if (!check) {
 							 			//insert into DB--Error
 							 			saveStudentErrorLog(IM_ID,SM_ID,BM_ID,UM_ID,fields,"column validation failed *");
@@ -220,15 +238,173 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 
 	private boolean isValidLine(String[] fields) {
 		// TODO Auto-generated method stub---27 fields
-		/*String[] format = {"Student_First_Name","Student_Last_Name","DOB","Email","Mobile","Landline","Address1","Address2","City","State","Admission_Number","Admission_Date",
-				"Class_Admitted_in","Gender","Active","Parent_First_Name","Parent_Last_Name","DOB","Email","Mobile","Landline","Address1","Address2","City","State","Parent_Type",
-				"Active"};*/
-		
-		
+		/*String[] format = {"Student_First_Name","Student_Last_Name","DOB","Admission_Number","Admission_Date","Class_Admitted_in","Current_Class","Current_Section","Gender",
+				"Father_First_Name","Father_Last_Name","DOB","Mother_First_Name","Mother_Last_Name","DOB","Primary_Email","Primary_Mobile","Landline","Address1","Address2","City","State"};
+*/	
+		for (int i = 0; i < fields.length; i++) {
+			if(!Validate(fields[i], i)){
+				return false;
+			}		
+		}		
 		return true;
 	}
 	
+	//************Validate methods*************
 	
+	   private boolean Validate(String value,int index){
+		   System.out.println("in validate()-------"+value+"----"+index);
+			  if (value!= null) {
+				  value= value.trim();
+				}else{
+					return false;
+				}
+	  
+		   String regx = "";									//	0						1						2						3									4							5												6						7
+		   /*String[] format = {"Student_First_Name","Student_Last_Name","DOB","Admission_Number","Admission_Date","Class_Admitted_in","Current_Class","Current_Section","Gender",
+			"Father_First_Name","Father_Last_Name","DOB","Mother_First_Name","Mother_Last_Name","DOB","Primary_Email","Primary_Mobile","Landline","Address1","Address2","City","State"};
+*/	
+		if (index == 0) {
+			regx = "^[a-zA-Z-. ]{2,25}$";//name
+		} else if (index == 1) {
+			regx = "^[a-zA-Z-. ]{2,25}$";//lname
+		} else if (index == 2) {
+			boolean hjhj= dateValidation(value);
+			System.out.println(hjhj+"from date validation result");
+			if(!dateValidation(value)){
+				return false;
+			}else{
+				return true;
+			}
+		} else if (index == 3) {
+			regx = "^[0-9-+ ]{8,15}$";
+		} else if (index == 4) {
+			if(!dateValidation(value)){
+				return false;
+			}else{
+				return true;
+			}
+		} else if (index == 5) {
+			//validate from DB-class name
+			classAdmitID = getClassID(value);//prasently it will look all classes in class master but not specific to branch
+			if (classAdmitID == null || classAdmitID == "null" ) {
+				return false;
+			} else{
+				return true;
+			}
+		} else if (index == 6) {
+			//validate from DB --Current_Class name is dr in DB or not
+			classCurID = getClassID(value);
+			if (classCurID == null || classCurID == "null" ) {
+				return false;
+			} else{
+				return true;
+			}
+		} else if (index == 7) {
+			//validate from DB --section name is dr in BD or not
+			sectionID = getSectionID(value);
+			if (sectionID == null || sectionID == "null" ) {
+				return false;
+			} else{
+				return true;
+			}
+		} else if (index == 8) {
+			if (value.equalsIgnoreCase("F") || value.equalsIgnoreCase("M")) {		
+				return true;			
+			} else {
+				return false;
+			}
+		} else if (index == 9) {
+			//9										10							11		12									13								14			15						16							17						18		19			20		21
+			//"Father_First_Name","Father_Last_Name","DOB","Mother_First_Name","Mother_Last_Name","DOB","Primary_Email","Primary_Mobile","Landline","Address1","Address2","City","State"};
+			regx = "^[a-zA-Z-. ]{2,25}$";//Father_First_Name		
+		} else if (index == 10) {
+			regx = "^[a-zA-Z-. ]{2,25}$";//Father_Last_Name			
+		} else if (index == 11) {
+			if(!dateValidation(value)){
+				return false;
+			}else{
+				return true;
+			}//Father DOB
+		} else if (index == 12) {
+			regx = "^[a-zA-Z-. ]{2,25}$";//Mother_First_Name			
+		} else if (index == 13) {
+			regx = "^[a-zA-Z-. ]{2,25}$";//Mother_last_Name			
+		} else if (index == 14) {
+			if(!dateValidation(value)){
+				return false;
+			}else{
+				return true;
+			}//mother DOB			
+		} else if (index == 15) {
+			regx	= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";//email		
+		} else if (index == 16) {
+			regx	="^(\\+91-|\\+91|0)?\\d{10}$";//mobile
+		} else if (index == 17) {
+			regx	= "^\\d{3,5}([\\-]\\d{6,8})?$";//land line
+		} else if (index == 18) {
+			regx="^[a-z-A-Z][a-zA-Z0-9\\s,'-.]*$";
+		} else if (index == 19) {
+			regx="^[a-z-A-Z][a-zA-Z0-9\\s,'-.]*$";			
+		} else if (index == 20) {
+			regx="^[a-zA-Z][a-zA-Z ]*['.]?[a-zA-Z ]+[a-zA-Z ]+$";			
+		}else if (index == 21) {
+		//validate from db---state id/state short name(not dr in DB)/state name
+			stateID = getStateID(value);
+			if (stateID == null || stateID == "null" ) {
+				return false;
+			}else{
+				return true;
+			}
+		}
+	   
+		   Pattern p = Pattern.compile(regx);//
+		   Matcher m = p.matcher(value);
+		  		   
+		   return m.matches();  //matches will search the whole string		   
+	   }
+	
+
+	   public boolean dateValidation(String date) {
+		   String[] formatStrings = {"dd-MM-yyyy","dd/MM/yyyy","dd.MM.yyyy","dd MM yyyy"};			
+		   System.out.println(date+"--------------------dateValidation()");
+		    for (String formatString : formatStrings)		    {
+		        try
+		        {
+		        	SimpleDateFormat sdf = new SimpleDateFormat(formatString);
+		        	 sdf.parse(date);		   
+		        	 System.out.println("true after validationnnnnnnnnnnnnnnnnn");
+		            return true;
+		        }
+		        catch (ParseException e) {
+		        	System.out.println("false"+formatString);
+		        	}
+		    }
+		    
+		   return false;
+	}
+	   
+
+	   public String getValidDate(String date) {
+		   String[] formatStrings = {"dd-MM-yyyy","dd/MM/yyyy","dd.MM.yyyy","dd MM yyyy"};			
+		    for (String formatString : formatStrings){
+		        try
+		        {
+		        	SimpleDateFormat sdf = new SimpleDateFormat(formatString);
+		        	SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+		        	Date drr = sdf.parse(date);
+		        	String Org = myFormat.format(drr);		        	
+		            return Org;
+		        }
+		        catch (ParseException e) {
+		        	//System.out.println("false"+formatString);
+		        	}
+		    }
+		 return date;
+	}
+	
+	    	
+	
+	   
 	private boolean doInsertIntoDB(String[] fields,String IM_ID, String SM_ID, String BM_ID){
 		 for (int i = 0; i < fields.length; i++) 
 		  {System.out.print("%%--"+fields[i]);
@@ -281,12 +457,12 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				//Student_First_Name,Student_Last_Name,DOB,Admission_Number,Admission_Date,Class_Admitted_In,Current_Class,Current_Section,Gender,---9
 				studentData.setFirstName(fields[i++]);
 				studentData.setLastName(fields[i++]);
-				studentData.setDob(fields[i++]);
+				studentData.setDob(getValidDate((fields[i++])));
 				studentData.setAdmissionNumber(fields[i++]);
-				studentData.setAdmissionDate(new SimpleDateFormat("yyyy-MM-dd").parse(fields[i++]));
+				studentData.setAdmissionDate(getValidDate((fields[i++])));
 				String classNameO = fields[i++];
-				String classID = getClassID(classNameO);
-				studentData.setClassAdmittedIn(classID == null?classNameO:classID);//------Class id required,so based on className get the classID...dis is one type validation also
+				//String classID = getClassID(classNameO);
+				studentData.setClassAdmittedIn(classAdmitID == null?classNameO:classAdmitID);//------Class id required,so based on className get the classID...dis is one type validation also
 				
 				String Current_Class = fields[i++];//section_student_map Table
 				String Current_Section = fields[i++];			
@@ -300,7 +476,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				studentData.setAddress2(fields[19]);
 				studentData.setCity(fields[20]);
 				//
-				String stateID = getStateID(fields[21]);
+				//String stateID = getStateID(fields[21]);
 				studentData.setState(stateID);
 				studentData.setActive("Y");
 				
@@ -308,7 +484,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				
 				
 				userMasterDao.save(umaster);
-				studentData.setUmId(umaster.getUmId());			
+				studentData.setUmId(umaster.getUmId()+"");			
 				studentDetailsDao.save(studentData);
 				
 			//	System.out.println("Student FNmae"+fields[0]+"DOB"+fields[10]+"Parent FNmae"+fields[15]+"DOB"+fields[20]);
@@ -324,15 +500,15 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				 umasterPar.setPassword(autoPasswordPar);
 				 umasterPar.setActive("Y");
 				 
-				 //mother
-				 UserMaster umasterMother = new UserMaster();
+				 //mother---not needed in usermaster
+			/*	 UserMaster umasterMother = new UserMaster();
 				 umasterMother.setImId(Long.parseLong(IM_ID));
 				 umasterMother.setSmId(Long.parseLong(SM_ID));
 				 umasterMother.setBmId(Long.parseLong(BM_ID));
 				 umasterMother.setUtId(new Long(2));//2-Parent
 				 umasterMother.setUserId(autoUserIDPar);
 				 umasterMother.setPassword(autoPasswordPar);
-				 umasterMother.setActive("Y");
+				 umasterMother.setActive("Y");*/
 				
 				
 				ParentDetails parentData =new ParentDetails();
@@ -342,11 +518,11 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				//i start here 9
 				parentData.setFirstName(fields[i++]);
 				parentData.setLastName(fields[i++]);
-				parentData.setDob(fields[i++]);
+				parentData.setDob(getValidDate(fields[i++]));
 				
 				motherData.setFirstName(fields[i++]);
 				motherData.setLastName(fields[i++]);				
-				motherData.setDob(fields[i++]);
+				motherData.setDob(getValidDate(fields[i++]));
 				
 				parentData.setEmail(fields[i]);
 				motherData.setEmail(fields[i]);i++;
@@ -378,11 +554,10 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				parentData.setUmId(umasterPar.getUmId());			
 				parentDetailsDao.save(parentData);
 				//mother
-				userMasterDao.save(umasterMother);
-				motherData.setUmId(umasterMother.getUmId());			
+				motherData.setUmId(umasterPar.getUmId());			
 				parentDetailsDao.save(motherData);
 				
-				System.out.println(umasterPar.getUmId()+"-umasterParID()"+"$$$$$"+umasterMother.getUmId()+"-umasterMotherID");
+				System.out.println(umasterPar.getUmId()+"-umasterParID()"+"$$same as father$$$"+motherData.getUmId()+"-umasterMotherID");
 				
 				ParentStudentMap psm = new ParentStudentMap();
 				psm.setActive("Y");
@@ -403,7 +578,17 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				
 				
 				//getClassID(Current_Class);
-				String secID = getSectionID(Current_Section);
+				//String secID = getSectionID(Current_Section);
+				
+				//4/29/2013 12:23am--******* required...
+				/*1)section_id
+				 * 2)class_id
+				 * 3)bm_id
+				 * 4)using above 3 get Section_Class_Map id(SCM_ID).
+				 * 5)insert dt id to Student_Section_Map 
+				 * */
+			String scm_id= 	getSctionClassMapID(BM_ID,classAdmitID,sectionID);
+				
 				
 				//Student_Section_Map
 				StudentSectionMap ssm = new StudentSectionMap();
@@ -411,7 +596,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 				ssm.setSmId(SM_ID);
 				ssm.setImId(IM_ID);
 				ssm.setBmId(BM_ID);
-				ssm.setScmId(secID == null?Current_Section:secID);
+				ssm.setScmId(scm_id);
 				ssm.setStuId(studentData.getStuId()+"");
 			
 				studentDetailsDao.insertStudentSectionMap(ssm);
@@ -427,9 +612,24 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	
 	
 
+	private String getSctionClassMapID(String bM_ID, String classAdmitID2,
+			String sectionID2) {
+		SectionMasterDAO smd = (SectionMasterDAO)ServiceFinder.getContext(request).getBean("SectionMasterDAO");
+		try {
+			SectionClassMap sectionMasterCheck = smd.findByProperty3(bM_ID, classAdmitID2, sectionID2);
+			return sectionMasterCheck.getScmId()+"";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
 	private String getClassID(String className) {
 		try {
 			// TODO Auto-generated method stub
+			System.out.println(className+"---------------className");
 			ClassMasterDAO classMasterdao = (ClassMasterDAO)ServiceFinder.getContext(request).getBean("ClassMasterHibernateDao"); 	
 			ClassMaster classMasterData = new ClassMaster();
 			
@@ -450,6 +650,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	private String getSectionID(String sectionName) {
 		try {
 			// TODO Auto-generated method stub
+			System.out.println("sectionName---"+sectionName);
 			SectionMasterDAO sectionMasterdao = (SectionMasterDAO)ServiceFinder.getContext(request).getBean("SectionMasterHibernateDao"); 	
 			SectionMaster sectionMasterData = new SectionMaster();
 			
@@ -471,6 +672,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 
 		try {
 			// TODO Auto-generated method stub
+			System.out.println("StateName---------"+StateName);
 			StateMasterDAO stateMasterdao = (StateMasterDAO)ServiceFinder.getContext(request).getBean("StateMasterHibernateDao"); 	
 			StateMaster stateMasterData = new StateMaster();
 			
@@ -490,7 +692,7 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	}
 	
 	public void saveStudentErrorLog(String iM_ID, String sM_ID, String bM_ID, String uM_ID, String[] fields, String reason) {
-		
+		System.out.println("reasonnnnnnn---"+reason);
 		 StudentDetailsDAO studentDetailsDao = (StudentDetailsDAO)ServiceFinder.getContext(request).getBean("StudentDetailsDAO");
 		 //delete old error log for same um_id
 		 
@@ -505,6 +707,9 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 		 StringBuffer sb = new StringBuffer();
 		 for (int i = 0; i < fields.length; i++) {
 			sb.append(fields[i]);
+			if (i<fields.length-1) {
+				sb.append(",");
+			}
 		}
 		 String line = sb.toString();
 		 System.out.println(iM_ID+"--"+sM_ID+"--"+bM_ID+"--"+uM_ID+"--"+fields+"--"+reason+"--"+line);
@@ -664,8 +869,10 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	}
 	
 	}
-	
-	
+
+
+	   
+
 }
 
 

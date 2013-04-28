@@ -17,28 +17,31 @@
             <column name="Short_Name" length="50" not-null="true" unique="true" />
         </property>
         <property name="address" type="java.lang.String">
-            <column name="Address" length="200" />
+            <column name="Address" length="200" not-null="true" />
         </property>
         <property name="city" type="java.lang.String">
-            <column name="City" length="100" />
+            <column name="City" length="100" not-null="true" />
         </property>
-        <property name="stateId" type="java.lang.Long">
-            <column name="State_ID" not-null="true" />
+        <property name="stateId" type="java.lang.String">
+            <column name="State_ID" length="20" not-null="true" />
         </property>
         <property name="contactPerson" type="java.lang.String">
-            <column name="Contact_Person" length="50" />
+            <column name="Contact_Person" length="50" not-null="true" />
         </property>
         <property name="emailId" type="java.lang.String">
-            <column name="Email_ID" length="100" />
+            <column name="Email_ID" length="100" not-null="true" />
         </property>
         <property name="mobile" type="java.lang.String">
-            <column name="Mobile" length="15" />
+            <column name="Mobile" length="15" not-null="true" />
         </property>
         <property name="landline" type="java.lang.String">
             <column name="Landline" length="20" />
         </property>
         <property name="active" type="java.lang.String">
-            <column name="Active" length="1" />
+            <column name="Active" length="1" not-null="true" />
+        </property>
+        <property name="franchiseId" type="java.lang.String">
+            <column name="franchise_id" length="20" />
         </property>
     </class>
 </hibernate-mapping>

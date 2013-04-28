@@ -72,9 +72,11 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 		String IM_SN =	(String)session.get("IM_SN");
 
 		String im_id =	(String)session.get("IM_ID");
-		 String sm_id =	(String)session.get("SM_ID");
-		 String bm_id =	(String)session.get("BM_ID");
+/*		 String sm_id =	(String)session.get("SM_ID");
+		 String bm_id =	(String)session.get("BM_ID");*/
 		 
+		String sm_id  = request.getParameter("schoolNames");
+		String bm_id = request.getParameter("branchNames");
 		 
 		 String fname =	request.getParameter("fname");
 		 String lname =	request.getParameter("lname");
@@ -170,7 +172,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 			}				 
 		 
 		 String uniqueFileName ="";
-		 
+		 String returnFlag = "";
 		 
 		 UserMasterDAO userMasterDao =null;
 		 StaffDetailsDAO staffDetailsDao = null;
@@ -210,6 +212,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					staffData.setMobile(mobile);
 					//staffData.setPhoto(fileUP);
 					staffData.setState(state);//state ID
+					returnFlag = "successSaff";
 			 }
 			if(userRights.equalsIgnoreCase("PA" ) ||  isParent.equalsIgnoreCase("Y")){//a parent may also TS or NTS
 				System.out.println("in PA or Y data");
@@ -233,6 +236,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					parentData.setPtmId(parentType);
 				}
 				
+				
 			}
 			if(userRights.equalsIgnoreCase("ST")){
 				System.out.println("in student data");
@@ -240,7 +244,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 				studentData.setActive(active);
 				studentData.setAddress1(addr1);
 				studentData.setAddress2(addr2);
-				studentData.setAdmissionDate(new SimpleDateFormat("yyyy-MM-dd").parse(admissionDate));
+				studentData.setAdmissionDate(admissionDate);
 				studentData.setAdmissionNumber(admissionNumber);
 				studentData.setCity(city);
 				studentData.setClassAdmittedIn(classAdmittedIn);
@@ -253,6 +257,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 				studentData.setMobile(mobile);
 				//studentData.setPhoto(fileUP);
 				studentData.setState(state);
+				returnFlag = "successStu";
 			}
 		//-------------------------------------------------------------------------------------------------------------------------------------------
 			//studentData.setPhoto(fileUP);
@@ -289,7 +294,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					session.put("nonadminMsg", "Failed");
-					return "success";
+					return returnFlag;
 				}
 			 
 		 }else  if(userRights.equalsIgnoreCase("TC")||userRights.equalsIgnoreCase("NTS")){
@@ -316,13 +321,15 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					session.put("nonadminMsg", "Failed");
-					return "success";
+					return returnFlag;
 				}
 			 
 		 }else if(userRights.equalsIgnoreCase("PA")){
 			 System.out.println("in PA Insertion");
 			 
 				try {
+					returnFlag = "successPA";
+					
 					userMasterDao = (UserMasterDAO)ServiceFinder.getContext(request).getBean("UserMasterHibernateDao"); 		
 						userMasterDao.save(userInputData);//---------------------ONE
 						
@@ -345,7 +352,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					session.put("nonadminMsg", "Failed");
-					return "success";
+					return returnFlag;
 				}
 			 
 		 }else if (userRights.equalsIgnoreCase("ST")) {
@@ -359,7 +366,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 						System.out.println(userInputData.getUmId()+"::::"+studentData.getAdmissionDate());
 						uniqueFileName = getFileUniqueName();
 						studentData.setPhoto(uniqueFileName);
-						studentData.setUmId(userInputData.getUmId());
+						studentData.setUmId(userInputData.getUmId()+"");
 					
 					studentDetailsDao = (StudentDetailsDAO)ServiceFinder.getContext(request).getBean("StudentDetailsHibernateDao");
 					studentDetailsDao.save(studentData);
@@ -379,14 +386,14 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					session.put("nonadminMsg", "Failed");
-					return "success";
+					return returnFlag;
 				}
 			 
 		}
 			 session.put("nonadminMsg", "Success");
 			 session.put("userIDD", autoUserID);
 			 session.put("passwordd", autoPassword);
-		 return "success";
+		 return returnFlag;
 		 
 		}else{
 			System.out.println("in main else of AddUseraction--");
@@ -591,7 +598,7 @@ public class AddUserAction extends ActionSupport  implements SessionAware,Servle
 				}
 			 
 		 }
-			 session.put("userIDD", userID);
+			 session.put("userIDD", "AD"+userID);
 			 session.put("passwordd", password);
 			 session.put("msg", "Success");
 			 

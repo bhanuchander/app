@@ -5,7 +5,8 @@
     	
     	
     		if(session.getAttribute("short_name") != null  && ((String)session.getAttribute("userType")).equalsIgnoreCase("AD")&& session.getAttribute("superadmin") == null ){
-    			if(session.getAttribute("IM_ID")!= null &&session.getAttribute("SM_ID")!= null &&session.getAttribute("BM_ID")!= null &&session.getAttribute("UM_ID")!= null){
+    			if(session.getAttribute("IM_ID")!= null &&session.getAttribute("SM_ID")!= null &&session.getAttribute("BM_ID")!= null &&session.getAttribute("UM_ID")!= null && session.getAttribute("pageTO")!=null){
+    		
     			}else{response.sendRedirect("BeforeLogin.action");	
     			}
     		}else{
@@ -13,7 +14,6 @@
     		}
     	
     	%>
-    	
     	
     	<!-- css -->
 	    <link href="css/bootstrap-fileupload.css" rel="stylesheet" media="screen">	   
@@ -23,9 +23,8 @@
 		    color: #FF0000;
 		    display: inline;
 		}
-
 			
-.divDemoBody  {
+		.divDemoBody  {
                 width: 60%;
                 margin-left: auto;
                 margin-right: auto;
@@ -93,23 +92,6 @@
 				}
 </style>
     	
-    	
-    	
-    <!-- 	 <script type="text/javascript"
-     src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
-    </script> -->
-<!--     <script type="text/javascript"
-     src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
-    </script> -->
-  
- 	  <!-- 
-      <script type="text/javascript"
-     src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
-     </script>
-         --><!--  <script type="text/javascript"
-     src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
-    </script> -->
-    
 	    <!-- javascripts -->
 	    <script src="js/bootstrap-datetimepicker.min.js"> </script>
     	<script  src="js/bootstrap-datetimepicker.pt-BR.js"> </script>
@@ -120,7 +102,9 @@
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/UserTypeMasterDWR.js"></script>
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/UserMasterDWR.js"></script>
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/EmailDomainDWR.js"></script>
-	    
+	    <script 	src="<%=request.getContextPath()%>/dwr/interface/SchoolMasterDWR.js"></script>
+	    <script 	src="<%=request.getContextPath()%>/dwr/interface/BranchMasterDWR.js"></script>
+	     <script 	src="<%=request.getContextPath()%>/dwr/interface/ClassMasterDWR.js"></script>
 		<script type="text/javascript">
 		    
 /*       			
@@ -143,11 +127,49 @@
 			document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
 			$("#idAlertDialog").modal ("show");
 		}
-      		
+		
+		function selectBranchesforClasses(){
+		   var branchID = jQuery("#branchNames").val();
+		if(branchID != '-1'){
+		   var schoolID = jQuery("#schoolNames").val();
+			if (branchID == "-1" || schoolID =="-1") {
+					/* setError("branchNames","Please select Branch Name ");
+               jQuery("#branchNames").focus(); */
+			}else if(jQuery("#userRights").val() == "ST"){
+			removeAllOptions("classAdmittedIn");
+								  
+		   try{
+						var listofclasses = document.getElementById('classAdmittedIn');					
+						    ClassMasterDWR.getClassMasterList(schoolID,branchID,function(data){
+						                                if (data == null) {													
+						                                  alert("error");
+														} else {				
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+															  var opt = document.createElement("option");
+															    var temp = data[i];
+															    opt.value = temp[0];
+															    opt.innerHTML = temp[1];
+															    listofclasses.appendChild(opt);
+															}		                          
+														}
+						                         }
+						      ) ;  
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery.log.info(e.message);
+						        jQuery("#infoError").html("&nbsp;");
+		         } 	
+	   
+			}
+		  }
+		}
+
       	function	changeUserRights(value){
       			document.getElementById("designation").style.display="none";
 
-						if(value == "TC" || value == "NTS" ||value == "Admin"){	
+						if(value == "TC" || value == "NTS" ||value == "Admin"){
 					
 							document.getElementById("designation").disabled=false;		
 						document.getElementById("designation").style.display="block";
@@ -175,10 +197,12 @@
 						document.getElementById("admissionOne").style.display='none';
 						document.getElementById("admissionTwo").style.display='none';
 						if(value == "ST"){ 
+						//get Class Master List
+						selectBranchesforClasses();//may not req in future
 							 document.getElementById("admissionOne").style.display='';
 						    document.getElementById("admissionTwo").style.display='';
 						    
-						    document.getElementById("parentTypeSel").disabled=false;		
+						    document.getElementById("parentTypeSel").disabled=true;		
 							document.getElementById("parentTypeSel").style.display="block";
 						
 						    }			
@@ -200,93 +224,24 @@
     	</script>
 	    <script>
 	    var userTypes;
-	    function addUser(){
-	    
-	    		var  patName 	= /^[a-zA-Z \']{3,25}$/;
-				var  patZipCode	= /^[0-9]{3,6}$/;
-				
-				var  userID 				= 	jQuery("#userID").val();
-				var  fname 				= 	jQuery("#fname").val();
-				var  password 			= 	jQuery("#password").val();
-				var  lname 				= 	jQuery("#lname").val();
-				var  cPassword 		= 	jQuery("#cPassword").val();
-				var  userRights 		= 	jQuery("#userRights").val();
-				var  dob 					=	 jQuery("#dob").val();
-				var  designation 		=	jQuery("#designation").val();
-				var  email 					= 	jQuery("#email").val();
-				var  mobile 				= 	jQuery("#mobile").val();
-				var  landline 			= 	jQuery("#landline").val();
-				var  isParent 			= 	jQuery("#isParent").val();				
-				var  addr1 				= 	jQuery("#addr1").val();
-				var  addr2 				= 	jQuery("#addr2").val();				
-				var  city 						= 	jQuery("#city").val();
-				var  country 				= 	jQuery("#country").val();
-				var  state;
-				if(country == "India"){
-				state						=	jQuery("#states").val();
-				alert("state1::"+state);
-				}else{
-				state						=	jQuery("#statei").val();
-				alert("state2::"+state);
-				}
-				//var  state				 	= 	jQuery("#state").val();
-				var  fileUP 				= 	jQuery("#fileUP").val();
-				var  active 				=	jQuery("#active").prop('checked') ? 'Y':'N';
-
-				//var image = dwr.util.getValue("fileUP");
-				//dwr.util.setValue("fileUP", null);
-	//image upload using dwr
-	
-
-				//Process DWR/AJAX request here
-				try{
-				alert("in alrttt--save user---------"+active+"-----"+fileUP);
-				       UserMasterDWR.addUser(//19 params
-					                                   userID,
-					                                   password,
-					                                   fname,
-					                                   lname,
-					                                   userRights,
-					                                   dob,
-					                                 	designation,
-					                                   email,
-					                                   mobile,
-					                                   	landline,
-					                                   	isParent,
-					                                   addr1,
-					                                   addr2,
-					                                   city,
-					                                   country,
-					                                   state,
-					                                   fileUP,
-					                                   active,
-					                                   function(data){
-					                                   if (data =='saved') {
-														
-					                                   alert("save::"+data);
-													} else {
-					                                   alert("exception::"+data);
-
-													}
-					                                   
-					                                   
-					                                   alert("data::"+data);
-					                                   }
-					                              ) ;    
-					 }catch(e){
-					 alert("incatch::"+e);
-					        jQuery.log.info(e.message);
-					        jQuery("#infoError").html("&nbsp;");
-	        	     } 		
-				 							
-	    
-	
-	    alert("hiii");
-	   }
 	    function getUserTypeMaster(){
 				//Process DWR/AJAX request here
 				try{
-				//alert("in alrttt--getUserTypeMaster");
+				var pageTO = '<%=(String)session.getAttribute("pageTO")%>';
+				//alert(pageTO+"<--");
+				if (pageTO == "uts") {
+					jQuery("#userRights").val('ST');
+					changeUserRights("ST");
+					//$('#userRights').attr("disabled", true); 
+					//read only is not there for selection box
+				} else if (pageTO == "ffats") {
+					jQuery("#userRights").val("TC");
+					changeUserRights("TC");
+				}else if (pageTO == "rap") {
+					jQuery("#userRights").val("PA");
+					changeUserRights("PA");
+					//$('#userRights').attr("disabled", true); 
+				}
 					var dd = document.getElementById('userRights');
 				     /*    UserTypeMasterDWR.userTypeMaster(function(data){
 					                                   if (data ==null) {														
@@ -306,7 +261,6 @@
 					      ) ;     */
 					 }catch(e){
 					 alert("incatch::"+e);
-					        jQuery.log.info(e.message);
 					        jQuery("#infoError").html("&nbsp;");
 	        	     }
 				 										
@@ -322,8 +276,9 @@
 													function(data){								
 					                                   if (data =="false") {
 					                                  // alert("not found"+data);											
-														} else {						                                
-						                                   alert("Email Id Already Exist::"+data);
+														} else {			
+														  setError("email","Email Id Already Exist");			                                
+						                                //   alert("Email Id Already Exist::"+data);
 						                                   		jQuery("#email").focus();			                              		                                   													
 														}
 					                        	 }
@@ -335,7 +290,7 @@
 		
 				var value1=jQuery("#userRights").val();
 		//alert("valll--"+value1);
-		if(value1 == "TC" || value1 == "NTS" ||value1 == "PA"||value1 == "admin"){
+		if(value1 == "TC" || value1 == "NTS" ||value1 == "admin"){
 			//	alert("in ifff");					
 				uniqueEmailCheck();			
 	    	}else{
@@ -346,6 +301,7 @@
 				    
 	    function onloadmethods(){
 	 //   alert("in onload");
+	 schoolMasterList();
 		getUserTypeMaster();
 		resultPopUp();
 
@@ -356,18 +312,44 @@
 	    form = document.forms[addform]; //assuming only form.
 		form.submit();
 	    }
+	    
+	    	 function removeAllOptions(whichOption)
+		{
+	//	var listofSubjects =  document.getElementById("selectSubject");
+		var listofSubjects =  document.getElementById(whichOption);
+		
+			var i;
+			for(i=listofSubjects.options.length-1;i>=0;i--)
+			{
+			listofSubjects.remove(i);
+			}
+			
+			 var opt = document.createElement("option");
+		    opt.value = "-1";
+		    opt.innerHTML = "Select";
+		    listofSubjects.appendChild(opt);
+			
+		/* 	 var opt = document.createElement("option");
+		    opt.value = "0";
+		    opt.innerHTML = "All";
+		    listofSubjects.appendChild(opt); */
+			
+		}
+	    
 	    function resultPopUp(){
 	    	var nonadminmsg = "<%=session.getAttribute("nonadminMsg")%>";
 	    	var userID = "<%=session.getAttribute("userIDD")%>";
 		    var password =  "<%=session.getAttribute("passwordd")%>";
 		    if(userID == null || password == null || userID == "null" || password == "null"){
-		     if(nonadminmsg != null && nonadminmsg != "null" ){
-		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+nonadminmsg+".</div>");		
-		    <%session.removeAttribute("nonadminMsg"); %> ;     
-		     }
-		    // alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> Success.<br/> Your ID : "+"TH676767676"+"<br/>Password : "+"yu76767hhgh6"+"</div>");
+			   //  alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> Success.<br/> Your ID : "+"TH676767676"+"<br/>Password : "+"yu76767hhgh6"+"</div>");
+			   //  resetForm($('#addNonAdminUser')); // by id, recommended
+				     if(nonadminmsg != null && nonadminmsg != "null" ){
+					    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+nonadminmsg+".</div>");		
+					    <%session.removeAttribute("nonadminMsg"); %> ;     
+				     }
 		    }else{
-		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+nonadminmsg+".<br/> Your ID : "+userID+"<br/>Password : "+password+"</div>");
+		    	alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+nonadminmsg+".<br/> Your ID : "+userID+"<br/>Password : "+password+"</div>");
+		 	   //  resetForm($('#addNonAdminUser')); // by id, recommended
 		    }
 		     if(userID != null){
 		 		<%session.removeAttribute("userIDD"); %> ;
@@ -375,6 +357,77 @@
 		 		<%session.removeAttribute("nonadminMsg"); %> ;
 		     }
 	    }
+	    
+	    	 function schoolMasterList(){
+	    
+		   try{
+						var listofschools = document.getElementById('schoolNames');					
+						    SchoolMasterDWR.getSchoolMasterList(function(data){
+						                                if (data == null) {				
+						                                  alert("error");						                                 
+														} else {				
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+															  var opt = document.createElement("option");
+															    var temp = data[i];
+															    opt.value = temp[0];
+															    opt.innerHTML = temp[1];
+															    listofschools.appendChild(opt);
+															}		                          
+														}
+						                         }
+						      ) ;  
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery.log.info(e.message);
+						        jQuery("#infoError").html("&nbsp;");
+		         }
+	}
+	
+	
+	function selectSchoolforBranches(val){
+	   
+	   if(val != '-1'){	   
+	   var schoolID = jQuery("#schoolNames").val();
+
+		removeAllOptions("branchNames");
+					  
+		if(val != '-1'){	   
+		   try{
+		   	var im_id = "<%=session.getAttribute("IM_ID")%>";	
+		   	
+					//alert("based school master getting branch master list--"+schoolID);
+						var listofbranchs = document.getElementById('branchNames');					
+	
+						    BranchMasterDWR.getBranchMasterList(schoolID,function(data){
+						                                if (data == null) {													
+						                                  alert("error");						                                 
+														} else {				
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+															  var opt = document.createElement("option");
+															    var temp = data[i];
+															    opt.value = temp[0];
+															    opt.innerHTML = temp[1];
+															    listofbranchs.appendChild(opt);
+															}		                          
+														}
+						                         }
+						      ) ;  
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery("#infoError").html("&nbsp;");
+		         } 	
+	   
+				
+				
+					
+				}else{			 	 }
+			  }
+	 }
+	    
 	    
 	 function validateNonAdminUser(addNonAdminUser){
 	    
@@ -385,11 +438,14 @@
 		var patBody =/^[A-Za-z0-9 ].+$/;
 		var patDob			= /^[0-9- ]{10}$/;
 
+				var  schoolNames 				= 	jQuery("#schoolNames").val();
+				var  branchNames 				= 	jQuery("#branchNames").val();
 				var  fname 				= 	jQuery("#fname").val().match(patName);
 				var  lname 				= 	jQuery("#lname").val().match(patName);
 				var  dob 				= 	jQuery("#dob").val().match(patDob);
 				var  userRights 		= 	jQuery("#userRights").val();
 				var  email 				= 	jQuery("#email").val().match(patEmail);
+				var  designation 		= 	$.trim(jQuery("#designation").val()).match(patName);
 				var  mobile 				= 	jQuery("#mobile").val().match(patNum);
 				var  landline 			= 	jQuery("#landline").val().match(patNum);
 				var  addr1 				= 	jQuery("#addr1").val().match(patBody);
@@ -400,112 +456,213 @@
 				var parentTypeSel		=	jQuery("#parentTypeSel").val();
 				var admissionNumber		=   jQuery("#admissionNumber").val().match(patNum);
 				var admissionDate		=   jQuery("#admissionDate").val().match(patDob);
-				var classAdmittedIn		=   jQuery("#classAdmittedIn").val().match(patBody);
-				/* var  cPassword 			= 	jQuery("#cPassword").val();
-				var  userRights 		= 	jQuery("#userRights").val();
-				var  dob 					=	 jQuery("#dob").val();
-				var  designation 		=	jQuery("#designation").val();
-				var  email 					= 	jQuery("#email").val();
-				var  isParent 			= 	jQuery("#isParent").val();				
-				var  country 				= 	jQuery("#country").val();
-				var  state;
-				if(country == "India"){
-				state						=	jQuery("#states").val();
-				}else{
-				state						=	jQuery("#statei").val();
+				var classAdmittedIn		=   jQuery("#classAdmittedIn").val();
+		
+			var  isParent 				=	jQuery("#isParent").prop('checked') ? 'Y':'N';
+			var  active				=	jQuery("#active").prop('checked') ? 'Y':'N';
+			
+				if(schoolNames=="-1"){
+				setError("schoolNames","Please select School Name ");
+               jQuery("#schoolNames").focus();
+				return false;
 				}
-				//var  state				 	= 	jQuery("#state").val();
-				var  fileUP 				= 	jQuery("#fileUP").val();
-				var  active 				=	jQuery("#active").prop('checked') ? 'Y':'N';	
-				 */
+			if(branchNames=="-1"){
+				setError("branchNames","Please select Branch Name ");
+               jQuery("#branchNames").focus();
+				return false;
+				}
+			//alert(  jQuery("#fname").val().length);
 				if(!fname){
-				alertDialog('please enter valid First Name ');
+					  setError("fname","Please enter valid First Name ");
+               jQuery("#fname").focus();
 				return false;
 				}
 				if(!lname){
-				alertDialog('please enter valid Last Name ');
+					  setError("lname","Please enter valid Last Name");
+               jQuery("#lname").focus();
 				return false;
 				}
 				 if(!dob){
-				alertDialog('please enter valid DOB ');
+				 	  setError("dob","Please enter valid DOB");
+               jQuery("#dob").focus();
 				return false;
 				} 
-				if(userRights=="Select"){
-				alertDialog('please select User Rights ');
+				if(userRights=="-1"){
+					  setError("userRights","Please select User Rights ");
+               jQuery("#userRights").focus();
 				return false;
 				}
 				if(!email){
-				alertDialog('please enter valid Email ');
+					  setError("email","Please enter valid Email");
+               jQuery("#email").focus();
 				return false;
 				}
+				
+			if(userRights=="NTS" ||userRights=="TC"){
+					if(!designation){
+						  setError("designation","Please enter valid Designation");
+		               jQuery("#designation").focus();
+						return false;
+						}
+				}
+				 
 				if(!mobile){
-				alertDialog('please enter valid Mobile ');
+					  setError("mobile","Please enter valid Mobile ");
+               jQuery("#mobile").focus();
 				return false;
 				}
 				if(!landline){
-				alertDialog('please enter valid Landline ');
+					  setError("landline","Please enter valid Landline");
+               jQuery("#landline").focus();
 				return false;
 				}
 				if(!addr1){
-				alertDialog('please enter valid Address 1 ');
+					  setError("addr1","Please enter valid Address 1");
+               jQuery("#addr1").focus();
 				return false;
 				}
 				if(!addr2){
-				alertDialog('please enter valid Address 2 ');
+					  setError("addr2","Please enter valid Address 2");
+               jQuery("#addr2").focus();
 				return false;
 				}
 				if(!city){
-				alertDialog('please enter valid City ');
+					  setError("city","Please enter valid City");
+               jQuery("#city").focus();
 				return false;
 				}
-				if(state=="Select"){
-				alertDialog('please select State');
+				if(state=="-1"){
+					  setError("state","Please select State");
+               jQuery("#state").focus();
 				return false;
 				}
-				if(country=="Select"){
-				alertDialog('please select Country');
+				if(country=="-1"){
+					  setError("country","Please select Country");
+               jQuery("#country").focus();
 				return false;
 				}
-				if(userRights !="ST"){
+		/* 		if(userRights !="ST"){
+				
 				if(parentTypeSel=="Select"){
-				alertDialog('please select Parent Type');
+				alertDialog('Please select Parent Type');
 				return false;
 				
 				}
-				}
+				} */
 				if(userRights=="ST"){
 					if(!admissionNumber){
-					alertDialog('please enter valid AdmissionNumber ');
+						setError("admissionNumber","Please enter valid AdmissionNumber");
+	               		jQuery("#admissionNumber").focus();
 					return false;
 					}
 					if(!admissionDate){
-					alertDialog('please enter valid Admission Date ');
+						setError("admissionDate","'Please enter valid Admission Date");
+	               		jQuery("#admissionDate").focus();
 					return false;
 					}
-					if(!classAdmittedIn){
-					alertDialog('please enter valid ClassAdmittedIn ');
+					if(classAdmittedIn == "-1"){
+						  setError("classAdmittedIn","Please select Class to Admit");
+               jQuery("#classAdmittedIn").focus();
+				return false;
 					return false;
 					}
 				}
-				if(isParent=="Y"  && parentTypeSel=="Select"){
-				alertDialog('please select Parent Type');
+				if(isParent=="Y"  && parentTypeSel=="-1"){
+					  setError("parentTypeSel","Please select Parent Type");
+               jQuery("#parentTypeSel").focus();
 				return false;
 				}
-		return true;
+				if(!validateForm()){
+				return false;				
+				}
+				
+			if(active=="N"){
+              //alert("Please select check box");
+              setError("active","Please select check box");
+              jQuery("#active").focus();
+              return false;
+           }
+		
 				    
 	    }
+	    
+	   function validateForm() {
+			var file1  = jQuery("#fileUP").val();
+			if(file1 != ""){
+				var extension = file1.split('.').pop().toLowerCase();
+				var allowed = ['gif','jpeg','pjpeg','png','jpg'];
+				if(allowed.indexOf(extension) === -1) {
+					//alertDialog("Your selected "+ file1+"  extension wrong"); previous
+					  setError("fileUP","Only gif / jpeg /jpg / pjpeg / png formats are allowed");
+	               jQuery("#fileUP").focus();
+					return false;
+				}else{
+	    			return true;
+				}
+			}else{
+	    			return true;
+				}
+	    }
+	    
+	var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	    
+	 function resetForm($form) {
+		    $form.find('input:text, input:password, input:file, textarea').val('');
+		       jQuery("#country").val('India');
+		       jQuery("#state").val('Andhra Pradesh');
+		 /*    
+		    $form.find('input:radio, input:checkbox')
+		         .removeAttr('checked').removeAttr('selected'); */
+		}
 	    
 	    </script>
 	    
 	    
-<div class="reg_mainCon">
- <form  action="addnonadminuser.action" method="post" enctype="multipart/form-data" name="addNonAdminUser"   > <!-- onsubmit="return validateNonAdminUser(this)" -->
+<div class="reg_mainCon"><!-- addnonadminuser.action -->
+ <form  action="addnonadminuser.action" method="post" enctype="multipart/form-data" name="addNonAdminUser" onsubmit="return validateNonAdminUser(this)"   > <!-- onsubmit="return validateNonAdminUser(this)" -->
 <!-- <form name="addform.action"  method="post"> -->
     <fieldset>
     <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Add User</legend>
     <div style="padding:20px;">
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
+       <tr><td colspan="5" style="text-align: center;"><span id ="errorspan" style="color:red;font-size: 14px;" ></span>&nbsp;</td></tr>
+           <tr><td width="18%"><label style="color:#000;"><b>School </b></label></td>
+	                <td width="30%"><div align="left"><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value);">
+	                        <option value="-1" selected="selected">Select</option>
+	                       <!--  <option value="0">ALL</option> -->
+	                       </select></div>
+	                 </td> <td >&nbsp;</td><td><label style="color:#000;"><b>Branch </b></label></td>
+	                <td><select class="span3" name="branchNames" id="branchNames"  onchange="selectBranchesforClasses() "><!-- -->
+	                        <option value="-1" selected="selected">Select</option>
+	                      <!--   <option value="0">All</option> -->
+	                       </select>    
+	             </td>
+        </tr>         
+        <tr> <td >&nbsp;</td></tr>
+	  <tr>
 	         	  <td width="18%"><label style="color:#000;"><b>First Name</b></label></td>
 	        	 <td width="30%"><div align="left"><input class="span3" type="text" placeholder="" name="fname"  id="fname"></div></td>
 	        	  <td >&nbsp;</td>
@@ -527,7 +684,7 @@
           <td ><label style="color:#000;"><b>User Rights</b></label></td>
          
           <td ><select  class="span3"   name="userRights"  id="userRights"    onchange=  "changeUserRights(this.value)">
-              <option selected="selected">Select</option>
+              <option value="-1"  selected="selected">Select</option>
               <option value="PA">Parent</option>
               <option value="TC">Teacher</option>
               <option value="NTS">Non Teaching Staff</option>
@@ -572,7 +729,7 @@
           <td ><label style="color:#000;"><b>Country</b></label></td>
           <td >            
              <select  class="span3"   name="country"  id="country" ><!--  onchange="changeCountry(this.value)" -->
-                 <option>Select</option>
+                 <option value="-1">Select</option>
             	 <option value="India"  selected="selected">India</option><option value="Indonesia">Indonesia</option>
               </select> 
            </td>
@@ -581,7 +738,7 @@
       		  <td ><label style="color:#000;"><b>State</b></label></td>         
 			 <td > <div align="left"><div id="displaySubjects" style="display:show;">
 					 <select   class="span3"  id="state" name="state">
-					     <option>Select</option>
+					     <option value="-1">Select</option>
 				   <option value="1"	selected="selected"	>Andhra Pradesh</option>
                    <option value="2">Madya pradesh</option>
 				   <option value="3">Bihar</option>
@@ -593,7 +750,7 @@
       <td ><label style="color:#000;"><b>Parent Type</b></label></td>         
         <td > 
 					 <select   class="span3"  id="parentTypeSel"   name="parentTypeSel">
-					     <option selected="selected">Select</option>
+					     <option selected="selected" value="-1">Select</option>
 				   <option value="1">Father</option>
                    <option value="2">Mother</option>
 				   <option value="3">Other</option>
@@ -621,15 +778,19 @@
         </tr>
         <tr  name="admissionTwo"  id="admissionTwo" style="display:none;">
           <td ><label style="color:#000;"><b>Class Admitted In</b></label></td>
-          <td ><div align="left">
-            <input class="span3" type="text" placeholder="" name="classAdmittedIn"  id="classAdmittedIn">
-          </div></td>
+          <td >
+           <div align="left">
+					 <select   class="span3"  id="classAdmittedIn" name="classAdmittedIn">
+					     <option value="-1">Select</option>
+				   </select>
+			</div>
+          </td>
          <td >&nbsp;</td>
           <td ><label style="color:#000;"><b>Gender</b></label></td>
           <td >            
              <select  class="span3"   name="gender"  id="gender" ><!--  onchange="changeCountry(this.value)" -->
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
        </select> 
        </td>
         </tr>

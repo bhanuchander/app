@@ -107,7 +107,7 @@ public class SectionMasterUploadAction extends ActionSupport implements ServletR
 		 }
 			try {
 				SectionMasterDAO smd = (SectionMasterDAO)ServiceFinder.getContext(request).getBean("SectionMasterDAO");
-				//here we need to check whether the class name already exist or not?
+				//here we need to check whether the section name already exist or not?
 				SectionMaster sectionMasterCheck = smd.findByProperty("sectionName", inpFeilds[0]);
 				
 				long sectionID = 0;

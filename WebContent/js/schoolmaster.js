@@ -76,8 +76,8 @@ function validateSchoolMasterForm(){
 	var patName		=/^[0-9a-zA-Z-. ]{2,25}$/;
 	var patAddress		=/^[a-zA-Z0-9-.,~!@#$%^&*()_+:"? ]{2,25}$/;
 	var num			= /^[0-9-+ ]{8,20}$/;	
-	
-	var sm_sname			= document.getElementById("sName").value.match(patName);
+	var scNmae = "/^([a-zA-Z]+\s)*[a-zA-Z]*['. ]?[ ]?([a-zA-Z]+[.]?\s?)*[a-zA-Z]+$/";//later change
+	var sm_sname			= document.getElementById("sName").value.match(scNmae);
 	var sm_ssname			= document.getElementById("ssName").value.match(patName);
 	var sm_address			= document.getElementById("sAddress").value.match(patAddress);
 	var sm_city				= document.getElementById("sCity").value.match(patName);
@@ -124,7 +124,8 @@ function validateSchoolMasterForm(){
 
 var flag1=1;
 function saveSchoolMasterAndGo(flag){
-	var retrnvalue=validateSchoolMasterForm();
+	//var retrnvalue=validateSchoolMasterForm();
+	var retrnvalue=true;
 	if(retrnvalue == "false" || retrnvalue == false)
 	{
 	return false; 

@@ -46,7 +46,7 @@ public class HiberDaoSupportTest {
 		im.setShortName("BGS");
 		im.setAddress("chinthal");
 		im.setCity("Hyderabad");
-		im.setStateId(new Long(1));
+		im.setStateId("1");
 		im.setContactPerson("Bharathi");
 		im.setEmailId("Bharathi@123.com");
 		im.setActive("Y");

@@ -123,4 +123,33 @@ public class SectionMasterDAOImpl extends STHibernateDAOSupport implements Secti
 			return true;
 		
 	}
+	
+	@Override
+	public SectionClassMap findByProperty3(final String bm_d,final String class_id,final String section_id) throws Exception {
+		try {
+			return (SectionClassMap) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)
+								throws HibernateException, SQLException{							
+							Criteria crt = session.createCriteria(SectionClassMap.class);
+						
+							crt.add(Restrictions.eq("bmId", bm_d));
+							crt.add(Restrictions.eq("cmId", class_id));
+							crt.add(Restrictions.eq("seMId", section_id));
+							crt.add(Restrictions.eq("active", "Y"));
+							List list = crt.list();
+							if(list.size()>0)
+								return list.get(0);
+							else
+								return null;
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	
 }

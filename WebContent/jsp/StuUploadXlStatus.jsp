@@ -29,7 +29,7 @@ System.out.println("msg@@"+msg+"$$"+resultString);
 	
 	//alert("Comming SOON");
 		var innerHtmlone='<table width="100%" cellspacing="1" cellpadding="0" border="0"><tr><th width="1%" style="font-size:12px;border:1px solid #d7d7d7; background:#d7d7d7;line-height:25px;text-align:center; padding-left:5px"><strong>S.NO</strong></th><th width="15%" style="font-size:12px;border:1px solid #d7d7d7; background:#d7d7d7;line-height:25px;text-align:center; padding-left:5px"><strong>Row</strong></th><th width="6%" style="font-size:12px;border:1px solid #d7d7d7;background:#d7d7d7;line-height:25px;text-align:center;"><div align="center"><strong>Reason</strong></div></th></tr>';
-		
+		var z=0;
 	StudentDWR.getErrorMsg(function(data){
 						                                if (data == null) {													
 						                                  alert("error");
@@ -37,7 +37,7 @@ System.out.println("msg@@"+msg+"$$"+resultString);
 														} else {				
 														//alert(data+":::"+data.length+data[1]);	                                 
 						                               for(var i = 0; i < data.length; i++) {
-															
+															z++;
 															    var temp = data[i];
 															   //alert(data[i]);
 															    	innerHtmlone += ' <tr>';
@@ -50,9 +50,11 @@ System.out.println("msg@@"+msg+"$$"+resultString);
 						                         }
 						      ) ;  
 	//alert(innerHtmlone);//height=200,left=0,top=100,screenX=0,screenY=100'
-	var myWindow = window.open("", "Schooltrix", "height=500,width=850,scrollbars=1,location=no,menubar=no,resizable=1,status=no,toolbar=no,screenX=100,screenY=100");
-			myWindow.document.write(innerHtmlone);
 	
+		if(z>0){
+		var myWindow = window.open("", "Schooltrix", "height=500,width=850,scrollbars=1,location=no,menubar=no,resizable=1,status=no,toolbar=no,screenX=100,screenY=100");
+				myWindow.document.write(innerHtmlone);
+		}
 	}
 /* 	$(document).keyup(function(e) {
 	alert("e.keyCode"+e.keyCode);

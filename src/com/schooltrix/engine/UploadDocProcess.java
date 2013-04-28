@@ -75,7 +75,7 @@ public class UploadDocProcess {
 			int flag_records = 0;
 			 con		= this.conn;	      
 			 st 	= con.prepareCall( "{call SchoolTrix_Upload_SMS(?)}");
-			//ud.sno, ud.IM_ID, ud.BM_ID, ud.SM_ID, ud.to_which,ud.to_whome ,ud.upload_type, ud.file_name
+			//ud.sno, ud.IM_ID, ud.BM_ID, ud.SM_ID, ud.class_id,ud.to_whome ,ud.upload_type, ud.file_name
 			//A:All, P:PROCESSED, U:UN PROCESSED	      	
 			st.setString("ACTION", "U");
 			
@@ -88,7 +88,7 @@ public class UploadDocProcess {
 				result.getString(2).trim();//IM_ID-------
 				result.getString(3).trim();//SM_ID-------
 				result.getString(4).trim();//BM_ID-------
-				result.getString(5).trim();//to_which-------
+				result.getString(5).trim();//class_id-------class id
 				result.getString(6).trim();//to_whome--------
 				result.getString(7).trim();//upload_type--------
 				result.getString(8).trim();//file_name-------------
@@ -117,19 +117,20 @@ public class UploadDocProcess {
 		}			
 	}
 	
-	private void proceessSMSFiletoSend(String Shortname,int sno, String im_id, String sm_id, String bm_id, String to_which,String to_whome , String upload_type,  String fileName) {
+	private void proceessSMSFiletoSend(String Shortname,int sno, String im_id, String sm_id, String bm_id, String class_id,String to_whome , String upload_type,  String fileName) {
 		// TODO Auto-generated method stub
 		//1)get the users list---user Fname ,Lname,mobile number
 				//parent details only depends on Class which select(like class-I,Class-II....etc or All classes
-				List smsList = getAuthorizedUsersList(im_id,sm_id,bm_id,to_which,"sms");
+				List smsList = getAuthorizedUsersList(im_id,sm_id,bm_id,class_id,"sms");
 			
 				//these r from properties file late depending on im_id (and sm_id..)
 			
 				String message = "Dear Parent, New "+upload_type.toUpperCase()+"is Uploaded.";
 				
 				System.out.println(message+":::message"+sno+":sno:"+fileName);
-				ProcessMSG ps = new ProcessMSG();
-				//ps.sendUploadDocSMS(message, smsList);
+				
+				//ProcessMSG ps = new ProcessMSG();
+				//	ps.sendUploadDocSMS(message, smsList);//**********************************Main
 				
 					Connection con = null;
 					CallableStatement st = null;
@@ -165,7 +166,7 @@ public class UploadDocProcess {
 			int flag_records = 0;
 			 con		= this.conn;	      
 			 st 	= con.prepareCall( "{call SchoolTrix_Upload_Email(?)}");
-			//ud.sno, ud.IM_ID, ud.BM_ID, ud.SM_ID, ud.to_which,ud.to_whome ,ud.upload_type, ud.file_name
+			//ud.sno, ud.IM_ID, ud.BM_ID, ud.SM_ID, ud.class_id,ud.to_whome ,ud.upload_type, ud.file_name
 			//A:All, P:PROCESSED, U:UN PROCESSED	      	
 			st.setString("ACTION", "U");
 			
@@ -176,10 +177,10 @@ public class UploadDocProcess {
 				log.info("---"+result.getString(3).trim());
 				result.getInt(1);//sno---------
 				result.getString(2).trim();//IM_ID-------
-				result.getString(3).trim();//IM_ID-------
-				result.getString(4).trim();//IM_ID-------
-				result.getString(5).trim();//to_which-------
-				result.getString(6).trim();//to_whome--------
+				result.getString(3).trim();//sM_ID-------
+				result.getString(4).trim();//bM_ID-------
+				result.getString(5).trim();//class_id-------
+				result.getString(6).trim();//parent/student--------
 				result.getString(7).trim();//upload_type--------
 				result.getString(8).trim();//file_name-------------
 			
@@ -207,28 +208,36 @@ public class UploadDocProcess {
 	}
 	
 	
-	private void proceessEmailFiletoSend(String Shortname,int sno, String im_id, String sm_id, String bm_id, String to_which,String to_whome , String upload_type,  String fileName) {
+	private void proceessEmailFiletoSend(String Shortname,int sno, String im_id, String sm_id, String bm_id, String class_id,String to_whome , String upload_type,  String fileName) {
 		// TODO Auto-generated method stub
 		
-		//1)get the users list---user Fname ,Lname,mobile number
+		//1)get the users list---user Fname ,Lname,emailID
 		//parent details only depends on Class which select(like class-I,Class-II....etc or All classes
-		List emailList = getAuthorizedUsersList(im_id,sm_id,bm_id,to_which,"email");
+		
+		List emailList = getAuthorizedUsersList(im_id,sm_id,bm_id,class_id,"email");//************************************88
+		
 		String[] users = new String[emailList.size()]; 
 		for (int i = 0; i < emailList.size(); i++) {
 			users[i] =(String) emailList.get(i);
+			System.out.println("users[i]--"+users[i]);
 		}
 		//these r from properties file late depending on im_id (and sm_id..)
 		String subject = "New "+upload_type.toUpperCase()+"is Uploaded";
-		String message = "<html><head >Dear Parents,<br/></head><br/><body style='font-family:verdana;'> New "+upload_type.toUpperCase()+"is Uploaded. Please go through the attachment. </br>\n</br></body></html>\n\n";
-/*		String 	from = "VT Intraday Report<intradayreports@vantagetrade.com>";*/
-		String 	from = "Upload From Admin<uploaddoc@"+Shortname+".com>";
-		String imagePath = "";
+	//	String message = "<html><head >Dear Parents,<br/></head><br/><body style='font-family:verdana;'> New "+upload_type.toUpperCase()+"is Uploaded. Please go through the attachment. </br>\n</br></body></html>\n\n";
+		String message ="<div  id=\"yes2\" style=\"width:93%; padding:20px; font-family:Arial; font-size:13px; border:#999999 1px solid; \"> " +
+				"<p>Dear Parents,<br/><br/></p><p>New "+upload_type.toUpperCase()+" is Uploaded. Please go through the attachment. </p> <p><br/>Regards,</p><p>Team "+Shortname+"</p></div>";
+		
+		
+		/*		String 	from = "VT Intraday Report<intradayreports@vantagetrade.com>";*/
+		String 	from = "Upload From Admin<contactus@schooltrix.com>";
+/*		String 	from = "Upload From Admin<uploaddoc@"+Shortname+".com>";
+*/		String imagePath = "";
 		
 		String folderFileName = uploadDocPath+Shortname+"/"+upload_type+"/"+fileName;
 		
-		
+		System.out.println("fo---"+folderFileName+"-->"+message+"<------>"+subject);
 		ProcessEmail pe = new ProcessEmail();
-		//pe.sendUploadDocMail(users, subject, message, new String[]{folderFileName}, from, imagePath);
+		pe.sendUploadDocMail(users, subject, message, new String[]{folderFileName}, from, imagePath);
 		
 		
 		
@@ -276,7 +285,7 @@ public class UploadDocProcess {
 		
 	}
 
-	private List getAuthorizedUsersList(String im_id,String sm_id,String bm_id,String to_which,String smsOrEmail) {
+	private List getAuthorizedUsersList(String im_id,String sm_id,String bm_id,String class_id,String smsOrEmail) {
 		// TODO Auto-generated method stub
 		String query = null;
 		List usersList = new ArrayList();
@@ -288,16 +297,33 @@ public class UploadDocProcess {
 		}
 		
 		
-		if(to_which.equalsIgnoreCase("0")){
-			query = "select "+channel+" from parent_details where um_id in (select um_id from user_master where IM_ID='"+im_id+"' and User_ID like 'Par%' and Active='Y') and Active='Y'";
-		}else{
+		t:if(class_id.equalsIgnoreCase("0")){
+			
+			if (bm_id.equalsIgnoreCase("0")) {
+				
+				if (sm_id.equalsIgnoreCase("0")) {
+					query = "select "+channel+" from parent_details where um_id in (select um_id from user_master where IM_ID='" + im_id +"' and UT_ID = '2' and Active='Y') and isDefault='Y' and Active='Y'";//AAALL Schoollll
+				break t;
+				}
+				query = "select "+channel+" from parent_details where um_id in (select um_id from user_master where IM_ID='" + im_id+ "' and SM_ID='" +sm_id+ "' and UT_ID = '2' and Active='Y') and isDefault='Y' and Active='Y'";//All Branches
+				break t;
+			}//bm_id
+			
+			query = "select "+channel+" from parent_details where um_id in (select um_id from user_master where IM_ID='" +im_id+ "'and SM_ID='" +sm_id+ "' and BM_ID='" +bm_id+ "' and UT_ID = '2' and Active='Y') and isDefault='Y' and Active='Y'";//all classes under one branch
+		
+/*			query = "select "+channel+" from parent_details where um_id in (select um_id from user_master where IM_ID='"+im_id+"' and User_ID like 'Par%' and Active='Y') and Active='Y'";
+*/		}else{
 			System.out.println("in class section");
 		
-			query = "select "+channel+" from parent_details where  Active='Y' and PD_ID in " +
-				"( select pd_id from parent_student_map where  Active='Y' and Stu_id in " +
-				"(select Stu_ID from student_section_map where  Active='Y' and IM_ID='"+im_id+"' and SM_ID='"+sm_id+"' and  BM_ID='"+bm_id+"' and SCM_ID in  " +
-				"( SELECT SCM_ID FROM section_class_map WHERE Active='Y' and CM_ID  = "+to_which+") ))";
-		}
+			query = "select "+channel+" from parent_details where Active='Y' and isDefault='Y'  and PD_ID in ( select pd_id from parent_student_map where Active='Y' and Stu_id in (select Stu_ID from student_section_map where Active='Y' and IM_ID='" +
+					im_id+ "' and SM_ID='" + sm_id+ "' and BM_ID='" + bm_id + "' and SCM_ID in " +
+					"( SELECT SCM_ID FROM section_class_map WHERE Active='Y' and CM_ID = " + class_id + " and bm_id = " +bm_id + ") ))";
+			
+/*			query = "select "+channel+" from parent_details where  Active='Y' and PD_ID in " +
+					"( select pd_id from parent_student_map where  Active='Y' and Stu_id in " +
+					"(select Stu_ID from student_section_map where  Active='Y' and IM_ID='"+im_id+"' and SM_ID='"+sm_id+"' and  BM_ID='"+bm_id+"' and SCM_ID in  " +
+					"( SELECT SCM_ID FROM section_class_map WHERE Active='Y' and CM_ID  = "+class_id+") ))";
+*/		}
 		
 		
 		try {

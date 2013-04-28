@@ -52,6 +52,7 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 			
 			 String im_id =	(String)session.get("IM_ID");
 
+				
 			 String sm_id =	request.getParameter("schoolNames");
 			 String bm_id =	request.getParameter("branchNames");
 			 
@@ -59,8 +60,8 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 
 			System.out.println(institutionName+":institutionName:");
 			 
-			 String selectGrades =	request.getParameter("selectGrades");
-			 String selectAll =	request.getParameter("selectAll");
+			 String selectClass =	request.getParameter("selectClass");
+			 String selectType =	request.getParameter("selectType");
 			 String uploadType =	request.getParameter("uploadType");
 			 String assignmentType =	request.getParameter("assignmentType");
 			 String selectSubject =	request.getParameter("selectSubject");
@@ -68,7 +69,7 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 			 String nty_email =	request.getParameter("nty_email");
 			 String nty_sms =	request.getParameter("nty_sms");
 			
-			 System.out.println("selectGrades--"+selectGrades+"--"+selectAll+"--"+uploadType+"-assignmentType-"
+			 System.out.println("selectClass--"+selectClass+"--"+selectType+"--"+uploadType+"-assignmentType-"
 			 +assignmentType+"--"+selectSubject+"--"+fileUPFileName+"--"+nty_email+"--"+nty_sms);
 			 
 			 
@@ -105,8 +106,8 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 			 uploadDocData.setSmId(sm_id);
 			 uploadDocData.setBmId(bm_id);
 
-			 uploadDocData.setToWhich(selectGrades);
-			 uploadDocData.setToWhome(selectAll);
+			 uploadDocData.setToWhich(selectClass);
+			 uploadDocData.setToWhome(selectType);
 			 uploadDocData.setUploadType(uploadType);
 			 
 			 uniqueFileName = getFileUniqueName();			 

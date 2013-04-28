@@ -8,7 +8,7 @@
 		}
 		
 		</style>
-		<script type="text/javascript" src="/Schooltrix/js/fckeditor.js"></script>
+		<script type="text/javascript" src="/js/fckeditor.js"></script>
 		   <script 	src="<%=request.getContextPath()%>/dwr/interface/ClassMasterDWR.js"></script>
 		   	      <script 	src="<%=request.getContextPath()%>/dwr/interface/SchoolMasterDWR.js"></script>
 	      <script 	src="<%=request.getContextPath()%>/dwr/interface/BranchMasterDWR.js"></script>
@@ -46,7 +46,7 @@
 	    
 		   try{
 		   
-					alert("onload school master");
+					//alert("onload school master");
 						var listofschools = document.getElementById('schoolNames');					
 	
 						    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -76,16 +76,17 @@
 	
 	function selectSchoolforBranches(val){
 	   
+		removeAllOptions("branchNames");
+		removeAllOptions("selectClass");
 	   if(val != '-1'){	   
 	   var schoolID = jQuery("#schoolNames").val();
 
-		removeAllOptions("branchNames");
 					  
 		if(val != '-1'){	   
 		   try{
 		   	var im_id = "<%=session.getAttribute("IM_ID")%>";	
 		   	
-					alert("based school master getting branch master list--"+schoolID);
+				//	alert("based school master getting branch master list--"+schoolID);
 						var listofbranchs = document.getElementById('branchNames');					
 	
 						    BranchMasterDWR.getBranchMasterList(schoolID,function(data){
@@ -133,7 +134,7 @@
 		   try{
 		   	var im_id = "<%=session.getAttribute("IM_ID")%>";	
 		   	
-					alert("based school master getting branch master list--"+branchID+"--"+schoolID);
+				//	alert("based school master getting branch master list--"+branchID+"--"+schoolID);
 						var listofclasses = document.getElementById('selectClass');					
 	
 						    ClassMasterDWR.getClassMasterList(schoolID,branchID,function(data){
@@ -190,9 +191,24 @@
 			
 		}
 	 	function getClassesList(){
-	
+		    var branchID = jQuery("#branchNames").val();
+	   		var schoolID = jQuery("#schoolNames").val();
+			
+			//alert(schoolID+"***"+branchID);
+		if(schoolID=="-1"){
+			alertDialog('Please select  School');
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchID=="-1"){
+			alertDialog('Please select  Branch');
+			jQuery("#branchNames").focus();
+			return false;
+		}
+			
 			if (!document.getElementById("classRadio").checked) {
-			alert("checkkk");			
+			//alert("checkkk");			
 			selectBranchesforClasses();
 
 			}
@@ -307,6 +323,33 @@
 //alert('All validations cleared');
 
 	}
+	
+	var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	    
+	
 	function okAlertDialog () {
 	$("#idAlertDialog").modal ('hide'); 
 	};
@@ -358,7 +401,7 @@ function alertDialog (prompt) {
                  </td>
         </tr>
         <tr>
-                <td><input  type="radio" placeholder=""  name="radio1"  id="classRadio" onchange="disableOrEnable('class')" onclick="getClassesList();return false;"></td>
+                <td><input  type="radio" placeholder=""  name="radio1"  id="classRadio" onchange="disableOrEnable('class')" onclick="return getClassesList();"></td>
                 <td><label style="color:#000;font-size: 14px;"><b>Select</b></label></td>
           		<td colspan="2"> <span style="color:black;font-weight:bold;font-size: 13px">Parents of &nbsp; &nbsp; &nbsp;&nbsp;   </span>
           		 <select class="span3"  name="selectClass"   id="selectClass" onchange="selectValue(this.value)" disabled="disabled"> 

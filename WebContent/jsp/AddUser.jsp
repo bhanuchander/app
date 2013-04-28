@@ -147,9 +147,9 @@
 													function(data){								
 					                                   if (data =="false") {
 					                                  // alert("not found"+data);											
-														} else {						                                
-						                                   alert("User Id Already Exist::"+data);
-						                                   		jQuery("#userID").focus();			                              		                                   													
+														} else {			
+														  setError("userID","User Id Already Exist");
+											               jQuery("#userID").focus();
 														}
 					                        	 }
 					      ); 
@@ -268,6 +268,7 @@
 			    }
 		    }else{
 		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".<br/> Admin ID : "+userID+"<br/>Password : "+password+"</div>");
+		        resetForm($('#addAdminUser')); // by id, recommended
 		    }
 		
 		    if(userID != null){
@@ -287,121 +288,204 @@
 	    }
 	    function validateAdminUser(addAdminUser){
 	    
-	    var patEmail	= /^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$/;					
-		var patName		=/^[a-zA-Z-. ]{2,25}$/;
-		var patUser		=/^[a-zA-Z0-9-. ]{2,25}$/;
-		var patAddress		=/^[a-zA-Z_0-9@\!#\$\^%&*()+=\-[]\\\';,\.\/\{\}\|\":<>\? ]{2,25}$/;
+	  	   // var patEmail	= /^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$/; previous					
+		//var patName		=/^[a-zA-Z-. ]{2,25}$/; previous
+		var patEmail		= /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+		var patName 		= /^[a-zA-Z]([a-zA-Z]+\s)*[a-zA-Z]+$/;
+		var patUser			= /^[a	-zA-Z0-9-. ]{2,25}$/;
+		var patAddress		= /^[a-zA-Z_0-9@\!#\$\^%&*()+=\-[]\\\';,\.\/\{\}\|\":<>\? ]{2,25}$/;
 		var patNum			= /^[0-9-+ ]{8,15}$/;
-		var patBody =/^[A-Za-z0-9 ].+$/;
+	//	var patBody	 		= /^[A-Za-z0-9 ].+$/;//previous
+		var patBody			= /^[a-z-A-Z][a-zA-Z0-9\s,'-.]*$/;
+		var patcity  		= /^[a-zA-Z][a-zA-Z ]*['.]?[a-zA-Z ]+[a-zA-Z ]+$/;
 		var patDob			= /^[0-9- ]{10}$/;
-		var patPassword		=/^[a-zA-Z0-9]{8}$/;
-  
+		var patPassword		= /^[a-zA-Z0-9]{8,15}$/;
+  	
   
                 var im_id_list   		=   jQuery("#im_id_list").val();
-                var userID				=	jQuery("#userID").val().match(patUser);	
-				var  fname 				= 	jQuery("#fname").val().match(patName);
+                var userID				=	$.trim(jQuery("#userID").val()).match(patUser);	
+				var  fname 				= 	$.trim(jQuery("#fname").val()).match(patName);
 				var password			=   jQuery("#password").val().match(patPassword);
-				var passwordValue =   jQuery("#password").val();
-				var cpasswordValue=   jQuery("#cPassword").val();
-				var  lname 				= 	jQuery("#lname").val().match(patName);
+				var passwordValue 		=   jQuery("#password").val();
 				var cpassword			=   jQuery("#cPassword").val().match(patPassword);
-				var  dob 				= 	jQuery("#dob").val().match(patDob);
+				var cpasswordValue		=   jQuery("#cPassword").val();
+				var  lname 				= 	$.trim(jQuery("#lname").val()).match(patName);
+				var  dob 				= 	$.trim(jQuery("#dob").val()).match(patDob);
 				var  userRights 		= 	jQuery("#userRights").val();
-				var  email 				= 	jQuery("#email").val().match(patEmail);
-				var  mobile 				= 	jQuery("#mobile").val().match(patNum);
-				var  landline 			= 	jQuery("#landline").val().match(patNum);
-				var  addr1 				= 	jQuery("#addr1").val().match(patBody);
-				var  addr2 				= 	jQuery("#addr2").val().match(patBody);				
-				var  city 				= 	jQuery("#city").val().match(patName);
+				var  email 				= 	$.trim(jQuery("#email").val()).match(patEmail);
+				var  mobile 			= 	$.trim(jQuery("#mobile").val()).match(patNum);
+				var  landline 			= 	$.trim(jQuery("#landline").val()).match(/^\d{3,5}([\-]\d{6,8})?$/);
+				var  addr1 				= 	$.trim((jQuery("#addr1").val())).match(patBody);
+				var  addr2 				= 	$.trim(jQuery("#addr2").val()).match(patBody);				
+				var  city 				= 	$.trim(jQuery("#city").val()).match(patName);
+				var  designation 		= 	$.trim(jQuery("#designation").val()).match(patName);
 				var state				= 	jQuery("#state").val();
 				var country=jQuery("#country").val();
-				
-				
 				
 				var parentTypeSel		=	jQuery("#parentTypeSel").val();
 			/* 	var admissionNumber		=   jQuery("#admissionNumber").val().match(patNum);
 				var admissionDate		=   jQuery("#admissionDate1").val().match(patDob);
 				var classAdmittedIn		=   jQuery("#classAdmittedIn").val().match(patBody); */
 				var  isParent 				=	jQuery("#isParent").prop('checked') ? 'Y':'N';
+				var  active 				=	jQuery("#active").prop('checked') ? 'Y':'N';
 				
 				
 				if(im_id_list=="-1"){
-				alertDialog('please select Institution Name ');
+			  setError("im_id_list","Please select Institution Name");
+               jQuery("#im_id_list").focus();
 				return false;
 				}
 				if(!userID){
-				alertDialog('please enter valid UserId ');
-				return false;
-				}
-				if(!fname){
-				alertDialog('please enter valid First Name ');
+				  setError("userID","Please enter valid UserId");
+               jQuery("#userID").focus();
 				return false;
 				}
 				if(!password){
-				//alertDialog('Password should be 8 charcters and should contain only Alphanumeric characters');
-				//return false;
-				}
-				if(!lname){
-				alertDialog('please enter valid Last Name ');
+				  setError("password","Password should be 8 charcters and should contain only Alphanumeric characters");
+               jQuery("#password").focus();
 				return false;
 				}
-				if(!cpassword){
-				//alertDialog('Confirm Password should be 8 charcters and should contain only Alphanumeric characters  ');
-				//return false;
+			if(cpasswordValue != passwordValue){
+				  setError("cpasswordValue","Confirm Password and Password must match");
+               jQuery("#cpasswordValue").focus();
+				return false;
 				}
-				if(cpasswordValue != passwordValue){
-				alertDialog('Confirm Password and Password didnot matched');
+				if(!fname){
+				  setError("fname","please enter valid First Name");
+               jQuery("#fname").focus();
+				return false;
+				}
+				if(!lname){
+				  setError("lname","please enter valid Last Name");
+               jQuery("#lname").focus();
 				return false;
 				}
 				if(userRights=="Select"){
-				alertDialog('please select User Rights ');
+				  setError("userRights","please select User Rights ");
+               jQuery("#userRights").focus();
 				return false;
 				}
 				 if(!dob){
-				alertDialog('please enter valid DOB ');
+				   setError("dob","please enter valid DOB");
+               jQuery("#dob").focus();
+				return false;
+				}
+				if(!designation){
+				  setError("designation","please enter valid Designation");
+               jQuery("#designation").focus();
 				return false;
 				} 
 				
 				if(!email){
-				alertDialog('please enter valid Email ');
+			  setError("email","Enter valid e-mail");
+               jQuery("#email").focus();
 				return false;
 				}
 				if(!mobile){
-				alertDialog('please enter valid Mobile ');
+				  setError("mobile","please enter valid Mobile ");
+               jQuery("#mobile").focus();
 				return false;
 				}
 				if(!landline){
-				alertDialog('please enter valid Landline ');
+				  setError("landline","please enter valid Landline ");
+               jQuery("#landline").focus();
 				return false;
 				}
 				if(isParent=="Y"  && parentTypeSel=="Select"){
-				alertDialog('please select Parent Type');
+				  setError("parentTypeSel","please select Parent Type");
+               jQuery("#parentTypeSel").focus();
 				return false;
 				}
+			
 				if(!addr1){
-				alertDialog('please enter valid Address 1 ');
+				  setError("addr1","please enter valid Address 1");
+               jQuery("#addr1").focus();
 				return false;
 				}
 				if(!addr2){
-				alertDialog('please enter valid Address 2 ');
+				  setError("addr2","please enter valid Address 2");
+               jQuery("#addr2").focus();
 				return false;
 				}
 				if(!city){
-				alertDialog('please enter valid City ');
+				  setError("city","'please enter valid City");
+               jQuery("#city").focus();
 				return false;
 				}
 				if(country=="Select"){
-				alertDialog('please select Country');
+				  setError("country","please select Country");
+               jQuery("#country").focus();
 				return false;
 				}
 				if(state=="Select"){
-				alertDialog('please select State');
+				  setError("state","please select State");
+               jQuery("#state").focus();
 				return false;
 				}
+				if (!validateForm()) {
+					return false;
+				}
 				//return false;
+			 if(active=="N"){
+              //alert("Please select check box");
+              setError("active","Please select check box");
+              jQuery("#active").focus();
+              return false;
+           }
+				
 				
 				    
 	    }
+	       
+	    function validateForm() {
+			var file1  = jQuery("#fileUP").val();
+			var extension = file1.split('.').pop().toLowerCase();
+			var allowed = ['gif','jpeg','pjpeg','png','jpg'];
+			if(allowed.indexOf(extension) === -1) {
+				//alertDialog("Your selected "+ file1+"  extension wrong"); previous
+				  setError("fileUP","Only gif / jpeg / pjpeg / png formats are allowed");
+               jQuery("#fileUP").focus();
+				return false;
+			}else{
+    			return true;
+			}
+	    }
+	    
+
+	var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	
+	    function resetForm($form) {
+		    $form.find('input:text, input:password, input:file, textarea').val('');
+		       jQuery("#country").val('India');
+		       jQuery("#state").val('Andhra Pradesh');
+		    
+		    $form.find('input:radio, input:checkbox')
+		         .removeAttr('checked').removeAttr('selected');
+		}
+	    
 	    </script>
 	    
 <div class="reg_mainCon">
@@ -410,13 +494,7 @@
     <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Add ADMIN</legend>
     <div style="padding:20px;">
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
-       <!--  <tr>
-          <td colspan="5" style="text-align:center">
-          <label style="color:#000;margin-left: 100px;"><b>Institution Name</b></label>                 
-          <select class="span3" name="im_id_list"  id="im_id_list" > onchange="changeCountry(this.value)"
-               <option value="-1"  selected="selected">Select</option>
-                    </select> 
-          </td></tr> -->
+            <tr><td colspan="5" style="text-align: center;"><span id ="errorspan" style="color:red" ></span>&nbsp;</td></tr>
           <tr>
 	          <td style="text-align:center" colspan="2">
 	          <label style="color:#000;margin-left: 100px;"><b>Institution Name</b></label>                 
@@ -429,12 +507,22 @@
          
         <tr>
           <td width="22%"><label style="color:#000;"><b>User ID</b></label></td>
-          <td width="26%"><div align="left">
+          <td width="26%">
+          <div class="input-prepend" align="left">
+				<span class="add-on">AD</span>
+				<input class="span3" style="width: 230px;" id="userID" name="userID"  type="text" placeholder="User ID" onblur="uniqueUserIDCheck();">
+			</div>
+      <!--     <div align="left">
             <input class="span3" type="text" placeholder="" name="userID"  id="userID" onblur="uniqueUserIDCheck();">
-          </div></td>
+          </div></td> -->
+          
+          
           <td >&nbsp;</td>
-          <td width="18%"><label style="color:#000;"><b>First Name</b></label></td>
-          <td width="30%"><input class="span3" type="text" placeholder="" name="fname"  id="fname"></td>
+         <td width="18%"><label style="color:#000;"><b>User Rights</b></label></td>
+          <td width="30%"><select class="span3"  name="userRights"  id="userRights">
+              <option>Select</option>
+              <option value="admin" selected="selected" >Admin</option>
+                </select></td>
         </tr>  
         <tr>
           <td ><label style="color:#000;"><b>Password</b></label></td>
@@ -442,21 +530,15 @@
             <input class="span3" type="text" placeholder="" name="password"  id="password">
           </div></td>
           <td width="4%">&nbsp;</td>
+          <td ><label style="color:#000;"><b>Confirm Password</b></label></td>
+          <td ><input class="span3" type="text" placeholder="" name="cPassword"  id="cPassword"></td>
+        </tr>
+        <tr>
+          <td ><label style="color:#000;"><b>First Name</b></label></td>
+          <td ><input class="span3" type="text" placeholder="" name="fname"  id="fname"></td>
+          <td >&nbsp;</td>
           <td ><label style="color:#000;"><b>Last Name</b></label></td>
           <td ><input class="span3" type="text" placeholder="" name="lname"  id="lname"></td>
-        </tr><tr>
-          <td ><label style="color:#000;"><b>Confirm Password</b></label></td>
-          <td ><div align="left">
-            <input class="span3" type="text" placeholder="" name="cPassword"  id="cPassword">
-          </div></td>
-          <td >&nbsp;</td>
-          <td ><label style="color:#000;"><b>User Rights</b></label></td>
-         
-          <td ><select class="span3"  name="userRights"  id="userRights">
-              <option>Select</option>
-              <option value="admin" selected="selected" >Admin</option>
-                </select>             
-        </td>
         </tr><tr>
           <td ><label style="color:#000;"><b>Date of Birth</b></label></td>
           <td ><div align="left">

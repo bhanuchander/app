@@ -264,7 +264,8 @@
 					                                   //alert("::"+data);
 					                                   jQuery("#smscredits").val(data);
 													} else {				
-												//	alert(data+":::")		                                 
+												//	alert(data+":::")	
+													alertDialog('You Dont have SMS credits');	                                 
 					                                   jQuery("#smscredits").val("0");				                          
 													}
 					                         }
@@ -277,6 +278,31 @@
 	 
 	 
 	 }
+	 
+	 	var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
 
 	function limiter(){
 		var tex = document.smsForm.smsbody.value;

@@ -326,7 +326,7 @@ public class ProcessMSG {
 					String DR		  	   = null;
 					try {
 						 properties = new Properties();
-						 inputStream = this.getClass().getResourceAsStream("../alerts/MailProperties.properties");
+						 inputStream = this.getClass().getResourceAsStream("SMS.properties");
 						 properties.load(inputStream);
 						  SMS_SERVICE_URL = properties.getProperty("SMS_SERVICE_URL");
 						  AUTH_USER 	  = properties.getProperty("SMS_COUNTRY_AUTH_USER");
@@ -345,7 +345,7 @@ public class ProcessMSG {
 						}
 					}
 					try{
-						smsText = msg;;
+						smsText = msg;
 						StringBuffer postData= new StringBuffer(); ;
 						//give all Parameters In String 
 						postData.append("User=" + URLEncoder.encode(AUTH_USER,"UTF-8"));

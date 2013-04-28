@@ -10,8 +10,8 @@
             <column name="Stu_ID" />
             <generator class="native" />
         </id>
-        <property name="umId" type="java.lang.Long">
-            <column name="UM_ID" not-null="true" />
+        <property name="umId" type="java.lang.String">
+            <column name="UM_ID" length="20" not-null="true" />
         </property>
         <property name="firstName" type="java.lang.String">
             <column name="First_Name" length="45" not-null="true" />
@@ -20,19 +20,19 @@
             <column name="Last_Name" length="45" not-null="true" />
         </property>
         <property name="gender" type="java.lang.String">
-            <column name="Gender" length="45" not-null="true" />
+            <column name="Gender" length="6" not-null="true" />
         </property>
         <property name="address1" type="java.lang.String">
-            <column name="Address1" length="45" not-null="true" />
+            <column name="Address1" length="100" not-null="true" />
         </property>
         <property name="address2" type="java.lang.String">
-            <column name="Address2" length="45" />
+            <column name="Address2" length="100" />
         </property>
         <property name="city" type="java.lang.String">
             <column name="City" length="45" not-null="true" />
         </property>
         <property name="state" type="java.lang.String">
-            <column name="State" length="10" not-null="true" />
+            <column name="State" length="45" not-null="true" />
         </property>
         <property name="email" type="java.lang.String">
             <column name="Email" length="100" />
@@ -47,13 +47,13 @@
             <column name="DOB" length="45" />
         </property>
         <property name="photo" type="java.lang.String">
-            <column name="Photo" length="300" />
+            <column name="Photo" length="100" />
         </property>
         <property name="admissionNumber" type="java.lang.String">
             <column name="Admission_Number" length="45" not-null="true" />
         </property>
-        <property name="admissionDate" type="java.util.Date">
-            <column name="Admission_Date" length="10" not-null="true" />
+        <property name="admissionDate" type="java.lang.String">
+            <column name="Admission_Date" length="45" not-null="true" />
         </property>
         <property name="classAdmittedIn" type="java.lang.String">
             <column name="Class_Admitted_in" length="10" not-null="true" />

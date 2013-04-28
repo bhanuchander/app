@@ -29,4 +29,6 @@ public interface SchoolMasterDAO extends Serializable {
 	public List getSchoolList(final String filed,final Long value) throws Exception ;
 	
 	public List findAll()throws Exception ;
+	
+	public List getFranchiseList(final String filed,final String value)throws Exception ;
 }

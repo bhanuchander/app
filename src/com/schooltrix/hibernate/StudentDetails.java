@@ -1,7 +1,5 @@
 package com.schooltrix.hibernate;
 
-import java.util.Date;
-
 /**
  * StudentDetails entity. @author MyEclipse Persistence Tools
  */
@@ -11,7 +9,7 @@ public class StudentDetails implements java.io.Serializable {
 	// Fields
 
 	private Long stuId;
-	private Long umId;
+	private String umId;
 	private String firstName;
 	private String lastName;
 	private String gender;
@@ -25,7 +23,7 @@ public class StudentDetails implements java.io.Serializable {
 	private String dob;
 	private String photo;
 	private String admissionNumber;
-	private Date admissionDate;
+	private String admissionDate;
 	private String classAdmittedIn;
 	private String active;
 
@@ -36,10 +34,10 @@ public class StudentDetails implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudentDetails(Long umId, String firstName, String lastName,
+	public StudentDetails(String umId, String firstName, String lastName,
 			String gender, String address1, String city, String state,
-			String admissionNumber, Date admissionDate, String classAdmittedIn,
-			String active) {
+			String admissionNumber, String admissionDate,
+			String classAdmittedIn, String active) {
 		this.umId = umId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -54,11 +52,11 @@ public class StudentDetails implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StudentDetails(Long umId, String firstName, String lastName,
+	public StudentDetails(String umId, String firstName, String lastName,
 			String gender, String address1, String address2, String city,
 			String state, String email, String mobile, String landline,
 			String dob, String photo, String admissionNumber,
-			Date admissionDate, String classAdmittedIn, String active) {
+			String admissionDate, String classAdmittedIn, String active) {
 		this.umId = umId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -88,11 +86,11 @@ public class StudentDetails implements java.io.Serializable {
 		this.stuId = stuId;
 	}
 
-	public Long getUmId() {
+	public String getUmId() {
 		return this.umId;
 	}
 
-	public void setUmId(Long umId) {
+	public void setUmId(String umId) {
 		this.umId = umId;
 	}
 
@@ -200,11 +198,11 @@ public class StudentDetails implements java.io.Serializable {
 		this.admissionNumber = admissionNumber;
 	}
 
-	public Date getAdmissionDate() {
+	public String getAdmissionDate() {
 		return this.admissionDate;
 	}
 
-	public void setAdmissionDate(Date admissionDate) {
+	public void setAdmissionDate(String admissionDate) {
 		this.admissionDate = admissionDate;
 	}
 

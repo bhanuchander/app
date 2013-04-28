@@ -103,10 +103,20 @@
 			        </param>
 			 </interceptor-ref>
 			 <interceptor-ref name="defaultStack"></interceptor-ref>
-			     <result name="success" type="redirectAction">
+			     <result name="successSaff" type="redirectAction">
 					 <param name="actionName">Access</param>
 	    		     <param name="p1">AddNonAdminUser</param>
-	    		     <param name="p2">SA_inst2</param>
+	    		     <param name="p2">ffats</param>
+				</result>
+			     <result name="successStu" type="redirectAction">
+					 <param name="actionName">Access</param>
+	    		     <param name="p1">AddNonAdminUser</param>
+	    		     <param name="p2">uts</param>
+				</result>
+			     <result name="successPA" type="redirectAction">
+					 <param name="actionName">Access</param>
+	    		     <param name="p1">AddNonAdminUser</param>
+	    		     <param name="p2">rap</param>
 				</result>
 				  <!--   <result name="success">/jsp/success.jsp</result> -->
 				  <!--   <result name="success"  type="tiles" >/adminNonAddUser</result> -->
@@ -155,7 +165,11 @@
 			<result name="institutionmaster"  type="tiles" >/test</result>
 			<result name="superInstitutionC"  type="tiles" >/superInstitutionC</result>
 			<result name="adminAddUser"  type="tiles" >/adminAddUserDef</result>
-			<result name="adminNonAddUser"   type="tiles"	>/adminNonAddUser</result>
+
+			<result name="adminNonAddUser_uts"   type="tiles"	>/adminNonAddUser</result>
+			<result name="adminNonAddUser_ffats"   type="tiles"	>/adminNonAddUser</result>
+			<result name="adminNonAddUser_rap"   type="tiles"	>/adminNonAddUser</result>
+
 			<result name="userSMS"  type="tiles" >/userSMSDef</result>
 			<result name="userEmail"  type="tiles" >/userEmailDef</result>
 			<result name="uploadDocuments"  type="tiles" >/uploadDocumentsDef</result>
@@ -253,7 +267,8 @@
 	   <action name="download" class="com.schooltrix.actions.DownloadAction">      
 	       <result name="success" type="stream">  
 			       <param name="contentType">application/octet-stream</param>
-				  <param name="contentDisposition">attachment;filename=\"${fileName}\"</param>
+				  <param name="contentDisposition">attachment;filename="${fileName}"</param>
+<!-- 				  <param name="contentDisposition">attachment;filename=\"${fileName}\"</param> -->
 				  <param name="bufferSize">1024</param>               
 	       </result>  
       </action>

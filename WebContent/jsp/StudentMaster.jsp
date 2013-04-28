@@ -30,12 +30,13 @@ System.out.println("msg"+msg);
 		});
 
  function resultPopUp(){
-	    	var userID = "<%=msg%>";
-		    if(userID == null  || userID == "null" ){
+	    	var msgg = "<%=msg%>";
+		    if(msgg == null  || msgg == "null" ){
 		    }else{
-		    alert(userID);
+		    setError("schoolNames",msg);
+		    jQuery("#schoolNames").focus();
 		    }
-		      if(userID != null){
+		      if(msgg != null){
 		 		<%session.removeAttribute("msg"); %> ;
 		     } 
 	    }
@@ -80,10 +81,10 @@ System.out.println("msg"+msg);
 	
 	function selectSchoolforBranches(val){
 	   
+		removeAllOptions("branchNames");
 	   if(val != '-1'){	   
 	   var schoolID = jQuery("#schoolNames").val();
 
-		removeAllOptions("branchNames");
 					  
 		if(val != '-1'){	   
 		   try{
@@ -155,13 +156,13 @@ System.out.println("msg"+msg);
 		
 		
 		if(schoolNames=="-1"){
-			alert('Please select valid School');
+		 setError("schoolNames","Please select valid School");
 			jQuery("#schoolNames").focus();
 			return false;
 		}
 		
 		if(branchNames=="-1"){
-			alert('Please select valid Branch');
+			 setError("branchNames","Please select  Branch");
 			jQuery("#branchNames").focus();
 			return false;
 		}
@@ -170,7 +171,7 @@ System.out.println("msg"+msg);
 		
 	//	alert(file1);
 		if(file1 == "" || file1 == undefined  || file1 == "undefined"){		
-			alert("Please select a file");
+			setError("branchNames","Please select a file");
 				jQuery("#fileUP").focus();
 			return false;
 		}
@@ -180,11 +181,45 @@ System.out.println("msg"+msg);
 		
 		if(allowed.indexOf(extension) === -1) {
 		    // Not valid.
-			alert("Your selected "+ file1+"  extension wrong");
+			setError("branchNames","Your selected "+ file1+"  extension wrong");
 				jQuery("#fileUP").focus();
 			return false;
 		}
 		
+		}
+		
+			var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	    
+	 function resetForm($form) {
+		    $form.find('input:text, input:password, input:file, textarea').val('');
+		       jQuery("#country").val('India');
+		       jQuery("#state").val('Andhra Pradesh');
+		 /*    
+		    $form.find('input:radio, input:checkbox')
+		         .removeAttr('checked').removeAttr('selected'); */
 		}
 		
 	    </script>
@@ -202,6 +237,8 @@ System.out.println("msg"+msg);
 	          <label style="color:#000;"></label>
 	 
 	   <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	   <tr><td colspan="4" style="text-align: center;"><span id ="errorspan" style="color:red;font-size: 14px;" ></span>&nbsp;</td></tr>
+	   <tr><td>&nbsp;</td></tr>
 		           <tr>
                 <td><label style="color:#000;"><b>Select School</b></label></td>
                 <td><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value)">
@@ -243,7 +280,7 @@ System.out.println("msg"+msg);
 		   
 				   <table width="100%" border="0" cellspacing="0" cellpadding="0">
 						 <tr> <td><input type="hidden" name="fileName" id="fileName"   value="student_upload.txt" >
-						 <td colspan="2" style="text-align:center;"><button type="submit" class="btn" >Template To download</button></td></tr>
+						 <td colspan="2" style="text-align:center;"><button type="submit" class="btn" >Download Template</button></td></tr>
 				
 				   </table>
 		    </form>

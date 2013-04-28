@@ -25,7 +25,7 @@ public class SMSCampaignJobInit extends QuartzJobBean{
 	
 	System.out.println("SMS JOB Started::"+new Date());
 
-	new SchooltrixManager().processEmail();
+	new SchooltrixManager().processSMS();
 	
 	System.out.println("SMS JOB End...."+new Date());
     

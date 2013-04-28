@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import com.schooltrix.hibernate.FranchiseMaster;
 import com.schooltrix.hibernate.SchoolMaster;
 
 
@@ -129,4 +130,27 @@ public class SchoolMasterDAOImpl extends STHibernateDAOSupport implements School
 			return null;
 		}
 	}
+	
+	@Override
+	public List getFranchiseList(final String filed,final String value) {
+		List FranchiseMasterList=null;
+		try {
+			FranchiseMasterList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							Criteria crit = session.createCriteria(FranchiseMaster.class);
+							//crit.add(Restrictions.eq(filed, value));
+							crit.add(Restrictions.eq("active", "Y"));
+							//crit.addOrder(Order.desc("sno"));
+							System.out.println(crit.list().size()+"--"+value+"-"+filed);
+							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return FranchiseMasterList;
+	}
+	
 }
