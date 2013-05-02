@@ -10,10 +10,12 @@ import javax.servlet.http.HttpSession;
 import org.directwebremoting.WebContextFactory;
 import org.springframework.beans.BeansException;
 
+import com.schooltrix.daos.DomainDAO;
 import com.schooltrix.daos.InstitutionMasterDAO;
 import com.schooltrix.daos.ParentDetailsDAO;
 import com.schooltrix.daos.SchoolMasterDAO;
 import com.schooltrix.daos.UserMasterDAO;
+import com.schooltrix.hibernate.DomainControl;
 import com.schooltrix.hibernate.FranchiseMaster;
 import com.schooltrix.hibernate.InstitutionMaster;
 import com.schooltrix.hibernate.SchoolMaster;
@@ -62,6 +64,7 @@ public List getFranchiseMasterDetails() {
 	
 		System.out.println("ac--"+insActive+"--"+insName+"---"+insAddr+"..."+insCity+"8888"+session);   	
 		InstitutionMasterDAO imMasterDao =null;    	
+		DomainDAO domainDAO 	=  null;
 		try {
 				imMasterDao = (InstitutionMasterDAO)ServiceFinder.getContext(request).getBean("InstitutionMasterHibernateDao"); 		
 				InstitutionMaster imInputData = new InstitutionMaster();
@@ -78,6 +81,20 @@ public List getFranchiseMasterDetails() {
 				imInputData.setFranchiseId(franchise);
 				imMasterDao.save(imInputData);
 				session.setAttribute("shortNameTemp", insSName);
+				
+				
+				try {
+					domainDAO = (DomainDAO)ServiceFinder.getContext(request).getBean("DomainContlHibernateDao"); 		
+					DomainControl domainData = new DomainControl();
+					domainData.setShortName(insSName);
+					//domainData.setUrl(insSName+".schooltrix.com");
+					domainData.setUrl(insSName+".schooltrix1.com");
+					domainData.setDedicated("Y");
+					domainDAO.save(domainData);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				return "saved";
 		} catch (BeansException e) {

@@ -6,17 +6,27 @@
 	<%
 String msg			= (String)session.getAttribute("msg"); 
 String resultString			= (String)session.getAttribute("result"); 
+String[] resultSplit = null;
 
-String[] resultSplit = resultString.split("~");
+	
+		try{
+		 resultSplit = resultString.split("~");
+		}catch(Exception e){
 
+				System.out.println("msg---excptionnnnnnnnnnnnn");
+		e.printStackTrace();
+		} 
+		
 //String[] resultSplit = {"5","0","1","10"};
 
-if(msg !=null)
+if(msg !=null){
 session.removeAttribute("msg");
- if(resultString !=null)
-session.removeAttribute("result"); 
+}
+ if(resultString !=null){
+session.removeAttribute("result");
+} 
 
-System.out.println("msg@@"+msg+"$$"+resultString);
+//System.out.println("msg@@"+msg+"$$"+resultString);
 %>
     	<!-- DWR calls -->
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/StudentDWR.js"></script>
@@ -39,7 +49,7 @@ System.out.println("msg@@"+msg+"$$"+resultString);
 						                               for(var i = 0; i < data.length; i++) {
 															z++;
 															    var temp = data[i];
-															   //alert(data[i]);
+															  // alert(data[i]);
 															    	innerHtmlone += ' <tr>';
 			innerHtmlone +='    <td style="font-size:12px;border:1px solid #d7d7d7;line-height:25px;text-align:left;"><div align="center">'+(i+1)+'</div></td>';
 			innerHtmlone +='    <td style="font-size:12px;border:1px solid #d7d7d7;line-height:25px;text-align:left;"><div align="center">'+temp[0]+'</div></td>';
@@ -50,11 +60,10 @@ System.out.println("msg@@"+msg+"$$"+resultString);
 						                         }
 						      ) ;  
 	//alert(innerHtmlone);//height=200,left=0,top=100,screenX=0,screenY=100'
-	
-		if(z>0){
+	//if(z>0){
 		var myWindow = window.open("", "Schooltrix", "height=500,width=850,scrollbars=1,location=no,menubar=no,resizable=1,status=no,toolbar=no,screenX=100,screenY=100");
 				myWindow.document.write(innerHtmlone);
-		}
+	//	}
 	}
 /* 	$(document).keyup(function(e) {
 	alert("e.keyCode"+e.keyCode);
@@ -83,12 +92,13 @@ System.out.println("msg@@"+msg+"$$"+resultString);
      <fieldset>
 	    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Student File Upload Status Report</legend>
 	    <div style="padding:20px;">
-	          <label style="color:#000;"><b><%=msg %></b></label>
+	          <label style="color: #3300FF;"><b><%=msg %></b></label>
 	   <table width="100%" border="0" cellspacing="0" cellpadding="0" style="color: #000;">
 		           <tr><td><label style="color:#000;"><b><%=resultSplit[3] %></b></td><td></label><label>records Uploaded</label></td></tr>
 		           <tr><td><label style="color:#009B00"><b><%=resultSplit[2] %></b></td><td></label><label>new records entered</label></td></tr>
 		           <tr><td><label style="color:#CCCC66;"><b><%=resultSplit[1] %></b></td><td></label><label>existing records ignored</label></td></tr>
 		           <tr><td><label style="color:#FF0D0D"><b><%=resultSplit[0] %></b></td><td></label><label>records had errors <b><a style="color: #FF0D0D;"  onclick="getErrorReport();">View</a></b></label></td></tr>
+	       <tr><td>&nbsp;</td><td colspan='2'><label style="color:red;float: right;"><b>* * Please don't Refresh this page</b></label></td></tr>
 	       </table>
 	    </div>
 	  

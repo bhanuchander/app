@@ -16,6 +16,8 @@
 	    
 	    <script type="text/javascript">
 	    
+	   
+	    
 	    $(function(){
 		
 			$('input:radio').screwDefaultButtons({
@@ -25,6 +27,29 @@
 			});
 			
 				});
+				
+				
+		$(function(){
+		alert("onloaddddddd");
+		            
+$('#notificationCheck').live('change', function(){
+      alert("jhkjhssssssssssssssssssjkh");
+
+    if($(this).is(':checked')){
+      alert("jhkjhjkh");
+    }
+});
+		
+            $('input:checkbox').screwDefaultButtons({
+                image: 'url("img/checkboxSmall.jpg")',
+                width: 20,
+                height: 20
+            });
+            
+
+            
+            }); 
+				
 	    function disableOrEnable(val){
 			if(val=='all'){
 				document.getElementById('selectClass').disabled = true;
@@ -367,9 +392,10 @@
 		document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
 		$("#idAlertDialog").modal ("show");
 	}
+	    function test(){
 	    
-	
-	
+	    alert("hjhjhj");
+	    }
 	   </script>
 	
 	<div style="height:50px;"></div>
@@ -378,44 +404,48 @@
   <form action="previewSMS.action"	method="post"  name="smsForm"  onsubmit="return previewSMSValidate(this)">
   
     <fieldset>
-    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Send
-        Sms</legend>
+    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Send SMS/Notification</legend>
     <div style="padding:20px;">
       <label style="color:#000;"></label>
    <table width="100%" border="0" cellspacing="0" cellpadding="0">
    
-   		<tr>
-            <td colspan="2"><label><b style="color:#000;font-size: 18px;">Select Audience</b></label></td>
-             <td>
-             
-             <label style="color:#000;text-align:right;padding-right: 60px"><b>SMS Credits :
-              <input type=text style=width:55px;height:12px; name='smscredits' id='smscredits' readonly="readonly"></b></label>
-             
-             </td>
-        </tr>
-        <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td colspan="4">
-	               <table  width="100%">
-	               <tr><td><label style="color:#000;"><b>School </b></label></td>
-	                <td><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value);">
+   <tr style="width: 10px;"><td colspan='4'>
+   <table><tr>
+		   <td style="width: 10px;" colspan="1"><input class="span3"  type="checkbox" placeholder=""  name="notificationCheck" id="notificationCheck"  ></td>
+		   <td style="float: left;padding-left: 20px;padding-top: 5px;"><label><b style="color:#000;font-size: 14px;">Notification</b></label></td>
+		   <td style="width: 25%">&nbsp;</td>
+		 <td colspan="1" style="width: 10px;"><input class="span3"  type="checkbox" placeholder=""  name="smsCheck" id="smsCheck"></td>
+		 <td style="width: 10px;padding-left: 20px;padding-top: 5px;"><label><b style="color:#000;font-size: 14px;">SMS</b></label></td></tr>
+	  </table>   
+   </td></tr>
+       <tr><td>&nbsp;</td></tr>       
+         <tr>
+        	 <td><label style="color:#000;"><b>School </b></label></td>
+	        <td><div align="left"><select class="span3"  name="schoolNames" id="schoolNames" onchange="selectSchoolforBranches(this.value);">
 	                        <option value="-1" selected="selected">Select</option>
 	                       <!--  <option value="0">ALL</option> -->
-	                       </select>                   
-	                 </td><td><label style="color:#000;"><b>Branch </b></label></td>
-	                <td><select class="span3" name="branchNames" id="branchNames" onchange="getSMSCredits();"><!-- selectBranchesforClasses(this.value) -->
+	                       </select></div></td>  <td >&nbsp;</td>
+	        <td><label style="color:#000;"><b>Branch </b></label></td>
+	        <td><select class="span3" name="branchNames" id="branchNames" onchange="getSMSCredits();"><!-- selectBranchesforClasses(this.value) -->
 	                        <option value="-1" selected="selected">Select</option>
 	                      <!--   <option value="0">All</option> -->
-	                       </select>                   
-	                 </td>
-	                 </tr></table>
-	             </td>
-        </tr>
-         <tr><td>&nbsp;</td></tr>
+	                       </select></td>
+	        </tr>
+			<tr>
+	         	  <td ><label style="color:#000;"><b>Notification Subject</b></label></td>
+	        	 <td ><div align="left"><input class="span3" type="text" placeholder="" name="notificationSub"  id="notificationSub"></div></td>
+	        	  <td >&nbsp;</td>
+	        	 <td ><label style="color:#000;"><b>SMS Credits:</b></label></td>
+	         	<td ><input class="span3" type="text" placeholder="" name="smscredits"  id="smscredits" readonly="readonly"> </td>
+        </tr>  
+        
+          <tr><td>&nbsp;</td></tr>
         <tr>
-                <td><input  type="radio" placeholder=""  name="radio1"   onchange="disableOrEnable('all')"	 checked></td>
+                <td>
+                
+                <input  type="radio" placeholder=""  name="radio1"   onchange="disableOrEnable('all')"	 checked></td>
                 <td><label><b style="color:#000;font-size: 14px;">Send to</b></label></td>
-          		<td><select class="span4"  type="text"  name="selectAll" placeholder="" id="selectAll" onchange="selectValue(this.value);"> 
+          		<td colspan="4"><select class="span4"  type="text"  name="selectAll" placeholder="" id="selectAll" onchange="selectValue(this.value);"> 
 						<option value="-1"  selected="selected">Select</option>
 						<option value="AllParents">All parents</option>
                         <option value="AllTeachingStaff">All Teaching Staff</option>
@@ -426,7 +456,7 @@
         <tr>
                 <td><input  type="radio" placeholder=""  name="radio1"  id="classRadio" onchange="disableOrEnable('class');" onclick="getClassesList();return false;"></td>
                 <td><label style="color:#000;font-size: 14px;"><b>Select</b></label></td>
-          		<td colspan="2"> <span style="color:black;font-weight:bold;font-size: 13px">Parents of &nbsp;&nbsp;   </span>
+          		<td colspan="4"> <span style="color:black;font-weight:bold;font-size: 13px">Parents of &nbsp;&nbsp;   </span>
           		 <select class="span3"  name="selectClass"   id="selectClass" onchange="selectValue(this.value)" disabled="disabled"> 
 						<option value="-1"  selected="selected">Select</option>
 							<!-- <option value="Class-A">Class-A</option>
@@ -435,33 +465,34 @@
           		</select></td>
         </tr>
          <tr><td>&nbsp;</td></tr>
-         <tr><td>&nbsp;</td></tr>
+        
+        <tr><td>&nbsp;</td></tr>
           <tr>
-            <td colspan="3">
-                <label style="color:#000;"><b>SMS Body</b></label>     
-                <textarea style="width:96%;" rows="3"  name="smsbody" id="smsbody" onkeyup="limiter()" wrap="physical"></textarea>
+            <td colspan="5">
+                <label style="color:#000;"><b><span id="bodyText"></span></b></label>     
+                <textarea style="width:93%;" rows="3"  name="smsbody" id="smsbody" onkeyup="limiter()" wrap="physical"></textarea>
                 </td>
         </tr>
-          <tr>
-            <td colspan="2">
+          <tr><td colspan="4"></td>
+            <td colspan="1" style="padding-right: 43px;float: right;">
              <script type="text/javascript">
 				document.write("<input type=text style=width:55px; name='limit' id='limit' size=4 readonly value='0'>");
 			</script>
                 </td>
-                 <td>
-            <label style="color:#000;text-align:right;"><b>New SMS per 120 characters will be sent</b></label>
-                </td>
         </tr>
-        
-  <tr>
-            <td style="border:none;text-align:center;" colspan="3">
-                        <button type="submit" class="btn">Preview</button> 
+          <tr>
+            <td style="border:none;text-align:center;" colspan="2">
+                        <button type="submit" class="btn">Save Notification</button> 
+<!--                         <button type="submit" class="btn" onclick="previewSmS(); return false;">Preview</button>  -->
+                    </td>
+            <td style="border:none;text-align:left: ;" colspan="2">
+                        <button type="submit" class="btn">SMS Preview</button> 
 <!--                         <button type="submit" class="btn" onclick="previewSmS(); return false;">Preview</button>  -->
                     </td>
         </tr>
-
-       </table>
-
+        
+        </table>
+       
     </div>
     </fieldset>
   </form>

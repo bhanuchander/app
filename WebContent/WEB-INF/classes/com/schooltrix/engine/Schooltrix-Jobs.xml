@@ -22,7 +22,7 @@
 	<bean id="cronSchooltrixEmailJob" class="org.springframework.scheduling.quartz.CronTriggerBean">		
 		<property name="jobDetail" ref="SchooltrixEmailJob" />
 		<!-- <property name="cronExpression" value="0/30 * * * * ? * MON-FRI"  /> -->
-		<property name="cronExpression" value="30 42 14 ? * MON-SUN" />
+		<property name="cronExpression" value="31 56 23 ? * MON-SUN" />
 	</bean>
 	
 	  <!--Upload Doc SMS Jobs Start -->
@@ -64,9 +64,10 @@
 		<property name="triggers">
 			<list>		
 			<!-- <ref bean="cronSchooltrixSMSJob" />		 -->
+<!-- 			<ref bean="cronUploadDocSMSJob" />		 -->
+		
 			<ref bean="cronSchooltrixEmailJob" />		
-			<ref bean="cronUploadDocSMSJob" />		
-			<ref bean="cronUploadDocEmailJob" />		
+			<!-- <ref bean="cronUploadDocEmailJob" />		 -->
 					
 			</list>
 		</property>
