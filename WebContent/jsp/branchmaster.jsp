@@ -1,6 +1,20 @@
 	<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	    pageEncoding="ISO-8859-1"%>
 
+
+  	<%
+    	//String tempShortname =(String) session.getAttribute("shortNameTemp");//this is for auto select of institute from InstitutionAdding
+    	String par1= "";
+    	   	System.out.println("******tt**"+ request.getAttribute("p2"));
+    	   	if( request.getAttribute("p2") != null){
+    	   	
+    	   	par1 = (String) request.getAttribute("p2");
+    	   	System.out.println("********"+par1);
+    	   	
+    	   	}
+    	 %>
+
+
 <script type="text/javascript" src="js/branchmaster.js"></script>
 
 <script type="text/javascript" src="dwr/interface/BranchMasterDWR.js"></script>
@@ -100,7 +114,6 @@ span.mandatory {
 	   	    function getSchoolMaster(){
 				//Process DWR/AJAX request here
 				try{
-				//alert("in alrttt--getInstitutionMaster");
 					var listofschools = document.getElementById('sm_id_list');
 					
 					    SchoolMasterDWR.getSchoolMasterList(function(data){
@@ -120,7 +133,16 @@ span.mandatory {
 					                         }
 					      ) ;  
 					
-					
+					 	var shortNameSel ='<%=par1%>';
+					 	//alert(shortNameSel);//here is missing
+					 
+		    		for (var i = 0; i < listofschools.options.length; i++) {
+				        if (listofschools.options[i].text== shortNameSel) {
+				            listofschools.options[i].selected = true;
+				            return;
+				      	}
+    				}
+		    
 					
 					 }catch(e){
 					 alert("incatch::"+e);

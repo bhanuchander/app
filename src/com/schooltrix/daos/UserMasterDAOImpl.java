@@ -113,7 +113,7 @@ public class UserMasterDAOImpl extends STHibernateDAOSupport implements UserMast
 		}
 		return UserMasterList;
 	}
-	
+	//for non admin usersss...
 	@Override
 	public List uniqueIDCheck(final String filed,final String value,final String filed1,final String value1) throws Exception {
 		List UserMasterList=null;
@@ -124,6 +124,27 @@ public class UserMasterDAOImpl extends STHibernateDAOSupport implements UserMast
 						public Object doInHibernate(Session session)throws HibernateException, SQLException {
 							Criteria crit = session.createCriteria(UserMaster.class);
 							crit.add(Restrictions.like(filed, value+"%"));
+							crit.add(Restrictions.eq(filed1, new Long(value1)));
+							//crit.addOrder(Order.desc("sno"));
+							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return UserMasterList;
+	}
+	@Override
+	public List adminUniqueIDCheck(final String filed,final String value,final String filed1,final String value1) throws Exception {
+		List UserMasterList=null;
+		try {
+			//System.out.println(filed+"--"+value+"--imId-"+filed1+"--"+value1);
+			UserMasterList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							Criteria crit = session.createCriteria(UserMaster.class);
+							crit.add(Restrictions.eq(filed, value));
 							crit.add(Restrictions.eq(filed1, new Long(value1)));
 							//crit.addOrder(Order.desc("sno"));
 							return crit.list();

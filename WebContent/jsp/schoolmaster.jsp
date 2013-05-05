@@ -169,17 +169,9 @@ span.mandatory {
 </html>
 
 
-
-
-   <div id="idAlertDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
+        <div id="idAlertDialog" class="modal hide fade" style="height: 200px;" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
             <img src="img/alert.gif" width="34" height="28" alt="alert icon">
             <h3 id="idAlertDialogPrompt"></h3>
-            <a href="#" class="btn btn-primary" onclick="okAlertDialog ();">OK</a>
-            </div>
-            
-            <div id="idConfirmDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
-			<img src="img/alert.gif" width="34" height="28" alt="confirm icon">
-			<h3 id="idConfirmDialogPrompt"></h3>
-			<a href="#" class="btn btn-primary" style="margin-top: 60px;" onclick="okConfirmDialog ();">Yes</a>
-			<a href="#" class="btn" style="margin-top: 60px;"onclick="closeConfirmDialog ();">No</a>
-			</div>
+            <a href="#" class="btn btn-primary" style="margin-top: 0px;" onclick="okAlertDialog ();">OK</a>
+            </div>     
+  

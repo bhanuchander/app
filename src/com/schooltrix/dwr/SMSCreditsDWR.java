@@ -34,13 +34,16 @@ public class SMSCreditsDWR implements Serializable {
     
 	 public String smsCreditsBalance(String SM_ID,String BM_ID) {
 
-			SMSCreditsDAO smsCreditsDao =null;			
+			SMSCreditsDAO smsCreditsDao =null;	
+			String smscredits = "";
 			try {
 				String IM_ID = (String)session.getAttribute("IM_ID");
 				smsCreditsDao = (SMSCreditsDAO)ServiceFinder.getContext(request).getBean("SMSCreditsHibernateDao"); 		
 				SmsCredits smsInputData = new SmsCredits();
 				smsInputData = smsCreditsDao.findByProperty("bmId", BM_ID);
-				String smscredits=smsInputData.getSmsCredits()!=null?smsInputData.getSmsCredits():"";
+				if (smsInputData != null) {
+					 smscredits=smsInputData.getSmsCredits();
+				}
 					
 					System.out.println("smsInputData-------"+smscredits);
 					

@@ -80,7 +80,7 @@ public List getFranchiseMasterDetails() {
 				imInputData.setStateId(insState);
 				imInputData.setFranchiseId(franchise);
 				imMasterDao.save(imInputData);
-				session.setAttribute("shortNameTemp", insSName);
+				//session.setAttribute("shortNameTemp", insSName);//for default selection
 				
 				
 				try {

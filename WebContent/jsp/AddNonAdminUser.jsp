@@ -267,37 +267,46 @@
 				
 			}
 				    
-		function uniqueEmailCheck(){
-			var emailID = jQuery("#email").val();
-			var userType = jQuery("#userRights").val();
-			EmailDomainDWR.isEmailCheck(
-													emailID,
-													userType,
-													function(data){								
-					                                   if (data =="false") {
-					                                  // alert("not found"+data);											
-														} else {			
-														  setError("email","Email Id Already Exist");			                                
-						                                //   alert("Email Id Already Exist::"+data);
-						                                   		jQuery("#email").focus();			                              		                                   													
-														}
-					                        	 }
-					      ); 
+  
+		
+			   function uniqueEmailCheck(){
+				   var userType = jQuery("#userRights").val();
+				   
+				   if (userType == -1) {
+					setError("userRights","Please select User rights");
+               jQuery("#userRights").focus();
+				}
+		 		  if(userType == "TC" || userType == "NTS" || userType == "PA"){
+			   		var im_id = <%=(String)session.getAttribute("IM_ID")%>;
+					var emailID = jQuery("#email").val();
+					var userType = jQuery("#userRights").val();
+			   		var patEmail		= /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 					
-		}		    
-		
-		function emailCheck(){
-		
-				var value1=jQuery("#userRights").val();
-		//alert("valll--"+value1);
-		if(value1 == "TC" || value1 == "NTS" ||value1 == "admin"){
-			//	alert("in ifff");					
-				uniqueEmailCheck();			
-	    	}else{
-	    	//alert("jijij");
-	    	}
-		
+					if(!emailID.match(patEmail)){
+						  setError("email","Please Enter valid e-mail");
+	              		 jQuery("#email").focus();
+						return false;
+					}
+					//alert(im_id);
+					EmailDomainDWR.isEmailCheck(
+															emailID,
+															userType,
+															im_id,
+															function(data){								
+							                                   if (data =="false") {
+							                                 //  alert("not found"+data);											
+																} else {			
+																 setError("email","Email Id Already Exist");
+													               jQuery("#email").focus();
+																}
+							                        	 }
+							      ); 
+			
+			}
 		}
+		
+		
+	
 				    
 	    function onloadmethods(){
 	 //   alert("in onload");
@@ -695,7 +704,7 @@
         <tr>
             <td ><label style="color:#000;"><b>Email</b></label></td>
           <td ><div align="left">
-            <input class="span3" type="text" placeholder="" name="email"  id="email" onblur="emailCheck();">
+            <input class="span3" type="text" placeholder="" name="email"  id="email" onblur="uniqueEmailCheck();">
           </div></td>          
           <td >&nbsp;</td>
           <td ><label style="color:#000;"><b>Designation</b></label></td>

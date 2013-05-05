@@ -115,6 +115,19 @@ public class ParentDetailsDAOImpl extends STHibernateDAOSupport implements Paren
 		return ParentDetailsList;
 	}
 	
+	//from AUTOS a where a.model in (select m.model from MODELS m)
+	
+	
+	public List emailCheck(String email,Long im_id) throws Exception {
+		try {
+			String queryString = "from UserMaster um where um.umId in (select pd.umId from ParentDetails pd where pd.email ='"+email+"' ) and um.imId="+im_id;
+			System.out.println("in emailcheck of ParentDetailsDAOIMPl");
+			return getHibernateTemplate().find(queryString);
+		} catch (Exception re) {
+			re.printStackTrace();
+			return null;
+		}
+	}
 	
 	
 	@Override

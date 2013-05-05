@@ -115,6 +115,16 @@ public class StaffDetailsDAOImpl extends STHibernateDAOSupport implements StaffD
 		return StaffDetailsList;
 	}
 	
+	public List emailCheck(String email,Long im_id) throws Exception {
+		try {
+			String queryString = "from UserMaster um where um.umId in (select sd.umId from StaffDetails sd where sd.email ='"+email+"' ) and um.imId="+im_id;
+			System.out.println("in emailcheck of StaffDetailsDAOIMPl");
+			return getHibernateTemplate().find(queryString);
+		} catch (Exception re) {
+			re.printStackTrace();
+			return null;
+		}
+	}
 	
 	
 	@Override

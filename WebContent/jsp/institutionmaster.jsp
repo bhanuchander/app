@@ -131,7 +131,7 @@
 	         return false;
             }
             //if (insAddr.search(/^[a-zA-Z0-9\s,'-]*$/) != -1 || insAddr =="") {
-            if (insAddr.search(/^[a-z-A-Z][a-zA-Z0-9\s,'-.]*$/)== -1 || insAddr =="") {
+            if (insAddr.search(/[a-z-A-Z][a-zA-Z0-9\s,'-.#@$;:]*$/)== -1 || insAddr =="") {
 			   //alert("Enter address in valid format");
 			   setError("insAddr","Enter address in valid format");
                 jQuery("#insAddr").focus();
@@ -294,7 +294,7 @@
 				                                   if (data =='saved') {
 				                                   //alertDialog("save");
 													if(flag == 2){
-				                                       document.location ="Access.action?p1=AddAdminUser";
+				                                       document.location ="Access.action?p1=AddAdminUser&p2="+insSName;//for by defult selection
 				                                        resetForm($('#form1')); // by id, recommended
 				                                       }else if(flag ==1){
 				                                       alertDialog("Success.<br/>Instituiton Name:<br/>"+insName);

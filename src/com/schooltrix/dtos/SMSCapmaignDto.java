@@ -4,10 +4,12 @@ public class SMSCapmaignDto {
 
 	
 	private String audience =null;
+	private String sms_notif=null;
 	private String smsbody =null;
 	private String selectClass =null;
 	private String selectAll =null;
 	private String limit =null;
+	private String notiSub =null;
 //	String smscredit =request.getParameter("smscredit");
 	private String IM_ID  =null;
 	private String BM_ID =null;
@@ -74,6 +76,18 @@ public class SMSCapmaignDto {
 	}
 	public void setSM_ID(String sM_ID) {
 		SM_ID = sM_ID;
+	}
+	public String getSms_notif() {
+		return sms_notif;
+	}
+	public void setSms_notif(String sms_notif) {
+		this.sms_notif = sms_notif;
+	}
+	public String getNotiSub() {
+		return notiSub;
+	}
+	public void setNotiSub(String notiSub) {
+		this.notiSub = notiSub;
 	}
 	
 }

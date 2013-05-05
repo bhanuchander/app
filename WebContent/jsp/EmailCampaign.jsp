@@ -8,7 +8,8 @@
 		}
 		
 		</style>
-		<script type="text/javascript" src="/js/fckeditor.js"></script>
+		<script type="text/javascript" src="/Schooltrix/js/fckeditor.js"></script>
+<!-- 		<script type="text/javascript" src="js/fckeditor.js"></script>// live-->
 		   <script 	src="<%=request.getContextPath()%>/dwr/interface/ClassMasterDWR.js"></script>
 		   	      <script 	src="<%=request.getContextPath()%>/dwr/interface/SchoolMasterDWR.js"></script>
 	      <script 	src="<%=request.getContextPath()%>/dwr/interface/BranchMasterDWR.js"></script>

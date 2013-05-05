@@ -176,11 +176,13 @@ System.out.println("msg"+msg);
 		    opt.value = "-1";
 		    opt.innerHTML = "Select";
 		    listofSubjects.appendChild(opt);
-			
-		/* 	 var opt = document.createElement("option");
+			if (whichOption == "classNames") {
+			 var opt = document.createElement("option");
 		    opt.value = "0";
 		    opt.innerHTML = "All";
-		    listofSubjects.appendChild(opt); */
+		    listofSubjects.appendChild(opt); 
+				
+			}
 			
 		}
 		
@@ -281,6 +283,7 @@ function validate(){//**********************************************************
 		 <tr>  <td><label style="color:#000;"><b>Select Class</b></label></td>
                 <td><select class="span3" name="classNames" id="classNames" >
                         <option value="-1" selected="selected">Select</option>                      
+                        <option value="0" >All</option>                      
                        </select>                   
                  </td>
            </tr>

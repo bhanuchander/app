@@ -18,27 +18,33 @@
 	Map session = null;
 	
 	public String execute() throws Exception{
+		System.out.println("smscre-->"+request.getParameter("smscredits1"));
 		try
 		{
 		SMSCapmaignDto smsDto = new SMSCapmaignDto();
 		
 		smsDto.setAudience(request.getParameter("radio1"));
+
+		smsDto.setSms_notif(request.getParameter("sms_notification"));
 		
+		//notificationSub
 		smsDto.setIM_ID((String)getSession().get("IM_ID"));
 		
 		smsDto.setSM_ID(request.getParameter("schoolNames"));
 		smsDto.setBM_ID(request.getParameter("branchNames"));
 		
 		smsDto.setSmsbody(request.getParameter("smsbody"));
+		smsDto.setLimit(request.getParameter("limit"));
+
 		smsDto.setSelectAll(request.getParameter("selectAll"));
 		smsDto.setSelectClass(request.getParameter("selectClass"));
-		smsDto.setLimit(request.getParameter("limit"));
+		smsDto.setNotiSub(request.getParameter("notificationSub"));
 		
-		smsDto.setSMSCredit(request.getParameter("smscredits"));
+		smsDto.setSMSCredit(request.getParameter("smscredits1"));
 		
 		String toWhome = "";
 		
-		System.out.println("radio1::" + smsDto.getAudience() + "---" + request.getParameter("smscredits"));
+		System.out.println("radio1::" + smsDto.getSelectAll() + "---" + request.getParameter("smscredits1")+"***"+smsDto.getSMSCredit());
 		System.out.println("smsbody::" + smsDto.getSmsbody());
 		
 		SMSCampaignSession smsSession = null;

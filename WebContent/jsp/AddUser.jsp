@@ -2,8 +2,15 @@
 	    pageEncoding="ISO-8859-1"%>
     	
     	<%
-    	String tempShortname =(String) session.getAttribute("shortNameTemp");//this is for auto select of institute from InstitutionAdding
+    	//String tempShortname =(String) session.getAttribute("shortNameTemp");//this is for auto select of institute from InstitutionAdding
+    	String par1= "";
+    	   	System.out.println("******tt**"+ request.getAttribute("p2"));
+    	   	if( request.getAttribute("p2") != null){
     	   	
+    	   	par1 = (String) request.getAttribute("p2");
+    	   	System.out.println("********"+par1);
+    	   	
+    	   	}
     	 %>
     	
     	
@@ -115,13 +122,7 @@
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/UserMasterDWR.js"></script>
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/EmailDomainDWR.js"></script>
 		<script type="text/javascript">
-		    		function okAlertDialog () {
-			$("#idAlertDialog").modal ('hide'); 
-		};
-		function alertDialog (prompt) {
-			document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
-			$("#idAlertDialog").modal ("show");
-			}
+		
 		
 /*       			
       			function changeCountry(value){
@@ -141,9 +142,25 @@
 	    var userTypes;
    
 	   	function uniqueUserIDCheck(){
+			var im_id_list = jQuery("#im_id_list").val();
 			var userID = jQuery("#userID").val();
+			var patUser			= /^[a	-zA-Z0-9-. ]{2,25}$/;			
+			
+				if(im_id_list=="-1"){
+			  setError("im_id_list","Please select Institution Name");
+               jQuery("#im_id_list").focus();
+				return false;
+				}
+				
+				if(!userID.match(patUser)){
+				  setError("userID","Please enter valid UserId");
+               jQuery("#userID").focus();
+				return false;
+				}
+			if (userID != "" && userID != null) {//some more validations req this filed
 			UserMasterDWR.isUserIDCheck(
 													"AD"+userID,
+													im_id_list,
 													function(data){								
 					                                   if (data =="false") {
 					                                  // alert("not found"+data);											
@@ -153,21 +170,39 @@
 														}
 					                        	 }
 					      ); 
-					
+				}
 		}	
 	   
 	   function uniqueEmailCheck(){
+	   
 			var emailID = jQuery("#email").val();
+	   		var im_id_list = jQuery("#im_id_list").val();
 			var userType = jQuery("#userRights").val();
+	   			var patEmail		= /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+			
+				if(im_id_list=="-1"){
+			  setError("im_id_list","Please select Institution Name");
+               jQuery("#im_id_list").focus();
+				return false;
+				}
+				
+				if(!emailID.match(patEmail)){
+				  setError("email","Please Enter valid e-mail");
+               jQuery("#email").focus();
+				return false;
+				}
+				
+				
 			EmailDomainDWR.isEmailCheck(
 													emailID,
 													userType,
+													im_id_list,
 													function(data){								
 					                                   if (data =="false") {
 					                                  // alert("not found"+data);											
-														} else {						                                
-						                                   alert("Email Id Already Exist::"+data);
-						                                   		jQuery("#email").focus();			                              		                                   													
+														} else {			
+														 setError("email","Email Id Already Exist");
+											               jQuery("#email").focus();
 														}
 					                        	 }
 					      ); 
@@ -185,69 +220,7 @@
 			}
 		}
 		
-	    function getUserTypeMaster(){
-		//Process DWR/AJAX request here
-		try{
-		//alert("in alrttt--getUserTypeMaster");
-			var dd = document.getElementById('userRights');
-		     /*    UserTypeMasterDWR.userTypeMaster(function(data){
-			                                   if (data ==null) {														
-			                                   alert("exception::"+data);
-											} else {
-				                                 userTypes=data;
-				                                   alert("save::"+data);
-				                                   
-												for(var i = 0; i < data.length; i++) {
-												    var opt = document.createElement('option');
-												    opt.innerHTML = data[i];
-												    opt.value = data[i];
-												    dd.appendChild(opt);
-												}
-											}
-			                         }
-			      ) ;     */
-			 }catch(e){
-			 alert("incatch::"+e);
-			        jQuery.log.info(e.message);
-			        jQuery("#infoError").html("&nbsp;");
-       	     } 		
-		 										
-		
-		}
-	
-	    function getInstitutionMaster(){
-				//Process DWR/AJAX request here
-				try{
-				//alert("in alrttt--getInstitutionMaster");
-					var listofInsit = document.getElementById('im_id_list');
-					
-					    UserTypeMasterDWR.getInstitutionMasterList(function(data){
-					                                if (data == null) {														
-					                                  alert("error");
-					                                 
-													} else {				
-												//	alert(data+":::"+data.length);	                                 
-					                               for(var i = 0; i < data.length; i++) {
-														  var opt = document.createElement("option");
-														    var temp = data[i];
-														    opt.value = temp[0];
-														    opt.innerHTML = temp[1];
-														    listofInsit.appendChild(opt);
-														}		                          
-													}
-					                         }
-					      ) ;  
-					
-					
-					
-					 }catch(e){
-					 alert("incatch::"+e);
-					        jQuery.log.info(e.message);
-					        jQuery("#infoError").html("&nbsp;");
-	        	     } 		
-				 										
-				
-			}
+
 				    
 	
 	    function addUserFormSubmit(){
@@ -257,35 +230,6 @@
 		form.submit();
 	    }
 	    
-	   function resultPopUp(){
-		    var userID = "<%=session.getAttribute("userIDD")%>";
-		    var password =  "<%=session.getAttribute("passwordd")%>";
-		    var msg =  "<%=session.getAttribute("msg")%>";
-		    if(userID == null || password == null || userID == "null" || password == "null"){
-			    if(msg != null && msg != "null"){
-			     alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".</div>");
-			     <%session.removeAttribute("msg"); %> ;
-			    }
-		    }else{
-		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".<br/> Admin ID : "+userID+"<br/>Password : "+password+"</div>");
-		        resetForm($('#addAdminUser')); // by id, recommended
-		    }
-		
-		    if(userID != null){
-		 		<%session.removeAttribute("userIDD"); %> ;
-		 		<%session.removeAttribute("passwordd"); %> ;
-		 		 <%session.removeAttribute("msg"); %> ;
-		    }
-		  
-	    }
-	
-	 function onloadmethods(){
-	 //   alert("in onload");
-	 	getInstitutionMaster();
-		getUserTypeMaster();
-		resultPopUp();
-	    
-	    }
 	    function validateAdminUser(addAdminUser){
 	    
 	  	   // var patEmail	= /^([\w\-\.]+)@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([\w\-]+\.)+)([a-zA-Z]{2,4}))$/; previous					
@@ -296,10 +240,10 @@
 		var patAddress		= /^[a-zA-Z_0-9@\!#\$\^%&*()+=\-[]\\\';,\.\/\{\}\|\":<>\? ]{2,25}$/;
 		var patNum			= /^[0-9-+ ]{8,15}$/;
 	//	var patBody	 		= /^[A-Za-z0-9 ].+$/;//previous
-		var patBody			= /^[a-z-A-Z][a-zA-Z0-9\s,'-.]*$/;
+		var patBody			= /[a-z-A-Z][a-zA-Z0-9\s,'-.$#@:;]*$/;
 		var patcity  		= /^[a-zA-Z][a-zA-Z ]*['.]?[a-zA-Z ]+[a-zA-Z ]+$/;
 		var patDob			= /^[0-9- ]{10}$/;
-		var patPassword		= /^[a-zA-Z0-9]{8,15}$/;
+		var patPassword		= /^[a-zA-Z0-9]{4,15}$/;
   	
   
                 var im_id_list   		=   jQuery("#im_id_list").val();
@@ -314,7 +258,7 @@
 				var  userRights 		= 	jQuery("#userRights").val();
 				var  email 				= 	$.trim(jQuery("#email").val()).match(patEmail);
 				var  mobile 			= 	$.trim(jQuery("#mobile").val()).match(patNum);
-				var  landline 			= 	$.trim(jQuery("#landline").val()).match(/^\d{3,5}([\-]\d{6,8})?$/);
+				var  landline 			= 	$.trim(jQuery("#landline").val()).match(/^\d{3,5}(\d{6,8})?$/);
 				var  addr1 				= 	$.trim((jQuery("#addr1").val())).match(patBody);
 				var  addr2 				= 	$.trim(jQuery("#addr2").val()).match(patBody);				
 				var  city 				= 	$.trim(jQuery("#city").val()).match(patName);
@@ -331,7 +275,7 @@
 				
 				
 				if(im_id_list=="-1"){
-			  setError("im_id_list","Please select Institution Name");
+			  setError("im_id_list","Please select Institution Short Name");
                jQuery("#im_id_list").focus();
 				return false;
 				}
@@ -341,7 +285,7 @@
 				return false;
 				}
 				if(!password){
-				  setError("password","Password should be 8 charcters and should contain only Alphanumeric characters");
+				  setError("password","Password should be minimum 4 charcters and should contain only Alphanumeric characters");
                jQuery("#password").focus();
 				return false;
 				}
@@ -497,7 +441,7 @@
             <tr><td colspan="5" style="text-align: center;"><span id ="errorspan" style="color:red" ></span>&nbsp;</td></tr>
           <tr>
 	          <td style="text-align:center" colspan="2">
-	          <label style="color:#000;margin-left: 100px;"><b>Institution Name</b></label>                 
+	          <label style="color:#000;margin-left: 100px;"><b>Institution Short Name</b></label>                 
 	          </td>
 			<td></td>
 			<td colspan="2"><select id="im_id_list" name="im_id_list" class="span3"><!--  onchange="changeCountry(this.value)" -->
@@ -527,11 +471,11 @@
         <tr>
           <td ><label style="color:#000;"><b>Password</b></label></td>
           <td ><div align="left">
-            <input class="span3" type="text" placeholder="" name="password"  id="password">
+            <input class="span3" type="password" placeholder="" name="password"  id="password">
           </div></td>
           <td width="4%">&nbsp;</td>
           <td ><label style="color:#000;"><b>Confirm Password</b></label></td>
-          <td ><input class="span3" type="text" placeholder="" name="cPassword"  id="cPassword"></td>
+          <td ><input class="span3" type="password" placeholder="" name="cPassword"  id="cPassword"></td>
         </tr>
         <tr>
           <td ><label style="color:#000;"><b>First Name</b></label></td>
@@ -664,11 +608,124 @@
             <a href="#" class="btn btn-primary" onclick="okAlertDialog ();">OK</a>
             </div>
 <script type="text/javascript">
- onloadmethods();
  
     $('#datetimepicker').datetimepicker({
       		  pickTime: false
       			});
+      			
+	    function getInstitutionMaster(){
+				//Process DWR/AJAX request here
+				try{
+				//alert("in alrttt--getInstitutionMaster");
+					var listofInsit = document.getElementById('im_id_list');
+					    UserTypeMasterDWR.getInstitutionMasterList(function(data){
+					                                if (data == null) {														
+					                                  alert("error");
+					                                 
+													} else {				
+												//	alert(data+":::"+data.length);	                                 
+					                               for(var i = 0; i < data.length; i++) {
+														  var opt = document.createElement("option");
+														    var temp = data[i];
+														    opt.value = temp[0];
+														    opt.innerHTML = temp[1];
+														    listofInsit.appendChild(opt);
+														}		                          
+													}
+					                         }
+					      ) ;  
+			
+					 }catch(e){
+					 alert("incatch::"+e);
+					        jQuery.log.info(e.message);
+					        jQuery("#infoError").html("&nbsp;");
+	        	     } 		
+				 										
+				
+			}			
+      	
+      	    			
+      	    function getUserTypeMaster(){
+		//Process DWR/AJAX request here
+		try{
+		//alert("in alrttt--getUserTypeMaster");
+			var dd = document.getElementById('userRights');
+		     /*    UserTypeMasterDWR.userTypeMaster(function(data){
+			                                   if (data ==null) {														
+			                                   alert("exception::"+data);
+											} else {
+				                                 userTypes=data;
+				                                   alert("save::"+data);
+				                                   
+												for(var i = 0; i < data.length; i++) {
+												    var opt = document.createElement('option');
+												    opt.innerHTML = data[i];
+												    opt.value = data[i];
+												    dd.appendChild(opt);
+												}
+											}
+			                         }
+			      ) ;     */
+			 }catch(e){
+			 alert("incatch::"+e);
+			        jQuery.log.info(e.message);
+			        jQuery("#infoError").html("&nbsp;");
+       	     } 		
+		 										
+		
+		}
+      			
+      			
+  	   function resultPopUp(){
+		    var userID = "<%=session.getAttribute("userIDD")%>";
+		    var password =  "<%=session.getAttribute("passwordd")%>";
+		    var msg =  "<%=session.getAttribute("msg")%>";
+		    if(userID == null || password == null || userID == "null" || password == "null"){
+			    if(msg != null && msg != "null"){
+			     alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".</div>");
+			     <%session.removeAttribute("msg"); %> ;
+			    }
+		    }else{
+		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".<br/> Admin ID : "+userID+"<br/>Password : "+password+"</div>");
+		        resetForm($('#addAdminUser')); // by id, recommended
+		    }
+		
+		    if(userID != null){
+		 		<%session.removeAttribute("userIDD"); %> ;
+		 		<%session.removeAttribute("passwordd"); %> ;
+		 		 <%session.removeAttribute("msg"); %> ;
+		    }
+		    	var shortNameSel ='<%=par1%>';
+		    	var listofInsit = document.getElementById('im_id_list');
+		    		for (var i = 0; i < listofInsit.options.length; i++) {
+				        if (listofInsit.options[i].text== shortNameSel) {
+				            listofInsit.options[i].selected = true;
+				            return;
+				      	}
+    				}
+		    
+		  
+	    }		
+	    
+	     onloadmethods();
+	     
+	    	    		function okAlertDialog () {
+			$("#idAlertDialog").modal ('hide'); 
+		};
+		function alertDialog (prompt) {
+			document.getElementById ("idAlertDialogPrompt").innerHTML = prompt;
+			$("#idAlertDialog").modal ("show");
+			}
+			
+ 	 function onloadmethods(){
+	 //   alert("in onload");
+	 	getInstitutionMaster();
+		getUserTypeMaster();
+		resultPopUp();
+	    
+	    }
+				
+	    
 </script>
 
 

@@ -3,6 +3,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	    pageEncoding="ISO-8859-1"%>
 <%@page import ="java.util.*" %>   
+
+
 	    <link href="css/bootstrap.css" rel="stylesheet">
  		<style type="text/css">
 	span.mandatory {
@@ -81,17 +83,31 @@
 
 
 	<%
+	
 	SMSCapmaignDto dto = (SMSCapmaignDto) request.getAttribute("dto");
 	System.out.println(dto.getSmsbody()+":::::sms body");
+
+	String sms_notifi = dto.getSms_notif() != null?dto.getSms_notif() : "";
+
+	String notifiSub = dto.getNotiSub() != null?dto.getNotiSub() : "";
 	
 	String smsBody = dto.getSmsbody() != null?dto.getSmsbody() : "";
 	String totalChars = dto.getLimit() != null?dto.getLimit() : "";
 	String smsCredits = dto.getSMSCredit() != null?dto.getSMSCredit() : "0";
 	String numberOfSms = dto.getSMSCount() != null?dto.getSMSCount() : "0";
+	
+	String toWhome = dto.getSelectAll() != null?dto.getSelectAll() : "";
+	String toClass = dto.getSelectClass() != null?dto.getSelectClass() : "";
+	
+	
 	String balanceSMScredits = null;
 		try{
 		System.out.println(smsCredits+"::"+numberOfSms);
 			balanceSMScredits =( Integer.parseInt(smsCredits)-Integer.parseInt(numberOfSms))+"";
+			if(( Integer.parseInt(smsCredits)-Integer.parseInt(numberOfSms))<0){
+			balanceSMScredits="0";
+			}
+			
 		}catch(Exception e){
 			System.out.println(smsCredits+":exxxxxxx:"+numberOfSms);
 			balanceSMScredits = "0";
@@ -112,6 +128,28 @@
 	    <script 	src="<%=request.getContextPath()%>/dwr/interface/SentSMSDWR.js"></script>
 	    
 	<script type="text/javascript">
+	function onloadMethods(){
+	var limiii = '<%=totalChars%>';
+	
+		document.getElementById("limit").innerHTML=limiii;
+	
+	var sms_nift = '<%=sms_notifi%>';
+	//alert(sms_nift+"--------"+limiii);
+	//smsRadio,notifictionRadio,smsnotificationRadio
+	if (sms_nift == "smsRadio") {
+		document.getElementById("notificationOR").style.display='none';
+		document.getElementById("smsOR").style.display="table-row";
+		document.getElementById("smsOR2").style.display='table-row';
+	} else if(sms_nift == "notifictionRadio"){
+		document.getElementById("smsOR").style.display='none';
+		document.getElementById("smsOR2").style.display='none';
+		document.getElementById("notificationOR").style.display="table-row";
+	} else if(sms_nift == "smsnotificationRadio"){
+		document.getElementById("smsOR").style.display='table-row';
+		document.getElementById("smsOR2").style.display='table-row';
+		document.getElementById("notificationOR").style.display="table-row";
+	}
+	}
 	
 		function okAlertDialog () {
 			$("#idAlertDialog").modal ('hide'); 
@@ -127,6 +165,13 @@
 			alertDialog('Please enter valid SMS text');
 			return false;
 		}
+/* 	var  sentUsersCount 	= jQuery("#sent_Sms_Count").val();
+	alert("ll**"+sentUsersCount.length);
+		if (!sentUsersCount.length >0) {			
+	alert("YYY**"+sentUsersCount.length);
+			alertDialog('No Recipients');
+		} */
+		
 	}
 	
 	   function sendSmS(){
@@ -164,7 +209,8 @@
 	        document.smsSent.comment.value =tex;
 	        return false;
 	} */
-	document.smsSent.limit.value = len;
+	document.getElementById("limit").innerHTML=len;
+	//document.smsSent.limit.value = len;
 	}
 	
 	function sendSMSCall(){
@@ -177,66 +223,88 @@
 				var  patName 	= /^[a-zA-Z \']{3,25}$/;
 				var  patZipCode	= /^[0-9]{3,6}$/;
 				
-				var  smsCredits 		= jQuery("#sms_credits").val();
 				var  smsBodyText 	= jQuery("#sms_body").val();
 				var  sentUsersCount 	= jQuery("#sent_Sms_Count").val();
 				var  smsBalcredits 	= jQuery("#sms_Balcredits").val();
 				var 	usersList				 = '<%=userdata%>';
-				var IM_ID ='<%=session.getAttribute("IM_ID")%>';
+				
+				
+				var Nsub = jQuery("#notif_subj").val();//this is for nitification
+				
 				var BM_ID ='<%=dto.getBM_ID()%>';
 				var SM_ID ='<%=dto.getSM_ID()%>';
 				
-				alert(IM_ID+"--"+SM_ID+"--"+BM_ID);
 				
-				var path='<%=request.getContextPath()%>'+'/'+ 'adduserForm.action';
-				
-				//after validation--we r asking confirm box..
-				
+				var ipaddr = '<%=request.getRemoteAddr()%>';				
+	
+			//	alert(IM_ID+"--"+SM_ID+"--"+BM_ID+"-*"+UM_ID+"^^"+ipaddr);
 				
 			// if (alertDialog('Do you want to send the SMS now. Yes | No'))
-			 if (confirm('Do you want to send the SMS now. Yes | No'))
+		/* 	 if (confirm('Do you want to send the SMS now. Yes | No'))
 			    {
-			        
-				//Process DWR/AJAX request here
-				try{
-				
-				        SentSMSDWR.sendSMSCall(
-					                                   smsCredits,
-					                                   smsBodyText,
-					                                   sentUsersCount,
-					                                   smsBalcredits,
-					                                   usersList,
-					                                   IM_ID,
-					                                   BM_ID,
-					                                   SM_ID,					                                 
+			         */
+//smsRadio,notifictionRadio,smsnotificationRadio
+	var sms_nift = '<%=sms_notifi%>';
+    if(sms_nift=="smsRadio"){
+			   
+				try{				
+				        SentSMSDWR.sendSMSCall(	smsBodyText, sentUsersCount, smsBalcredits, 	usersList, BM_ID,	 SM_ID,	ipaddr,				                                 
 					                                   function(data){
-					                                   if (data =='success') {
-					                                   alertDialog("Success");
-													document.location ="Access.action?p1=UserSMS";
-												
-														} else if (data =='No Users'){
-														document.location ="Access.action?p1=UserSMS";
-						                                   alertDialog("No Users");
-														}else{
-						                                   alertDialog("Server Error");
-						                                   document.location ="Access.action?p1=UserSMS";
-														}
-					                                   }
+					                                   document.location ="Access.action?p1=UserSMS";
+						                                   //if (data =='success') {document.location ="Access.action?p1=UserSMS"; }else if (data =='No Users'){document.location ="Access.action?p1=UserSMS";}else{ document.location ="Access.action?p1=UserSMS"; }
+						                                    }
 					                              ) ;    
 					 }catch(e){
 							 alert("incatch::"+e);
-					        jQuery.log.info(e.message);
-					        jQuery("#infoError").html("&nbsp;");
-	        	     } 		
+	        	     }
 				 	
-			    }else{
-			    alertDialog("Thanx");
+		}else   if(sms_nift=="notifictionRadio"){				 	
+		 	try{
+				var toWhome = '<%=toWhome%>';
+				var toClass = '<%=toClass%>';
+				        SentSMSDWR.sendNotififcation(SM_ID,	 BM_ID, smsBodyText, Nsub, toWhome,	toClass,	usersList, ipaddr,				                                 
+					                               function(data){
+					                                   document.location ="Access.action?p1=UserSMS";
+						                                   //if (data =='success') {document.location ="Access.action?p1=UserSMS"; }else if (data =='No Users'){document.location ="Access.action?p1=UserSMS";}else{ document.location ="Access.action?p1=UserSMS"; }
+						                                    }
+					                              ) ;    
+					 }catch(e){
+							 alert("incatch::"+e);
+	        	     }
+				 	
+				 	
+		}else   if(sms_nift =="smsnotificationRadio"){				 	
+		 	try{
+				 	var toWhome = '<%=toWhome%>';
+					var toClass = '<%=toClass%>';
+					
+				        SentSMSDWR.sendSMSNotificationCall(smsBodyText,	sentUsersCount,	smsBalcredits,	usersList,	Nsub,	toWhome,	toClass, BM_ID, SM_ID, ipaddr,				                                 
+					                                 function(data){
+					                                   document.location ="Access.action?p1=UserSMS";
+						                                   //if (data =='success') {document.location ="Access.action?p1=UserSMS"; }else if (data =='No Users'){document.location ="Access.action?p1=UserSMS";}else{ document.location ="Access.action?p1=UserSMS"; }
+						                                    }
+					                              ) ;    
+					 }catch(e){
+							 alert("incatch::"+e);
+	        	     }
+				 	
+				 	
+				 	}
+				 	
+		
+				
+				 	
+			   /*  }else{
+			 //  alertDialog("Thanx");
 			    document.location ="Access.action?p1=UserSMS";
-			    }									
+			    }		 */							
 				
 			}
 	
-	
+		    function test(){
+	    
+	    alert("hjhjhj"+document.getElementById("sms_Ccredits").value);
+	    }
 	
 	</script>
 	
@@ -244,45 +312,83 @@
 <div class="reg_mainCon">
   <form  method="post"  name="smsSent">
     <fieldset>
-    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;SMS Preview</legend>
+    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;
+ 
+    <%
+//smsRadio,notifictionRadio,smsnotificationRadio
+    if(sms_notifi.equalsIgnoreCase("smsRadio")){
+    %>
+     SMS Preview    
+    <%        
+    }else  if(sms_notifi.equalsIgnoreCase("notifictionRadio")){
+    %>    
+    Notification Preview
+    <%
+        }else{
+        %>
+        SMS/Notification Preview        
+        <%
+        }
+        %>
+   </legend>
     <div style="padding:20px;">
       <label style="color:#000;"></label>
    <table width="100%" border="0" cellspacing="0" cellpadding="0">
    
-   		<tr>
+   		<%-- <tr>
              <td colspan="2"><label style="color:#000;text-align:right;"><b>SMS Credits:</b>
              <input type="text" placeholder=""  style="width:55px;margin-right:20px;" disabled="disabled" name="sms_credits" id="sms_credits" value="<%=smsCredits%>"	></label></td>
-        </tr>
-   
+        </tr> --%>
         <tr>
-                <td><label style="color:#000;"><b>SMS</b></label></td>
-                <td><textarea style="width:96%;" rows="3"  name="sms_body" id="sms_body" onkeyup="limiter()" wrap="physical" ><%=smsBody %></textarea></td>
+                <td><label style="color:#000;"><b>Message</b></label></td>
+                <td><textarea style="width:100%;" rows="3"  name="sms_body" id="sms_body" onkeyup="limiter();" onload="limiter();" wrap="physical" ><%=smsBody %></textarea></td>
         </tr>
         <tr>
                 <td><label style="color:#000;"><b>Total Characters</b></label></td>
-                <td>       <script type="text/javascript">
+                <td>      <div style="float:left; color:#333333;padding-bottom: 5px;"><span id='limit' ></span></div>  
+                  <%--   <script type="text/javascript">
 document.write("<input type=text style=width:55px; name=limit size=4 readonly value='<%=totalChars%>'>");
-</script></td>
-          		
+</script> --%></td>
+        </tr>
+           <tr id="notificationOR">
+             <td><label style="color:#000;"><b>Notification Subject</b></label></td>
+                <td><input class="span4" style="width:100%;" type="text" placeholder="" disabled="disabled"  name="notif_subj" id="notif_subj" value="<%=notifiSub%>"></td>
         </tr>
         <tr>
-               <td><label style="color:#000;"><b>No.of SMS to be sent</b></label></td>
+               <td><label style="color:#000;"><b>Number of Recipients</b></label></td>
                <td><input class="span4" type="text" style="width:55px;"  placeholder="" disabled="disabled" name="sent_Sms_Count" id="sent_Sms_Count" value="<%=numberOfSms %>">
                 <a style="color:#000000;" href="#" onclick="tellMeMore('audience'); return false">View audience</a></td>
         </tr>
-          <tr>
+          <tr id="smsOR">
              <td><label style="color:#000;"><b>Current SMS Credits</b></label></td>
                 <td><input class="span4" style="width:55px;"  type="text" placeholder="" disabled="disabled"  name="sms_Ccredits" id="sms_Ccredits" value="<%=smsCredits %>"></td>
         </tr>
-         <tr>
+         <tr id="smsOR2">
              <td><label style="color:#000;"><b>Balance SMS Credits</b></label></td>
                 <td><input class="span4" style="width:55px;" type="text" placeholder="" disabled="disabled"  name="sms_Balcredits" id="sms_Balcredits" value="<%=balanceSMScredits%>"></td>
         </tr>
         
   <tr>
             <td style="border:none;text-align:center;" colspan="2">
-                     <button type="button" class="btn"  onclick="sendSMSCall();return false">Send SMS</button>
-                 <!--        <button type="submit" class="btn">Send SMS</button> -->
+                     <button type="button" class="btn"  onclick="sendSMSCall();return false">
+                         <%
+//smsRadio,notifictionRadio,smsnotificationRadio
+    if(sms_notifi.equalsIgnoreCase("smsRadio")){
+    %>
+     Send SMS    
+    <%        
+    }else  if(sms_notifi.equalsIgnoreCase("notifictionRadio")){
+    %>    
+    Send Notification
+    <%
+        }else{
+        %>
+        Send SMS/Notification       
+        <%
+        }
+        %>
+        </button>
+                   
                     </td>
         </tr>
 
@@ -298,3 +404,12 @@ document.write("<input type=text style=width:55px; name=limit size=4 readonly va
             <h3 id="idAlertDialogPrompt"></h3>
             <a href="#" class="btn btn-primary" onclick="okAlertDialog ();">OK</a>
             </div>
+   
+   <script type="text/javascript">
+<!--
+onloadMethods();
+//-->
+</script>         
+            
+            
+            

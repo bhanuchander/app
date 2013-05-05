@@ -264,7 +264,7 @@
 		
 		
 		
-	   <action name="download" class="com.schooltrix.actions.DownloadAction"> 
+	   <action name="download" class="com.schooltrix.actions.DownloadAction">      
 	       <result name="success" type="stream">  
 			       <param name="contentType">application/octet-stream</param>
 				  <param name="contentDisposition">attachment;filename="${fileName}"</param>

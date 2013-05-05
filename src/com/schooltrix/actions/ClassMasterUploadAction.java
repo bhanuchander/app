@@ -93,7 +93,8 @@ public class ClassMasterUploadAction extends ActionSupport implements ServletReq
 			e.printStackTrace();
 			return INPUT;
 		}
-		session.put("msg","Your file name:  " + fileUPFileName+ ",Success !");
+//		session.put("msg","Your file name:  " + fileUPFileName+ ",Success !");
+		session.put("msg","Saved");
 		return SUCCESS;	
 	}
 

@@ -14,11 +14,13 @@ public class SentSms implements java.io.Serializable {
 	private String imId;
 	private String bmId;
 	private String smId;
+	private String umId;
 	private String smsBody;
 	private String noToSent;
 	private String smsBalanceCredits;
 	private String userListFileName;
 	private String status;
+	private String ipaddr;
 	private Timestamp reqTime;
 	private Timestamp processedTime;
 
@@ -29,24 +31,29 @@ public class SentSms implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SentSms(String status, Timestamp reqTime, Timestamp processedTime) {
+	public SentSms(String umId, String status, Timestamp reqTime,
+			Timestamp processedTime) {
+		this.umId = umId;
 		this.status = status;
 		this.reqTime = reqTime;
 		this.processedTime = processedTime;
 	}
 
 	/** full constructor */
-	public SentSms(String imId, String bmId, String smId, String smsBody,
-			String noToSent, String smsBalanceCredits, String userListFileName,
-			String status, Timestamp reqTime, Timestamp processedTime) {
+	public SentSms(String imId, String bmId, String smId, String umId,
+			String smsBody, String noToSent, String smsBalanceCredits,
+			String userListFileName, String status, String ipaddr,
+			Timestamp reqTime, Timestamp processedTime) {
 		this.imId = imId;
 		this.bmId = bmId;
 		this.smId = smId;
+		this.umId = umId;
 		this.smsBody = smsBody;
 		this.noToSent = noToSent;
 		this.smsBalanceCredits = smsBalanceCredits;
 		this.userListFileName = userListFileName;
 		this.status = status;
+		this.ipaddr = ipaddr;
 		this.reqTime = reqTime;
 		this.processedTime = processedTime;
 	}
@@ -83,6 +90,14 @@ public class SentSms implements java.io.Serializable {
 
 	public void setSmId(String smId) {
 		this.smId = smId;
+	}
+
+	public String getUmId() {
+		return this.umId;
+	}
+
+	public void setUmId(String umId) {
+		this.umId = umId;
 	}
 
 	public String getSmsBody() {
@@ -123,6 +138,14 @@ public class SentSms implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getIpaddr() {
+		return this.ipaddr;
+	}
+
+	public void setIpaddr(String ipaddr) {
+		this.ipaddr = ipaddr;
 	}
 
 	public Timestamp getReqTime() {

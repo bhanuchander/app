@@ -117,6 +117,7 @@
 				<value>com/schooltrix/hibernate/StudentSectionMap.hbm.xml</value>
 				<value>com/schooltrix/hibernate/StudentxlErrorTemp.hbm.xml</value>
 				<value>com/schooltrix/hibernate/FranchiseMaster.hbm.xml</value>
+				<value>com/schooltrix/hibernate/NotificationMaster.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -191,12 +192,16 @@
 	<bean id="DomainContlDAO" class="com.schooltrix.daos.DomainDAOImpl">
 		<property name="sessionFactory"><ref local="sessionFactory"/></property>
 	</bean>
+
+	<bean id="NotificationMasterDAO" class="com.schooltrix.daos.NotificationMasterDAOImpl">
+		<property name="sessionFactory"><ref local="sessionFactory"/></property>
+	</bean>
 	
 	<!-- indivdual sessionss..test -->
 	 <bean id="SMSCampaignSession" class="com.schooltrix.daos.SMSCampaignSession">
 		<property name="sessionFactory"><ref local="sessionFactory"/></property>
 	</bean> 
-		 <bean id="EmailCampaignSession" class="com.schooltrix.daos.EmailCampaignSession">
+	<bean id="EmailCampaignSession" class="com.schooltrix.daos.EmailCampaignSession">
 		<property name="sessionFactory"><ref local="sessionFactory"/></property>
 	</bean> 
 	
@@ -417,6 +422,19 @@
 	<bean id="DomainContlHibernateDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref local="transactionManager"/></property>
 		<property name="target"><ref local="DomainContlDAO"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED</prop>
+				<prop key="find*">PROPAGATION_REQUIRED</prop>
+				<prop key="load*">PROPAGATION_REQUIRED</prop>
+				<prop key="store*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="NotificationMasterHibernateDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager"><ref local="transactionManager"/></property>
+		<property name="target"><ref local="NotificationMasterDAO"/></property>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="get*">PROPAGATION_REQUIRED</prop>

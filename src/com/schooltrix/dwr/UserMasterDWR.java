@@ -40,16 +40,19 @@ public class UserMasterDWR implements Serializable {
 	HttpSession session = WebContextFactory.get().getSession();
 	
 	
-	public String isUserIDCheck(String userID) {
+	public String isUserIDCheck(String userID,String im_id) {
 		
 		
 		UserMasterDAO userMasterDao = null;
 		 ParentDetailsDAO parentDetailsDao = null;
 		 List userList = new ArrayList();
-		 if(userID != null ){
+		 if(userID != null && userID !=""){
 			 try {
+				 System.out.println("im_idddddddd"+im_id);
 				 userMasterDao = (UserMasterDAO)ServiceFinder.getContext(request).getBean("UserMasterHibernateDao"); 		
-				 userList =  userMasterDao.findByPropertyList("userId", userID);
+				 //userList =  userMasterDao.findByPropertyList("userId", userID);
+				 userList =  userMasterDao.adminUniqueIDCheck("userId", userID, "imId", im_id);
+				 
 			} catch (BeansException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
