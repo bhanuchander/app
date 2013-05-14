@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.schooltrix.hibernate.BranchMaster;
@@ -100,6 +102,32 @@ public class BranchMasterDAOImpl extends STHibernateDAOSupport implements Branch
 							crit.add(Restrictions.eq("active", "Y"));
 							//crit.addOrder(Order.desc("sno"));
 							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return branchMasterList;
+	}
+	
+	@Override
+	public List getMultiBranchList(final String im_id,final String inQuery){
+		
+		List branchMasterList=null;
+		try {
+			//System.out.println("in branchMasterList DAOIMPL");
+			branchMasterList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+						
+							String qu= "select BM_ID,Branch_Name from branch_master where IM_ID='"+im_id+"' and SM_ID in("+inQuery+") and Active='Y'";
+							System.out.println("##"+qu);
+							SQLQuery sqlqu = session.createSQLQuery(qu);							
+							sqlqu.addScalar("BM_ID", new StringType());
+							sqlqu.addScalar("Branch_Name", new StringType());
+							System.out.println("in SIZE"+sqlqu.list().size());
+							return sqlqu.list();
 						}
 					});
 		} catch (Exception ex_) {

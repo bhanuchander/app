@@ -24,6 +24,8 @@ public interface BranchMasterDAO extends Serializable {
 	
 	public List getBranchList(final String filed,final String value,final String filed1,final Long value1)throws Exception ; 
 	
+	public List getMultiBranchList(final String im_id,final String inQuery)throws Exception ; 
+	
 	public List findAll()throws Exception ;
 	
 }

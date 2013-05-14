@@ -1,6 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 
+<%
+
+
+
+ %>
+
+
+	<script 	src="<%=request.getContextPath()%>/dwr/interface/NotificationGetDWR.js"></script>
     
     <script type="text/javascript">
 		 jQuery(document).ready(function () {
@@ -8,8 +16,44 @@
 				 // schoolMasterList();
 		});
 
+		function notificationLoad(){
+		
+					    SchoolMasterDWR.getSchoolMasterList(function(data){
+						                                if (data == null) {													
+						                                  alert("error");						                                 
+														} else {				
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+															  var opt = document.createElement("option");
+															    var temp = data[i];
+															    opt.value = temp[0];
+															    opt.innerHTML = temp[1];
+															    listofschools.appendChild(opt);
+															}		                          
+														}
+						                         }
+						      ) ;  
+						      
+		NotificationGetDWR.getNotifications(function(data) {
+				          if (data == null) {													
+                                alert("error");						                                 
+						} else {				
+						alert(data+":::");	                                 
+                         
+						}
+		
+		});
+		
+		
+		
+		
+		}
+		
+		
 		
 		</script>
+		
+		
     
     
     <div class="reg_mainCon">

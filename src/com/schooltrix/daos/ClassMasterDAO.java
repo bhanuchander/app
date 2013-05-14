@@ -32,6 +32,8 @@ public interface ClassMasterDAO extends Serializable {
 
 	public List getClassMasterList(String BM_ID)throws Exception ;
 	
+	public List getMultiClassMasterList(final String BM_IDs) throws Exception ;
+	
 	public List findAll()throws Exception ;
 	
 	
@@ -48,6 +50,8 @@ public interface ClassMasterDAO extends Serializable {
 	public List findBySubjectMasterPropertyList(final String filed,final String value)throws Exception ;
 	
 	public List getSubjectMasterList(String IM_ID, String BM_ID, String SM_ID,String CM_ID)throws Exception ;
+	
+	public List getMultiSubjectMasterList(String IM_ID,final String BM_ID, String SM_ID,final String CM_ID) throws Exception;
 	
 	public List findAllSubjectMaster()throws Exception ;
 	

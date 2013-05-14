@@ -41,45 +41,79 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 	}
 	
 	public String uploadDoc() {
-				System.out.println("kkkkkkkkkkkkk--"+fileUPFileName);
+
 	if (fileUPFileName != null) {
 		
 		if(fileValidation()){
 				
 		try {
-			String filePath = request.getSession().getServletContext().getRealPath("/")+"UploadDoc/";
-;		
-			
-			 String im_id =	(String)session.get("IM_ID");
-
-				
-			 String sm_id =	request.getParameter("schoolNames");
-			 String bm_id =	request.getParameter("branchNames");
-			 
+			 String filePath 				= request.getSession().getServletContext().getRealPath("/")+"UploadDoc/";			
+			 String im_id 					=	(String)session.get("IM_ID");
 			 String institutionName = (String)session.get("IM_SN");
 
-			System.out.println(institutionName+":institutionName:");
+			 String sm_id[] 			=	request.getParameterValues("schoolNames");
+			 String bm_id[] 			=	request.getParameterValues("branchNames");
+			 String selectClass[] =	request.getParameterValues("selectClass");
+			 String selectSubject[] 	=	request.getParameterValues("selectSubject");
 			 
-			 String selectClass =	request.getParameter("selectClass");
-			 String selectType =	request.getParameter("selectType");
-			 String uploadType =	request.getParameter("uploadType");
+			 String classIds 		=  "";
+			 String smIds		 	=  "";
+			 String bmIds 			=  "";
+				StringBuffer inclassIds 	= new StringBuffer();
+				StringBuffer insmIds 		= new StringBuffer();
+				StringBuffer inbmIds	 	= new StringBuffer();
+				StringBuffer inSubjects	 	= new StringBuffer();
+				
+				
+				for (int i = 0; i < sm_id.length; i++) {				
+					insmIds.append(sm_id[i]);
+					if(i<sm_id.length-1)
+						insmIds.append(",");					
+				}
+				System.out.println("inString**********"+insmIds);
+				
+			 for (int i = 0; i < bm_id.length; i++) {
+				 inbmIds.append(bm_id[i]);
+					if(i<bm_id.length-1)
+						inbmIds.append(",");		
+			 }
+			 
+			 for (int i = 0; i < selectClass.length; i++) {
+				 inclassIds.append(selectClass[i]);
+					if(i<selectClass.length-1)
+						inclassIds.append(",");	
+			}
+			 
+			 if(selectSubject != null){
+			 for (int i = 0; i < selectSubject.length; i++) {
+				 inSubjects.append(selectSubject[i]);
+				 if(i<selectSubject.length-1)
+					 inSubjects.append(",");	
+			 }
+			 }
+
+			// System.out.println(sm_id.length+"^^"+sm_id[0]+"*sm_id*"+bm_id+"*bm_ids*"+selectClass);
+			 
+			System.out.println(institutionName+":institutionName:"+insmIds+"**"+inbmIds+"**"+inclassIds+"**"+inSubjects);
+			 
+			 String selectType 			=	request.getParameter("selectType");
+			 String uploadType 		=	request.getParameter("uploadType");
 			 String assignmentType =	request.getParameter("assignmentType");
-			 String selectSubject =	request.getParameter("selectSubject");
-			 String fileUP =	request.getParameter("fileUP");
-			 String nty_email =	request.getParameter("nty_email");
-			 String nty_sms =	request.getParameter("nty_sms");
+			 String assdesc 					=	request.getParameter("desc");
+			 String fileUP 				=	request.getParameter("fileUP");
+			 String nty_email 			=	request.getParameter("nty_email");
 			
 			 System.out.println("selectClass--"+selectClass+"--"+selectType+"--"+uploadType+"-assignmentType-"
-			 +assignmentType+"--"+selectSubject+"--"+fileUPFileName+"--"+nty_email+"--"+nty_sms);
+			 +assignmentType+"--"+assdesc+"--"+selectSubject+"--"+fileUPFileName+"--"+nty_email);
 			 
 			 
 			 if(assignmentType == null){ 
 				 assignmentType = "";
 				}
-			
-			 if(selectSubject == null){ 
-				 selectSubject = "";
-			 }
+	/*		
+		 if(selectSubject == null){ 
+				 selectSubject = new String[1];
+			 }*/
 			 
 			 
 			 if(nty_email == null || nty_email == "null"){
@@ -88,11 +122,6 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 				 nty_email = "Y";
 			 }
 
-			 if(nty_sms == null || nty_sms == "null"){
-				 nty_sms = "N";
-			 }else{
-				 nty_sms = "Y";
-			 }
 
 			 String uniqueFileName ="";
 			 
@@ -103,28 +132,28 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 			 filePath = filePath+"/"+institutionName+"/"+uploadType+"/";//change ?
 				
 			 uploadDocData.setImId(im_id);
-			 uploadDocData.setSmId(sm_id);
-			 uploadDocData.setBmId(bm_id);
+			 uploadDocData.setSmId(insmIds+"");
+			 uploadDocData.setBmId(inbmIds+"");
 
-			 uploadDocData.setToWhich(selectClass);
+			 uploadDocData.setToWhich(inclassIds+"");
 			 uploadDocData.setToWhome(selectType);
 			 uploadDocData.setUploadType(uploadType);
 			 
-			 uniqueFileName = getFileUniqueName();			 
+			 uniqueFileName = getFileUniqueName();	
 			 uploadDocData.setFileName(uniqueFileName);
 
 			 uploadDocData.setAssignType(assignmentType);
-			 uploadDocData.setSubject(selectSubject);
+			 uploadDocData.setAssgDesc(assdesc);
+			 uploadDocData.setSubject(inSubjects+"");
 
 			 uploadDocData.setNotifyPaEmail(nty_email);
-			 uploadDocData.setNotifyPaSms(nty_sms);
 			 uploadDocData.setNotifyPaEmailFlag("0");
-			 uploadDocData.setNotifyPaSmsFlag("0");
 
 				
 			 SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			 uploadDocData.setUploadDate(java.sql.Timestamp.valueOf(sdf.format(new Date())));
 				
+			 uploadDocData.setProcessedDate(java.sql.Timestamp.valueOf(sdf.format(new Date())));
 			 
 			 try {
 				 uploadDocDao = (UploadDocDAO)ServiceFinder.getContext(request).getBean("UploadDocHibernateDao"); 		

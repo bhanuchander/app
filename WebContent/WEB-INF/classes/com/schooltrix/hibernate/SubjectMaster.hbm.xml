@@ -10,6 +10,9 @@
             <column name="subm_id" />
             <generator class="native" />
         </id>
+        <property name="bmId" type="java.lang.String">
+            <column name="bm_id" length="20" />
+        </property>
         <property name="subCode" type="java.lang.String">
             <column name="sub_code" length="45" not-null="true" />
         </property>

@@ -22,6 +22,8 @@
 	      <script 	src="<%=request.getContextPath()%>/dwr/interface/ClassMasterDWR.js"></script>
 	    
 	    <script type="text/javascript">
+	    var smsCrGlobal = "";//the form wil not submit if no sms credits
+	    
 	    $(function(){		
 			$('input:radio').screwDefaultButtons({
 				image: 'url("img/radioSmall.jpg")',
@@ -304,12 +306,14 @@
 				     SMSCreditsDWR.smsCreditsBalance(schoolID,branchID,function(data){
 					                                if (data != "error" && data != null && data != "") {
 					                                   //alert("::"+data);
+					                                   smsCrGlobal = data;
 					                                   jQuery("#smscredits1").val(data);
 					                                document.getElementById("smscredits").innerHTML=data;
 					                                
 													} else {
-													 setError("schoolNames","You Dont have SMS credits");
-													//alertDialog('You Dont have SMS credits');	                                 
+													 setError("schoolNames","You Dont have SMS credits. Form will not submitted");
+													//alertDialog('You Dont have SMS credits');	              
+													smsCrGlobal = "0";                   
 					                                document.getElementById("smscredits").innerHTML="0";
 					                                   jQuery("#smscredits1").val("0");				                          
 													}
@@ -346,6 +350,7 @@
 		     var j = 0;
 		   	var schoolNames = jQuery("#schoolNames").val();
 			var branchNames = jQuery("#branchNames").val();	
+		
 		
 			if(schoolNames=="-1"){
 				 setError("schoolNames","Please select  school");
@@ -389,6 +394,16 @@
 		    }
 		    var tt = jQuery("#sms_notification").val();
 		    //smsRadio,notifictionRadio,smsnotificationRadio
+		    
+		      if(j != 2){
+		    	if (smsCrGlobal <= 0) {
+					 setError("schoolNames","No SMS Credits.");
+					jQuery("#schoolNames").focus();
+					return false;
+				}
+			}
+		    
+		    
 		    if(j != 1){
 			    if(jQuery("#notificationSub").val() == "" || jQuery("#notificationSub").val() == null ||jQuery("#notificationSub").val().length < 4){
 			    setError("notificationSub","Please enter notififcation subject");
@@ -437,7 +452,7 @@
 <div class="reg_mainCon">
 <form action="previewSMS.action"	method="post"  name="smsForm"  onsubmit="return previewSMSValidate(this)">
     <fieldset>
-    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Send Sms</legend>
+    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Send SMS/Notification</legend>
     <div style="padding:20px;">
       <table width="100%" border="0" cellspacing="0" cellpadding="10">
        <tr><td colspan="4" style="text-align: center;padding: 0px;"><span id ="errorspan" style="color:red;font-size: 14px;" ></span>&nbsp;</td></tr>

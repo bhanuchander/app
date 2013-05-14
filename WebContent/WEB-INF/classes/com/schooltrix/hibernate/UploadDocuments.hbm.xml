@@ -14,10 +14,10 @@
             <column name="im_id" length="10" />
         </property>
         <property name="bmId" type="java.lang.String">
-            <column name="bm_id" length="10" />
+            <column name="bm_id" length="20" />
         </property>
         <property name="smId" type="java.lang.String">
-            <column name="sm_id" length="10" />
+            <column name="sm_id" length="20" />
         </property>
         <property name="toWhich" type="java.lang.String">
             <column name="to_which" length="50" not-null="true" />
@@ -31,8 +31,11 @@
         <property name="assignType" type="java.lang.String">
             <column name="assign_type" length="50" />
         </property>
+        <property name="assgDesc" type="java.lang.String">
+            <column name="assg_desc" length="100" />
+        </property>
         <property name="subject" type="java.lang.String">
-            <column name="subject" length="100" />
+            <column name="subject" length="50" />
         </property>
         <property name="fileName" type="java.lang.String">
             <column name="file_name" length="100" not-null="true" />
@@ -43,14 +46,11 @@
         <property name="notifyPaEmailFlag" type="java.lang.String">
             <column name="notify_pa_email_flag" length="1" />
         </property>
-        <property name="notifyPaSms" type="java.lang.String">
-            <column name="notify_pa_sms" length="1" not-null="true" />
-        </property>
-        <property name="notifyPaSmsFlag" type="java.lang.String">
-            <column name="notify_pa_sms_flag" length="1" />
-        </property>
         <property name="uploadDate" type="java.sql.Timestamp">
             <column name="upload_date" length="19" />
+        </property>
+        <property name="processedDate" type="java.sql.Timestamp">
+            <column name="processed_date" length="19" />
         </property>
     </class>
 </hibernate-mapping>

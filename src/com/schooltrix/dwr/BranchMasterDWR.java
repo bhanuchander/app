@@ -1,6 +1,7 @@
 package com.schooltrix.dwr;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -164,6 +165,76 @@ public class BranchMasterDWR {
 			}
 	
 	}
+
+	    //bhanu
+		 public List getMultiBranchMasterList(String[] schoolID) {
+			 
+				BranchMasterDAO branchMasterDao =null;
+				List instList= new ArrayList();
+				List branchList = new ArrayList();
+				try {
+					StringBuffer inString =new StringBuffer();
+					//in('2','3')
+					
+					for (int i = 0; i < schoolID.length; i++) {
+						if(schoolID[i].equalsIgnoreCase("0")){
+							inString = new StringBuffer("0");
+							break;
+						}						
+						inString.append(schoolID[i]);
+						if(i<schoolID.length-1)
+						inString.append(",");
+						
+					}
+					//System.out.println("inString**********"+inString);
+					
+					String inQuery = inString+"";
+		
+					String im_id =(String)session.getAttribute("IM_ID");
+					
+					Long sm_id = Long.parseLong(schoolID[0]);
+					
+					branchMasterDao = (BranchMasterDAO)ServiceFinder.getContext(request).getBean("BranchMasterHibernateDao"); 		
+
+					if (inQuery.equalsIgnoreCase("0")) {
+						instList = 	branchMasterDao.findByPropertyList("imId",im_id);						
+						for (int i = 0; i < instList.size(); i++) {
+							String[] oioio = new String[2];
+							BranchMaster ioio = (BranchMaster)instList.get(i);
+							System.out.println("--90---"+ioio.getBranchName());
+							oioio[0] = ioio.getBmId()+"";
+							oioio[1] = ioio.getBranchName();
+							System.out.println(oioio[0]+"*************"+oioio[1]);
+							branchList.add(oioio);
+						}
+					} else{
+						instList = 	branchMasterDao.getMultiBranchList(im_id,inQuery);
+						for (int i = 0; i < instList.size(); i++) {
+							String[] oioio = new String[2];
+							System.out.println(instList.size()+"^^^^^^^^^^^^^");
+						    Object[] uu = (Object[])instList.get(i) ;
+						    oioio[0] =(String) uu[0];
+							oioio[1] = (String)uu[1];
+							System.out.println(instList.size()+"@@"+oioio[0]+"**"+oioio[1]);
+							branchList.add(oioio);							
+						}
+					}
+							//System.out.println("in getInstitutionMasterList"+im_id);
+							//	System.out.println("in dwr ut--"+instList.size());
+		
+						return branchList;
+			
+				} catch (BeansException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				}
+		
+		}
 
 
 

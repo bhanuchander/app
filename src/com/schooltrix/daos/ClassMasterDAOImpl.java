@@ -165,7 +165,31 @@ public class ClassMasterDAOImpl extends STHibernateDAOSupport implements ClassMa
 			}
 			return ClassMasterList;
 		}	
-	
+		
+		@Override
+		public List getMultiClassMasterList(final String BM_IDs) throws Exception {
+			List ClassMasterList=null;
+			try {
+				ClassMasterList = (List) getHibernateTemplate().execute(
+						new HibernateCallback() {
+							public Object doInHibernate(Session session)throws HibernateException, SQLException {
+								String qu= "select cm_id,class_name from class_master where cm_id in(select cm_id  from class_branch_map where Active='Y' and bm_id in ("+BM_IDs+"))";
+							//	System.out.println("in getMultiClassMasterList DAOIMPL*&"+qu);
+								SQLQuery sqlqu = session.createSQLQuery(qu);							
+								sqlqu.addScalar("cm_id", new StringType());
+								sqlqu.addScalar("class_name", new StringType());
+								System.out.println("in SIZE"+sqlqu.list().size());
+								return sqlqu.list();
+							}
+						});
+			} catch (Exception ex_) {
+				ex_.printStackTrace();
+				return null;
+			}
+			return ClassMasterList;
+		}	
+		
+		
 	@Override
 	public ClassMaster findById(java.lang.Long id) throws Exception {
 		try {
@@ -315,6 +339,35 @@ public class ClassMasterDAOImpl extends STHibernateDAOSupport implements ClassMa
 			return SubjectMasterList;
 		}
 	
+		@Override
+		public List getMultiSubjectMasterList(String IM_ID,String SM_ID,final String BM_IDs, final String CM_IDs) throws Exception {
+			List SubjectMasterList=null;
+			try {
+				//System.out.println("in getSubjectMasterList DAOIMPL---"+BM_IDs+"---"+CM_IDs);
+				SubjectMasterList = (List) getHibernateTemplate().execute(
+						new HibernateCallback() {
+							public Object doInHibernate(Session session)throws HibernateException, SQLException {//need more where condtion im_id sm_id
+								//String qu= "select class_name from subject_master where cm_id in(select cm_id  from class_branch_map where Active='Y' and bm_id='"+BM_ID+"')";
+								String qu = "";
+								 qu="SELECT sub_name, subm_id FROM subject_MASTER where subm_id in (SELECT subm_id FROM subject_class_map where cm_id in ("+CM_IDs+"))" +
+								 		"and bm_id in("+BM_IDs+") group by sub_name ";
+								
+								SQLQuery sqlqu = session.createSQLQuery(qu);							
+								sqlqu.addScalar("sub_name", new StringType());
+								sqlqu.addScalar("subm_id", new StringType());
+								System.out.println("in SIZE"+sqlqu.list().size());
+								return sqlqu.list();
+							}
+						});
+			} catch (Exception ex_) {
+				ex_.printStackTrace();
+				return null;
+			}
+			return SubjectMasterList;
+		}
+	
+		
+		
 		@Override
 		public boolean saveClassBranchMap(ClassBranchMap transientInstance) throws Exception {
 			System.out.println("in ClassMasterDAOImpl---ClassBranchMap");

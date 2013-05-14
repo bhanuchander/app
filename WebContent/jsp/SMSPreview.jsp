@@ -178,10 +178,25 @@
 		alert('preview');
 			
 		}
+		
+		  function closepopup()
+   {
+      if(false == myWindow.closed)
+      {
+         myWindow.close ();
+      }
+      else
+      {
+         alert('Window already closed!');
+      }
+   }
+		
 	function tellMeMore(call){
 	
-		var myWindow = window.open("", "Schooltrix", "height=600,width=800,scrollbars=1,location=no,menubar=no,resizable=1,status=no,toolbar=no");
-	
+	window.opener=self; window.close();
+		var  myWindow = window.open("", "Schooltrix", "height=600,width=800,scrollbars=1,location=no,menubar=no,resizable=1,status=no,toolbar=no");
+	//	closepopup();
+
 		
 		var dtt = '<%=userdata%>';
 		var performence_json	=  jQuery.parseJSON(dtt);
@@ -198,9 +213,23 @@
 			innerHtmlone +='  </tr>';	    
 	}
 		myWindow.document.write(innerHtmlone);
-		}
+ }
 		
+		  function closepopup()
+   {
+   
 
+      if(false == my_window.closed)
+      {
+         my_window.close ();
+      }
+      else
+      {
+         alert('Window already closed!');
+      }
+  
+    
+   }
 	function limiter(){
 	var tex = document.smsSent.sms_body.value;
 	var len = tex.length;

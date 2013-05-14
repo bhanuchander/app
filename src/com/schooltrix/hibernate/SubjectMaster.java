@@ -9,6 +9,7 @@ public class SubjectMaster implements java.io.Serializable {
 	// Fields
 
 	private Long submId;
+	private String bmId;
 	private String subCode;
 	private String oldSubCode;
 	private String subName;
@@ -28,8 +29,9 @@ public class SubjectMaster implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectMaster(String subCode, String oldSubCode, String subName,
-			String active) {
+	public SubjectMaster(String bmId, String subCode, String oldSubCode,
+			String subName, String active) {
+		this.bmId = bmId;
 		this.subCode = subCode;
 		this.oldSubCode = oldSubCode;
 		this.subName = subName;
@@ -44,6 +46,14 @@ public class SubjectMaster implements java.io.Serializable {
 
 	public void setSubmId(Long submId) {
 		this.submId = submId;
+	}
+
+	public String getBmId() {
+		return this.bmId;
+	}
+
+	public void setBmId(String bmId) {
+		this.bmId = bmId;
 	}
 
 	public String getSubCode() {

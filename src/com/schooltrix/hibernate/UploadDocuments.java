@@ -18,13 +18,13 @@ public class UploadDocuments implements java.io.Serializable {
 	private String toWhome;
 	private String uploadType;
 	private String assignType;
+	private String assgDesc;
 	private String subject;
 	private String fileName;
 	private String notifyPaEmail;
 	private String notifyPaEmailFlag;
-	private String notifyPaSms;
-	private String notifyPaSmsFlag;
 	private Timestamp uploadDate;
+	private Timestamp processedDate;
 
 	// Constructors
 
@@ -34,21 +34,20 @@ public class UploadDocuments implements java.io.Serializable {
 
 	/** minimal constructor */
 	public UploadDocuments(String toWhich, String toWhome, String uploadType,
-			String fileName, String notifyPaEmail, String notifyPaSms) {
+			String fileName, String notifyPaEmail) {
 		this.toWhich = toWhich;
 		this.toWhome = toWhome;
 		this.uploadType = uploadType;
 		this.fileName = fileName;
 		this.notifyPaEmail = notifyPaEmail;
-		this.notifyPaSms = notifyPaSms;
 	}
 
 	/** full constructor */
 	public UploadDocuments(String imId, String bmId, String smId,
 			String toWhich, String toWhome, String uploadType,
-			String assignType, String subject, String fileName,
-			String notifyPaEmail, String notifyPaEmailFlag, String notifyPaSms,
-			String notifyPaSmsFlag, Timestamp uploadDate) {
+			String assignType, String assgDesc, String subject,
+			String fileName, String notifyPaEmail, String notifyPaEmailFlag,
+			Timestamp uploadDate, Timestamp processedDate) {
 		this.imId = imId;
 		this.bmId = bmId;
 		this.smId = smId;
@@ -56,13 +55,13 @@ public class UploadDocuments implements java.io.Serializable {
 		this.toWhome = toWhome;
 		this.uploadType = uploadType;
 		this.assignType = assignType;
+		this.assgDesc = assgDesc;
 		this.subject = subject;
 		this.fileName = fileName;
 		this.notifyPaEmail = notifyPaEmail;
 		this.notifyPaEmailFlag = notifyPaEmailFlag;
-		this.notifyPaSms = notifyPaSms;
-		this.notifyPaSmsFlag = notifyPaSmsFlag;
 		this.uploadDate = uploadDate;
+		this.processedDate = processedDate;
 	}
 
 	// Property accessors
@@ -131,6 +130,14 @@ public class UploadDocuments implements java.io.Serializable {
 		this.assignType = assignType;
 	}
 
+	public String getAssgDesc() {
+		return this.assgDesc;
+	}
+
+	public void setAssgDesc(String assgDesc) {
+		this.assgDesc = assgDesc;
+	}
+
 	public String getSubject() {
 		return this.subject;
 	}
@@ -163,28 +170,20 @@ public class UploadDocuments implements java.io.Serializable {
 		this.notifyPaEmailFlag = notifyPaEmailFlag;
 	}
 
-	public String getNotifyPaSms() {
-		return this.notifyPaSms;
-	}
-
-	public void setNotifyPaSms(String notifyPaSms) {
-		this.notifyPaSms = notifyPaSms;
-	}
-
-	public String getNotifyPaSmsFlag() {
-		return this.notifyPaSmsFlag;
-	}
-
-	public void setNotifyPaSmsFlag(String notifyPaSmsFlag) {
-		this.notifyPaSmsFlag = notifyPaSmsFlag;
-	}
-
 	public Timestamp getUploadDate() {
 		return this.uploadDate;
 	}
 
 	public void setUploadDate(Timestamp uploadDate) {
 		this.uploadDate = uploadDate;
+	}
+
+	public Timestamp getProcessedDate() {
+		return this.processedDate;
+	}
+
+	public void setProcessedDate(Timestamp processedDate) {
+		this.processedDate = processedDate;
 	}
 
 }
