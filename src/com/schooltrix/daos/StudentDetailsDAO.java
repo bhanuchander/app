@@ -35,7 +35,11 @@ public interface StudentDetailsDAO extends Serializable {
 
 	public boolean saveStudentParentMap(ParentStudentMap transientInstance) throws Exception ;
 
-	public boolean insertStudentSectionMap(StudentSectionMap ssm);
+	public ParentStudentMap getStudentParentMap(final String field,final String pd_id) throws Exception ;//may use both parent and student
+
+	public boolean insertStudentSectionMap(StudentSectionMap ssm) ;
+
+	public StudentSectionMap getStudentSectionMap(final String filed,final String value) throws Exception;
 
 	public boolean insertStudentErrorLog(StudentxlErrorTemp setemp) throws Exception;
 	

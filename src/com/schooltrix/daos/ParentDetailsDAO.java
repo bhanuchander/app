@@ -28,6 +28,8 @@ public interface ParentDetailsDAO extends Serializable {
 	
 	public List findByPropertyList(final String filed,final String value)throws Exception ;
 	
+	public List findByPropertyListLong(final String filed,final Long value)throws Exception ;
+	
 	public List emailCheck(String email,Long im_id) throws Exception;
 	
 	public List findAll()throws Exception ;

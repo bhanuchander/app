@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +106,26 @@ public class ParentDetailsDAOImpl extends STHibernateDAOSupport implements Paren
 							Criteria crit = session.createCriteria(ParentDetails.class);
 							crit.add(Restrictions.eq(filed, value));
 							//crit.addOrder(Order.desc("sno"));
+							return crit.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+		return ParentDetailsList;
+	}
+	@Override
+	public List findByPropertyListLong(final String filed,final Long value) throws Exception {
+		List ParentDetailsList=null;
+		try {
+			ParentDetailsList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							Criteria crit = session.createCriteria(ParentDetails.class);
+							crit.add(Restrictions.eq(filed, value));
+							crit.addOrder(Order.asc("ptmId"));
+							//System.out.println(crit.list().size()+"in findByPropertyListLong");
 							return crit.list();
 						}
 					});

@@ -55,9 +55,9 @@ public class SectionMasterDAOImpl extends STHibernateDAOSupport implements Secti
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)
 								throws HibernateException, SQLException{							
-							Criteria isExpiredCrit = session.createCriteria(SectionMaster.class);
-							isExpiredCrit.add(Restrictions.eq(filed, value));
-							List list = isExpiredCrit.list();
+							Criteria crit = session.createCriteria(SectionMaster.class);
+							crit.add(Restrictions.eq(filed, value));
+							List list = crit.list();
 							if(list.size()>0)
 								return list.get(0);
 							else
@@ -121,6 +121,30 @@ public class SectionMasterDAOImpl extends STHibernateDAOSupport implements Secti
 			getHibernateTemplate().saveOrUpdate(transientInstance);
 			System.out.println("in saveee---saveSectionClassMap");
 			return true;
+		
+	}
+	
+	public SectionClassMap getSectionClassMap(final String filed,final Long value) throws Exception {
+		
+
+		try {
+			return (SectionClassMap) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)
+								throws HibernateException, SQLException{							
+							Criteria crit = session.createCriteria(SectionClassMap.class);
+							crit.add(Restrictions.eq(filed, value));
+							List list = crit.list();
+							if(list.size()>0)
+								return list.get(0);
+							else
+								return null;
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
 		
 	}
 	

@@ -1,0 +1,654 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+        pageEncoding="ISO-8859-1"%>
+        <link href="css/bootstrap.css" rel="stylesheet">
+            <link href="css/bootstrap-fileupload.css" rel="stylesheet" media="screen">	
+        	    <script src="js/bootstrap-jquery.js"></script>
+        	<script type="text/javascript" src="js/bootstrap-radio.js"></script>
+            <script src="js/bootstrap-fileupload.js" type="text/javascript"></script>
+            <script src="js/bootstrap-multiselect.js" type="text/javascript"></script>
+        
+         <script 	src="<%=request.getContextPath()%>/dwr/interface/SchoolMasterDWR.js"></script>
+         <script 	src="<%=request.getContextPath()%>/dwr/interface/BranchMasterDWR.js"></script>
+         <script 	src="<%=request.getContextPath()%>/dwr/interface/ClassMasterDWR.js"></script>
+        
+        <script type="text/javascript">
+        
+        $(document).ready(function() {
+        
+        			resultPopUp();
+				schoolMasterList();
+        
+     				$('#schoolNames').multiselect({
+							buttonText: function(options, select) {
+								if (options.length == 0) {
+									return 'Select School <b class="caret"></b>';
+								}
+								else if (options.length > 1) {
+									return options.length + ' selected <b class="caret"></b>';
+								}
+								else {
+									var selected = '';
+									options.each(function() {
+										var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+				
+										selected += label + ', ';
+									});
+									return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+								}
+							},						
+					buttonWidth: '270px',
+					filterPlaceholder: 'Search School'
+				});
+				
+				$('#branchNames').multiselect({
+						buttonText: function(options, select) {
+							if (options.length == 0) {
+								return 'Select Branch <b class="caret"></b>';
+							}
+							else if (options.length > 1) {
+								return options.length + ' selected <b class="caret"></b>';
+							}
+							else {
+								var selected = '';
+								options.each(function() {
+									var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+			
+									selected += label + ', ';
+								});
+								return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+							}
+						},														
+					buttonWidth: '270px',
+					filterPlaceholder: 'Search Branch'
+				});
+				
+				$('#selectClass').multiselect({
+						buttonText: function(options, select) {
+							if (options.length == 0) {
+								return 'Select Class <b class="caret"></b>';
+							}
+							else if (options.length > 1) {
+								return options.length + ' selected <b class="caret"></b>';
+							}
+							else {
+								var selected = '';
+								options.each(function() {
+									var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+			
+									selected += label + ', ';
+								});
+								return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+							}
+						},														
+					buttonWidth: '270px',
+					filterPlaceholder: 'Search Class'
+				});
+		
+				$('#selectType').multiselect({
+						buttonText: function(options, select) {
+							if (options.length == 0) {
+								return 'Select Audience Type <b class="caret"></b>';
+							}
+							else if (options.length > 2) {
+								return options.length + ' selected <b class="caret"></b>';
+							}
+							else {
+								var selected = '';
+								options.each(function() {
+									var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+			
+									selected += label + ', ';
+								});
+								return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+							}
+						},														
+					buttonWidth: '297px',
+					filterPlaceholder: 'Search'
+				});
+				
+        	$('#selectSubject').multiselect({
+						buttonText: function(options, select) {
+							if (options.length == 0) {
+								return 'Select Subject <b class="caret"></b>';
+							}
+							else if (options.length > 2) {
+								return options.length + ' selected <b class="caret"></b>';
+							}
+							else {
+								var selected = '';
+								options.each(function() {
+									var label = ($(this).attr('label') !== undefined) ? $(this).attr('label') : $(this).text();
+			
+									selected += label + ', ';
+								});
+								return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+							}
+						},														
+					buttonWidth: '300px',
+					filterPlaceholder: 'Search'
+				});
+				
+		 });
+			        
+         $(function(){
+  /*            $('input:checkbox').screwDefaultButtons({
+                image: 'url("img/checkboxSmall.jpg")',
+                width: 20,
+                height: 20
+            });  */
+            }); 
+       
+	    function editPreviousUploads(){
+	      		alert('editPreviousUploads');
+	      }
+	      
+	       function selectType1(val){
+			    if(val=='Assignment' || val=='AcademicMaterial'){
+				    if ( val=='Assignment') {
+						document.getElementById('assignmentType').disabled = false;
+					}else{
+						document.getElementById('assignmentType').disabled = true;
+					}
+					document.getElementById('selectSubject').disabled = false;				
+					document.getElementById('desc').disabled = false;
+					  subjectMaster();
+				}else{
+					    document.getElementById('assignmentType').disabled = true;
+					    document.getElementById('selectSubject').disabled = true;
+					    document.getElementById('desc').disabled = true;
+					    	//$("#selectSubject").attr("disabled", "disabled"); display: none;
+					    document.getElementById('selectSubject').display = 'none';
+					//	jQuery('.multiselect dropdown-toggle btn[data-toggle="dropdown"]').addClass('disabled');
+
+					var $spans = $('button[data-toggle="dropdown"]')[4];
+					$(".btn-group").find( $spans ).addClass('disabled');	
+	
+			  }
+			  
+		 }
+		 
+	
+	function schoolMasterList(){
+	    
+		   try{
+				//	alert("onload school master"+im_id);
+						var listofschools = document.getElementById('schoolNames');					
+	//alert(listofschools.value+"**");
+						    SchoolMasterDWR.getSchoolMasterList(function(data){
+						                                if (data == null) {													
+						                                  alert("error");
+						                                 
+														} else {				
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+														  var opt = document.createElement("option");
+															    var temp = data[i];														
+															    var d = temp[0];
+															    var dV = temp[1];
+															    var  innerHtml= "<option value="+d+">"+dV+"</option>)";
+															    
+															  //  alert(d+"^^^"+dV);
+															    $('#schoolNames').append(innerHtml);																	    
+															    
+															}
+																			//alert(listofschools.value+"$$$$$");
+															$('#schoolNames').multiselect('rebuild');		                          
+														}
+						                         }
+						      ) ;  
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery.log.info(e.message);
+						        jQuery("#infoError").html("&nbsp;");
+		         }
+	} 
+		 
+		 
+		 
+	function selectSchoolforBranches(){
+	     
+	   var schoolID = jQuery("#schoolNames").val();
+		removeAllOptions("#branchNames");
+		removeAllOptions("#selectClass");
+		if(schoolID == null || schoolID == ""){
+			setError("schoolNames","Please select School");
+			 jQuery("#schoolNames").focus();
+			return false;
+		}
+		   try{
+		   	var im_id = "<%=session.getAttribute("IM_ID")%>";			   	
+						var listofbranchs = document.getElementById('branchNames');					
+	
+					//    BranchMasterDWR.getBranchMasterList(schoolID,function(data){
+					    BranchMasterDWR.getMultiBranchMasterList(schoolID,function(data){
+						                                if (data == null) {
+						                                  alert("error");
+														} else {
+														//alert(data+":::"+data.length+data[1]);	                                 
+						                               for(var i = 0; i < data.length; i++) {
+															  var opt = document.createElement("option");
+															    var temp = data[i];
+															    	var  innerHtml= "<option value="+ temp[0]+">"+ temp[1]+"</option>)";
+															    	$('#branchNames').append(innerHtml);
+															}
+														}
+															$('#branchNames').multiselect('rebuild');
+						                         }
+						      ) ;
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery.log.info(e.message);
+						        jQuery("#infoError").html("&nbsp;");
+		         } 	
+	 }
+	 
+	 function selectBranchesforClasses(val){
+	   var schoolID = jQuery("#schoolNames").val();
+		removeAllOptions("#selectClass");
+		//removeAllOptions("selectClass");
+
+		if(schoolID == null || schoolID == ""){
+			setError("schoolNames","Please select School");
+			 jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		var branchID = jQuery("#branchNames").val();
+		if(branchID == null || branchID == ""){
+			setError("branchNames","Please select Branch");
+			 jQuery("#branchNames").focus();
+			return false;
+		}
+		   try{
+		   	var im_id = "<%=session.getAttribute("IM_ID")%>";			   	
+			var listofclasses = document.getElementById('selectClass');					
+	
+			    ClassMasterDWR.getMultiClassMasterList(branchID,function(data){
+				                                if (data == null) {
+				                                  alert("error");
+												} else {
+												//alert(data+":::"+data.length+data[1]);	                                 
+				                               for(var i = 0; i < data.length; i++) {
+													  var opt = document.createElement("option");
+													    var temp = data[i];
+													    	var  innerHtml= "<option value="+ temp[0]+">"+ temp[1]+"</option>)";
+													    	$('#selectClass').append(innerHtml);
+													}
+												}
+													$('#selectClass').multiselect('rebuild');
+				                         }
+				      ) ;
+						
+		   		 }catch(e){
+						 alert("incatch::"+e);
+						        jQuery.log.info(e.message);
+						        jQuery("#infoError").html("&nbsp;");
+		         } 	
+			  
+		 }
+	 
+	 	function selectSubjectsForClasses(){	   		 
+		   var upload = jQuery("#uploadType").val();		   
+				    if(upload =='Assignment' || upload=='AcademicMaterial'){
+				    //alert(upload+"in selct  ===");
+				//    removeAllOptions("#selectSubject");				    
+						  subjectMaster();
+						
+					}else{			 	 }				  
+	}
+		 
+		 
+	function subjectMaster(){
+			//Process DWR/AJAX request here
+				try{
+			    var branchIDs = jQuery("#branchNames").val();
+				var classIDs = jQuery("#selectClass").val();
+				if (branchIDs != null && classIDs != null) {
+			
+				var im_id = "<%=session.getAttribute("IM_ID")%>";					
+	   			var schoolIDs = jQuery("#schoolNames").val();
+	   			
+				removeAllOptions("#selectSubject");
+			
+					//	alert(listofSubjects+":::"+im_id+"--"+schoolID+"--"+branchID);
+				     ClassMasterDWR.getMultiSubjectMasterList(schoolIDs,branchIDs,classIDs,function(data){
+					                                if (data == null) {												
+					                                  alert("error");					                                 
+													} else {		
+									//alert(data+"**"+data.length);
+													    for(var i = 0; i < data.length; i++) {
+													  var opt = document.createElement("option");
+													    var temp = data[i];
+													    	var  innerHtml= "<option value="+ temp[1]+">"+ temp[0]+"</option>)";
+													    	$('#selectSubject').append(innerHtml);
+													}
+													$('#selectSubject').multiselect('rebuild');												
+												}
+					                         }
+					      ) ;
+					  }
+					 }catch(e){
+					 alert("incatch::"+e);
+					        jQuery.log.info(e.message);
+					        jQuery("#infoError").html("&nbsp;");
+	        	     } 	
+	}
+		
+			function removeAllOptions(whichOption)
+		{
+					//alert(whichOption+"---");
+					$(whichOption).html('');
+					var  innerHtml= "<option value='0'>Seleect All </option>";					
+
+				    $(whichOption).append(innerHtml);		
+	
+				$(whichOption).multiselect('rebuild');	
+	
+		}
+
+
+
+		
+			var errorDisp=null;
+       function setError(errElement, msg){
+			if(errorDisp != null){
+				errorDisp.stop(true, true).animate({opacity: 1}, 0);
+				errorDisp.hide();
+			}
+
+			var feild 		= jQuery("#"+errElement);
+				errorDisp 	= jQuery("#errorspan");
+			
+			errorDisp.show();											
+			jQuery("#errorspan").html(msg);
+
+			errorDisp.position({
+				of:feild,
+				my:"left" 	+ " " + "top",
+				at:"right" 	+ " " + "top",
+				offset:'0 0',
+				collision : 'none none'
+				
+				
+			});
+			errorDisp.animate({opacity: 0}, 6000);
+	  }
+	    
+	 function resetForm($form) {
+		    $form.find('input:text, input:password, input:file, textarea').val('');
+		       jQuery("#schoolNames").val('Select School');
+		       jQuery("#branchNames").val('Select Branch');
+		       jQuery("#selectClass").val('Select Class');
+		       jQuery("#selectType").val('Select');
+		       jQuery("#uploadType").val('Select');
+		       jQuery("#assignmentType").val('Select');
+		       jQuery("#selectSubject").val('Select Subject');
+		 /*    
+		    $form.find('input:radio, input:checkbox')
+		         .removeAttr('checked').removeAttr('selected'); */
+		}
+		
+		function showEmailSub(){
+			var msgg="";
+			var uploadValue =  jQuery("#uploadType").val();
+				if (document.getElementById("nty_email").checked) {
+				 	var name = "<%=session.getAttribute("name")%>";		
+					if ( uploadValue == -1) {
+						setError("uploadType","Please select upload type");
+			 			jQuery("#uploadType").focus();
+						return false;
+					}else{			
+							/* msgg = "Following email will be sent to the parents:<br/><br/>Subject:&nbsp;&nbsp;&nbsp;New "+uploadValue+" is uploaded.<br/>Body:<br/><p style='padding-left:11px;'>Dear Parent,  "+
+												"<br/>New "+uploadValue+" has been uploaded on the school portal.<br/> Kindly login and check.<br/><br/>Yours,<br/>"+name+"</p> ";*/
+
+							msgg = "Subject:&nbsp;&nbsp;&nbsp;   New "+uploadValue+" uploaded<br/><br/>Dear Parent, <br/><br/>New "+uploadValue+" has been uploaded on the school portal.<br/><br/>Kindly login and check.<br/><br/>Yours,<br/>School Admin<br/> "
+
+							jQuery("#emailSub").html(msgg);							
+					}
+					
+				}else if(!jQuery("#nty_email").checked){
+							jQuery("#emailSub").html(msgg);
+				}
+		}
+		
+		   function resultPopUp(){
+		    jQuery("#schoolNames").focus();
+	    	var msg = "<%=session.getAttribute("msg")%>";
+	    	
+		    if(msg == null || msg == "null"){
+		    // alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> Success.<br/> Your ID : "+"TH676767676"+"<br/>Password : "+"yu76767hhgh6"+"</div>");
+		    }else{
+		     setError("schoolNames",msg);
+		      jQuery("#schoolNames").focus();
+		        resetForm($('#uploaddocForm')); // by id, recommended
+		  	  //  alert(msg);
+/* 		    alertDialog("<div style='padding-left:50px; text-align:center; margin-top: 15px;'> "+msg+".<br/></div>"); */
+		    }
+		     if(msg != null){
+		 		<%session.removeAttribute("msg"); %> ;
+		     }
+	    }
+
+		function validateForm(){
+	
+		var schoolNames = jQuery("#schoolNames").val();
+		var branchNames = jQuery("#branchNames").val();
+		var selectClass = jQuery("#selectClass").val();
+		var selectType = jQuery("#selectType").val();
+		var uploadType = jQuery("#uploadType").val();
+		
+		
+		if(schoolNames== null){
+		 setError("schoolNames","Please select valid School(s)");
+			jQuery("#schoolNames").focus();
+			return false;
+		}
+		
+		if(branchNames== null){
+			 setError("branchNames","Please select  Branch(s)");
+			jQuery("#branchNames").focus();
+			return false;
+		}
+		
+		if(selectClass== null){
+			 setError("selectClass","Please select  Class(s)");
+			jQuery("#selectClass").focus();
+			return false;
+		}
+		if(selectType== null){
+			 setError("selectType","Please select  Parent/Student/All");
+			jQuery("#selectType").focus();
+			return false;
+		}
+		
+	if(uploadType=="-1"){
+			 setError("uploadType","Please select  Upload type");
+			jQuery("#uploadType").focus();
+			return false;
+		}
+		
+		if (uploadType == "Assignment" || uploadType == "AcademicMaterial") {
+			var assignmentType = jQuery("#assignmentType").val();
+			var selectSubject = jQuery("#selectSubject").val();
+			var desc = jQuery("#desc").val();
+			
+				if (assignmentType == "-1" && uploadType == "Assignment") {
+						setError("assignmentType","Please select Assignment Type");
+						jQuery("#assignmentType").focus();
+					return false;
+				}		
+				
+					
+				if (selectSubject == "-1") {
+						setError("selectSubject","Please select Subject(s)");
+						jQuery("#selectSubject").focus();
+			return false;
+				}	
+				if (desc == "" || desc.length<1) {
+						setError("desc","Please select description");
+						jQuery("#desc").focus();
+			return false;
+				}		
+			
+		}
+			
+			var file1  = jQuery("#fileUP").val();
+		if(file1 == "" || file1 == undefined  || file1 == "undefined"){		
+			setError("branchNames","Please select a file");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+	
+		var extension = file1.split('.').pop().toLowerCase();
+		var allowed = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt','ppt','pptx','gif','csv','png','jpg','jpeg','dot','dotx','html','odm','ott','odt','rtf','xps'];
+		
+		if(allowed.indexOf(extension) === -1) {
+		    // Not valid.
+			setError("branchNames","Your selected "+ file1+"  extension wrong");
+				jQuery("#fileUP").focus();
+			return false;
+		}
+		
+		}
+
+    </script>
+   
+    <div style="height:50px;"></div>
+<div class="reg_mainCon">
+   <form  method="post"  action="uploadDocActionName.action" name="uploaddocForm" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+    <fieldset>
+    <legend><img src="img/list_add_user.PNG" class="img-circle">&nbsp;&nbsp;Upload Documents</legend>
+    <div style="padding:20px;padding-top: 2px;">
+      <label style="color:#000;"></label>
+   <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  
+           <tr>
+             <td colspan="3" style="text-align:right;"><button type="button" class="btn" onclick="editPreviousUploads(); return false;">Edit previous uploads</button> </td>
+        </tr>
+   <tr><td colspan="4" style="text-align: center;"><span id ="errorspan" style="color:red;font-size: 14px;" ></span>&nbsp;</td></tr>
+        <tr>
+                <td colspan="3"><label style="color:#000;"><b>Select Audience</b></label></td>
+        </tr>
+          <tr>
+                <td><label style="color:#000;"><b>Display to</b></label></td>
+                <td>
+                   <div class="input-append">  
+						<select class="multiselect" multiple="multiple"  id="schoolNames" name="schoolNames">			
+							<option value="0" >Select All </option>
+						</select>
+					  <button class="btn " type="button" style="width:30px; "  id="schoolNamesGo" name="schoolNamesGo" onblur="return selectSchoolforBranches();" onclick="return selectSchoolforBranches();">Go!</button> 
+				 </div><!-- btn-primary -->                
+			</td>                 
+            <td>
+               <div class="input-append">  
+					<select class="multiselect" multiple="multiple"  id="branchNames" name="branchNames">		
+						<option value="0" >Select All </option>	
+					</select>
+				    <button class="btn " type="button" style="width:30px; "  id="branchNamesGo" name="branchNamesGo" onblur=" selectBranchesforClasses();" onclick="selectBranchesforClasses();">Go!</button> 
+			   </div>
+			</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+              <div class="input-append">  
+              		<select class="multiselect" multiple="multiple"  id="selectClass" name="selectClass">		
+						<option value="0" >Select All </option>	
+					</select>
+				  	<button class="btn " type="button" style="width:30px; "  id="classNamesGo" name="classNamesGo"  onblur=" selectSubjectsForClasses();"  >Go!</button>  </div>				          
+            </td>
+            <td>
+					<select class="multiselect" multiple="multiple"  id="selectType" name="selectType">		
+						<option value="0" >Select All </option>	
+						    <option value="Parents"> Parents</option>
+                        <option value="Students">Students</option>
+					</select>
+           </td>                 
+        </tr>
+        <tr>
+         <td><label style="color:#000;"><b>Upload Type</b></label></td>
+                <td><select class="span4"   name="uploadType" id="uploadType" onchange="selectType1(this.value)">
+                        <option value="-1"  selected="selected">Select</option>
+                        <option value="AcademicMaterial">Academic Material</option>
+                        <option value="Assignment">Assignment</option>
+                        <option value="Calendar">Calendar</option>
+                        <option value="Canteen menu">Canteen Menu</option>
+                        <option value="ExamSchedule">Exam Schedule</option>
+                        <option value="Time table">Timetable</option>
+                       </select>                   
+                 </td>
+                <td>&nbsp;</td>
+             
+        </tr>
+         <tr>
+         <td><label style="color:#000;"><b>Assignment Type</b></label></td>
+                <td><select class="span4" name="assignmentType"  id="assignmentType" disabled="disabled">
+                        <option value="-1"  selected="selected">Select</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Holiday">Holiday</option>
+                        <option value="Weekend">Weekend</option>
+                       </select>                   
+                 </td>
+                <td>&nbsp;</td>
+             
+        </tr>
+         <tr>
+         <td><label style="color:#000;"><b>Description</b></label></td>
+                <td> <input class="input-xlarge" style="width: 88%" type="text" placeholder="" name="desc"  id="desc" disabled="disabled">             
+                 </td>
+                <td>&nbsp;</td>
+             
+        </tr>
+        
+          <tr>
+         <td><label style="color:#000;"><b>Subject</b></label></td>
+                <td>
+                 <select class="multiselect" multiple="multiple"  id="selectSubject" name="selectSubject" disabled="disabled">		
+						<option value="0" >Select All </option>	
+					</select>
+                 </td>
+              <td>&nbsp;</td> 
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+         <tr>             
+        <td width="20%"><label style="color:#000;"><b>Upload</b></label></td>
+          <td colspan="2">
+          	<div class="fileupload fileupload-new" data-provides="fileupload" >
+				  <div class="input-append">
+				    <div class="uneditable-input span4"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file">
+				    <span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span>
+				    <input type="file" name="fileUP" id ="fileUP"/></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+				  </div>
+</div>
+          </td>
+          </tr>
+         <tr>
+             <td colspan="3">
+             <div style="float: left;">
+                <input class="span4" style="width:55px;padding-top: 3px;" type="checkbox" placeholder=""  name="nty_email" id="nty_email" onclick="showEmailSub();"></div>
+               <div style="float: left;"><label style="color:#000;vertical-align: 14px;"><b>Notify parents by email</b></label></div>
+               <div style="width:100%;height:1px; clear:both;">&nbsp;</div>   
+                </td>
+        </tr>
+
+  <tr><td style="" rowspan="8" colspan="2"><span id ="emailSub" style="color:#000;font-size: 14px;" ></span>&nbsp;</td>
+           
+            <td style="border:none;text-align:center;padding-bottom: 132px;" >
+                        <!-- <button type="button" class="btn"
+                            onclick="sendSmS(); return false;">Save</button> -->
+                      <button type="submit" class="btn">  &nbsp;&nbsp;&nbsp; Save&nbsp; &nbsp;&nbsp; </button>
+                    </td>
+        </tr>
+
+       </table>
+
+    </div>
+    </fieldset>
+  </form>
+</div>
+<script type="text/javascript">
+onloadmethods();
+</script>
+

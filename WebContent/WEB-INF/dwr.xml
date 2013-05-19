@@ -54,6 +54,17 @@
     <create creator="new" javascript="StudentDWR">
 		<param name="class" value="com.schooltrix.dwr.StudentDWR"/>
     </create>
+    
+    <create creator="new" javascript="NotificationGetDWR">
+		<param name="class" value="com.schooltrix.dwr.NotificationGetDWR"/>
+    </create>
+   
+    <create creator="new" javascript="AssignmentGetDWR">
+		<param name="class" value="com.schooltrix.dwr.AssignmentGetDWR"/>
+    </create>
+    <create creator="new" javascript="ParentDetailsDWR">
+		<param name="class" value="com.schooltrix.dwr.ParentDetailsDWR"/>
+    </create>
 
     
   </allow>

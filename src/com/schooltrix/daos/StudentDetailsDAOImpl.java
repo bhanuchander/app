@@ -152,6 +152,30 @@ public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements Stud
 		System.out.println("in saveee");
 		return false;
 	}
+	
+	public ParentStudentMap getStudentParentMap(final String field,final String pd_id) throws Exception {
+
+		try {
+			return (ParentStudentMap) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)
+								throws HibernateException, SQLException{							
+							Criteria isExpiredCrit = session.createCriteria(ParentStudentMap.class);
+							isExpiredCrit.add(Restrictions.eq(field, pd_id));
+							List list = isExpiredCrit.list();
+							if(list.size()>0)
+								return list.get(0);
+							else
+								return null;
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public boolean insertStudentSectionMap(StudentSectionMap ssm) {
 		// TODO Auto-generated method stub
@@ -159,6 +183,29 @@ public class StudentDetailsDAOImpl extends STHibernateDAOSupport implements Stud
 		System.out.println("in saveee");
 		return true;
 	}
+	
+	public StudentSectionMap getStudentSectionMap(final String field,final String value) throws Exception{
+
+		try {
+			return (StudentSectionMap) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)
+								throws HibernateException, SQLException{							
+							Criteria Crit = session.createCriteria(StudentSectionMap.class);
+							Crit.add(Restrictions.eq(field, value));
+							List list = Crit.list();
+							if(list.size()>0)
+								return list.get(0);
+							else
+								return null;
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public boolean insertStudentErrorLog(StudentxlErrorTemp setemp) throws Exception{
 		// TODO Auto-generated method stub

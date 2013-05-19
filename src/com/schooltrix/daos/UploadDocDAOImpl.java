@@ -6,8 +6,10 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -102,6 +104,44 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 			throw re;
 		}
 	}
+	
+	public List getAssignemets(final String bm_id,final String cm_id)throws Exception {
+
+		
+		List assignList=null;
+		try {
+			//System.out.println("in branchMasterList DAOIMPL");
+			assignList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+						
+						/*	select * from upload_documents where ((to_which like '%,4,%') or
+									(to_which like '4,%') or (to_which like '%,4') or (to_which like '4') );*/
+							
+							String qu = "select upload_date,assign_type ,subject,assg_desc,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
+									"or (to_which like '%,"+cm_id+"') or (to_which like '"+cm_id+"'))  and ((bm_id like '%,"+bm_id+",%') or	(bm_id like '"+bm_id+",%') " +
+									"or (bm_id like '%,"+bm_id+"') or (bm_id like '"+bm_id+"'))  and    to_whome in ('Parents','0') and upload_type='Assignment' ";
+							
+							System.out.println("##"+qu);
+							StringType st = new StringType();
+							SQLQuery sqlqu = session.createSQLQuery(qu);	
+							sqlqu.addScalar("upload_date", st);
+							sqlqu.addScalar("assign_type",st );
+							sqlqu.addScalar("subject", st);
+							sqlqu.addScalar("assg_desc",st);
+							sqlqu.addScalar("file_name", st);
+							
+							System.out.println("in SIZE"+sqlqu.list().size());
+							return sqlqu.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return assignList;
+		}
+		return assignList;
+	}
+	
 
 	@Override
 	public List findAll() throws Exception {

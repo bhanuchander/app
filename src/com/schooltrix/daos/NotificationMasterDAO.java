@@ -26,4 +26,6 @@ public interface NotificationMasterDAO extends Serializable {
 	public List findByPropertyList(final String filed,final String value)throws Exception ;
 	
 	public List findAll()throws Exception ;
+	
+	public List getNotificationForParent(final String BM_ID,final String classID)  throws Exception;
 }

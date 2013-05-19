@@ -304,7 +304,8 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 		} else if (index == 7) {
 			//validate from DB --section name is dr in BD or not
 			sectionID 					= getSectionID(value);//here  section id is req for getting sectionId..it's further give to getsectionclassMapId(),,
-			sectionClassMapID	= 	getSctionClassMapID(bm_id,classAdmitID,sectionID);
+		//	sectionClassMapID	= 	getSctionClassMapID(bm_id,classAdmitID,sectionID);
+			sectionClassMapID	= 	getSctionClassMapID(bm_id,classCurID,sectionID);//based on current class only  v get section class map id....
 		/*	if (sectionID == null || sectionID == "null" ) {
 				return false;
 			}else*/
@@ -617,11 +618,11 @@ public class StudentMasterUploadAction extends ActionSupport implements ServletR
 	
 	
 
-	private String getSctionClassMapID(String bM_ID, String classAdmitID2,
+	private String getSctionClassMapID(String bM_ID, String curClassID,
 			String sectionID2) {
 		SectionMasterDAO smd = (SectionMasterDAO)ServiceFinder.getContext(request).getBean("SectionMasterDAO");
 		try {
-			SectionClassMap sectionMasterCheck = smd.findByProperty3(bM_ID, classAdmitID2, sectionID2);
+			SectionClassMap sectionMasterCheck = smd.findByProperty3(bM_ID, curClassID, sectionID2);
 			return sectionMasterCheck.getScmId()+"";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

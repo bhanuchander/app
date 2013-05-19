@@ -24,6 +24,7 @@ import com.schooltrix.hibernate.StudentDetails;
 import com.schooltrix.hibernate.UserMaster;
 import com.schooltrix.hibernate.UserType;
 import com.schooltrix.managers.ServiceFinder;
+import com.schooltrix.utils.StudentDetailsAnalysis;
 
 
 public class LoginAction extends ActionSupport implements SessionAware,ServletRequestAware{
@@ -145,6 +146,29 @@ public class LoginAction extends ActionSupport implements SessionAware,ServletRe
 				
 					session.put("city", parentDetails.getCity());
 					session.put("stateID", parentDetails.getState());
+					/*Start
+					 * this code added after some prob dwr...setting session in NotificationDWR....2013-05-19*/
+					StudentDetails studentDetails1 = null;
+					String classID = null;
+					
+					StudentDetailsAnalysis studentDetailsAnalysis = new StudentDetailsAnalysis();
+					studentDetails1 = studentDetailsAnalysis.getStudentDetails(request, parentDetails.getPdId()+"", userMaster.getBmId()+"");
+				
+					if (studentDetails1 != null) {
+						//classID = studentDetails.getClassAdmittedIn();
+						classID  =  studentDetailsAnalysis.getCurrentClassID(request,studentDetails1.getStuId()+"",userMaster.getBmId()+"");//return may null
+						
+						/*these session usefull total parent dashboard .... so for time being .. ...
+						 * these session removed after logout only...
+						 * Assignmenet ..and remain things use these session to get thier respected values... 
+						 * */
+						System.out.println(classID+"*classID*"+studentDetails1.getStuId());
+						
+						session.put("StuID", studentDetails1.getStuId()+"");
+						session.put("ClassID", classID);
+					/*END*/
+					}
+					
 					
 					//return "";	yet to decided 
 					return "parentViewTemp";

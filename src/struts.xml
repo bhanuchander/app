@@ -272,6 +272,15 @@
 				  <param name="bufferSize">1024</param>               
 	       </result>  
       </action>
+	   <action name="downloadUploadDoc" class="com.schooltrix.actions.UploadDocDownloadAction">      
+	       <result name="success" type="stream">  
+			       <param name="contentType">application/octet-stream</param>
+				  <param name="contentDisposition">attachment;filename="${fileName}"</param>
+<!-- 				  <param name="contentDisposition">attachment;filename=\"${fileName}\"</param> -->
+				  <param name="bufferSize">1024</param>               
+	       </result>  
+	       <result name="fail" type="redirectAction">BeforeLogin</result>	
+      </action>
 		
 		
 		

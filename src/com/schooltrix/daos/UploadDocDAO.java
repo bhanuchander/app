@@ -26,5 +26,7 @@ public interface UploadDocDAO extends Serializable {
 	
 	public List findByPropertyList(final String filed,final String value)throws Exception ;
 	
+	public List getAssignemets(final String bm_id,final String cm_id)throws Exception ;
+
 	public List findAll()throws Exception ;
 }

@@ -117,4 +117,33 @@ public class NotificationMasterDAOImpl extends STHibernateDAOSupport implements 
 			return null;
 		}
 	}
+	@Override
+	public List getNotificationForParent(final String BM_ID,final String classID)  throws Exception{
+
+		
+		List notificationList=null;
+		try {
+			//System.out.println("in branchMasterList DAOIMPL");
+			notificationList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+						
+							String qu= "select notif_subject,notif_body,ondate from notification_master where bm_id='"+BM_ID+"' and (to_class in("+classID+")  or  to_whom ='AllParents')  ";
+							System.out.println("##"+qu);
+							SQLQuery sqlqu = session.createSQLQuery(qu);	
+							sqlqu.addScalar("notif_subject", new StringType());
+							sqlqu.addScalar("notif_body", new StringType());
+							sqlqu.addScalar("ondate", new StringType());
+							System.out.println("in SIZE"+sqlqu.list().size());
+							return sqlqu.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return notificationList;
+		}
+		return notificationList;
+	}
+	
+	
 }

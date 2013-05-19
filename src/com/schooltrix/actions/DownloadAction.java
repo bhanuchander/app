@@ -19,10 +19,12 @@ public class DownloadAction extends ActionSupport implements ServletRequestAware
 	   private String fileName;
 	   HttpServletRequest request = null;
 	   public String getFileName() {
+		   System.out.println("in get file"+fileName);
 		return fileName;
 	}
 	   
 	public void setFileName(String fileName) {
+		System.out.println("inset file"+fileName);
 		this.fileName = fileName;
 	}
 	public InputStream getInputStream(){  

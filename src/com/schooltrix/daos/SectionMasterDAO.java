@@ -31,6 +31,8 @@ public interface SectionMasterDAO extends Serializable {
 
 	public boolean saveSectionClassMap(SectionClassMap transientInstance) throws Exception ;
 	
+	public SectionClassMap getSectionClassMap(final String filed,final Long value) throws Exception ;
+
 	public SectionClassMap findByProperty3(final String bm_d,final String class_id,final String section_id) throws Exception;
 	
 }
