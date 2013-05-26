@@ -282,7 +282,9 @@
 	       <result name="fail" type="redirectAction">BeforeLogin</result>	
       </action>
 		
-		
+		<action name="ViewAllListParent" >
+			<result  type="tiles" >/ViewAllListParentDef</result>
+		</action>
 		
 		
 	</package>
