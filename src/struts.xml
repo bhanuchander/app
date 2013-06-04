@@ -141,7 +141,7 @@
 					  <!--   <result name="success"  type="tiles" >/adminNonAddUser</result> -->
 		</action>
 				
-		<action name="uploadDocActionName"    class="com.schooltrix.actions.UploadDocAction"  method="uploadDoc">
+		<action name="uploadDocActionName"    class="com.schooltrix.actions.UploadDocAction"  method="uploadDocument">
 		    <interceptor-ref name="fileUpload">
 			    <!--     <param name="maximumSize">2097152</param> -->
 			      <!--   <param name="maximumSize">1048576</param> --><!-- 1mb -->

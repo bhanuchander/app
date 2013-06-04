@@ -4,24 +4,33 @@
 
 String data = request.getParameter("assAlldata");
 String subData = request.getParameter("notifAlldata");
-System.out.println(subData+"#-----#"+data);
+String acaaData = request.getParameter("acadAlldata");
+System.out.println(subData+"#-----#"+data+"***"+acaaData);
  %>
  
    <script type="text/javascript">
    		 jQuery(document).ready(function () {
 			  var datatemp = '<%=request.getParameter("assAlldata")%>';  //Assignments
 			  var notiftemp = '<%=request.getParameter("notifAlldata")%>';  //Notifications
-		   		 
-	   		 if (datatemp == null || datatemp == "null" ) {
+			  var acadtemp = '<%=request.getParameter("acadAlldata")%>';  //Academics
+	   		 if (datatemp != null && datatemp != "null" ) {
 	   		 //NotifMainDiv-AssignMainDiv
-				document.getElementById("AssignMainDiv").style.display='none';
-			 	document.getElementById("NotifMainDiv").style.display='block';
-				onloadNotiFication();
-			} else {
 				document.getElementById("AssignMainDiv").style.display='block';
-	   		  	document.getElementById("NotifMainDiv").style.display='none';
+			 	document.getElementById("NotifMainDiv").style.display='none';
+				document.getElementById("AssignMainDiv").style.display='none';
+				onloadNotiFication();
+			} else  if (notiftemp != null && notiftemp != "null" ) {
+				document.getElementById("AssignMainDiv").style.display='none';
+	   		  	document.getElementById("NotifMainDiv").style.display='block';
+				document.getElementById("AssignMainDiv").style.display='none';
 			
 				onloadAssign();
+			} else  if (acadtemp != null && acadtemp != "null" ) {
+				document.getElementById("AcademicMainDiv").style.display='block';
+				document.getElementById("AssignMainDiv").style.display='none';
+	   		  	document.getElementById("NotifMainDiv").style.display='none';
+			
+				onloadAcademics();
 			}
 			
 		});
@@ -214,6 +223,133 @@ System.out.println(subData+"#-----#"+data);
 				$("#assignBodyID1").text(assignFileWithMsg); 
 
 		}
+		
+			function onloadAcademics(){
+	
+			  var acdtemp = '<%=request.getParameter("acadAlldata")%>';  
+			  var   data  = acdtemp.split("~");
+			  
+			   var subjectMasterListtemp1 = '<%=request.getParameter("acadAllSubdata")%>';		
+			   var subjectMasterList1 =  subjectMasterListtemp1.split("~");
+			
+			if(acdtemp.length>0){
+								var newAcademicGrid  	 = jQuery('#academicsDynamicTable');
+							   	var newAcademicStr = '';     
+				   						newAcademicStr += '<table class="table table-bordered" width="100%" style="margin-bottom:0px;">';
+										newAcademicStr += '<tr><th width="19%">Date</th><th width="20%">Subject</th><th width="30%">Description</th><th width="12%" style="text-align:center;">View</th></tr>';
+					                     
+				                     for(var i = 0; i < data.length; i++) {
+				                         
+				                         var academicSubjID 			= i+"academic_s";
+			                           	   var academicDescID 			= i+"academic_d";
+				                           var academicFileNameID 	=	i+"academic_f"; ; 
+												var tempTemp = data[i];
+												var temp = data[i].split('*');
+						 						//here required subject wise split
+						 						var subjectsSplit = temp[1].split(',');
+						 						
+						 						var subjectNAem = null;
+						 						
+						 						for ( var p = 0; p < subjectsSplit.length; p++) {//Subject wise.................................
+						 					
+													//alert(subjectsSplit[p]);//assume	2
+													if (subjectsSplit[p] != 0) {
+													
+														//alert(subjectMasterList.length+"--->subjectMasterList.length");
+													    for(var qq = 0; qq < subjectMasterList1.length; qq++) {
+													    
+															    var tempS = subjectMasterList1[qq].split("*");
+															    	//alert(tempS+"%%"+tempS[0]+"##tempS##"+subjectsSplit[p]);
+															    	//alert(subjectMasterList[qq]+"**masterSub"+tempS[0]+"^^"+tempS.length);
+															    if (tempS[0] == subjectsSplit[p]) {
+																	subjectNAem = tempS[1];
+																	break;
+																}	
+															    	
+															}
+													newAcademicStr += '<tr>';
+							 						
+													newAcademicStr += '<td>'+temp[0]+'</td>';		//2										
+													//	subject,	assg_desc,	file_name
+													//here actually not doing anything with subject name.....
+													newAcademicStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicSubjID+'" value="'+temp[1]+'">'+subjectNAem+'</label ></td>';
+	/* 												newAcademicStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicSubjID+'" value="'+temp[2]+'">'+temp[2]+'</label ></td>'; */
+													
+													newAcademicStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicDescID+'" value="'+temp[2]+'">'+temp[2]+'</label >	</td>';
+													
+													newAcademicStr += '<td><a href="#myModal_4" id= "'+i+'"  value="yuyu" style="color:#666; text-decoration:none; padding-left:26px;" data-toggle="modal" onclick="openModelWithAcademicsData(id);"><i class="icon-eye-open"></i> <input type="hidden" id='+academicFileNameID+' value="'+temp[3]+'"></a></td>';
+													
+													newAcademicStr += '</tr> ';	
+															
+														}
+													//here based on this thid get subject name from above method
+												}
+						 				
+											}
+								newAcademicStr += '</table>'; 
+					   		 newAcademicGrid.html(newAcademicStr);  
+					   		 
+					   		 //var hhhhr = "C:\Program Files\Apache Software Foundation\Tomcat 7.0\webapps\Schooltrix\First.html";
+					   		// newAssignmentAllGrid.html('<form method="post" id="allForm1" action="ViewAllListParent.action"><a href="#" id= "66"  value="yuyu" style="color:#666; text-decoration:none; padding-left:26px;" data-toggle="modal" onclick="nextPageView()"><i class="icon-eye-open"></i><input type="hidden" id="assAlldata" name="assAlldata"  value="'+data+'">View1 All</a></form>');
+					   		 
+					   	   document.getElementById("academicsDynamicTable").style.display='block';
+					       document.getElementById("noAcademics").style.display='none';
+					       }else{
+					       //noNotification			notificationDynamicTable	
+					       document.getElementById("academicsDynamicTable").style.display='none';
+					       document.getElementById("noAcademics").style.display='block';
+					   		} 
+				
+		}
+						
+	function openModelWithAcademicsData(vall){
+
+		var academicTypeID 	= '#'+vall+"academic_t";//for notif body
+		var academicSubjID 	= '#'+vall+"academic_s";//for notif body
+		var academicDescID 		= '#'+vall+"academic_d";//for sub 
+		var academicFileNameID 		= '#'+vall+"academic_f";//for sub 
+		
+		var academicFileName 		= jQuery(academicFileNameID).val();		//text || hidden field value
+		var academicDesc 			= $(academicDescID).attr('value');	//fetch lable value
+			
+		//var academicFileWithMsg ='      to download the  '+academicDesc;//sir said not req file desc here..
+		var academicFileWithMsg ='      to download the  academic metirial.';
+		//	<a href="#">Click here</a> to download the Holiday Home work for Summer Vacation 2013
+			
+	/* 		var p = document.getElementById('academicBodyID');
+			if (p != null) {
+				
+			p.parentNode.removeChild(p);
+			} */
+			
+			
+		 //Get the element that we want to append to
+         var divEl = document.getElementById('academicsBodyID');
+     //    alert(divEl);
+        document.getElementById('academicsBodyID').innerHTML = "";
+         //divEl.text('');
+         
+        //Create the new <a>
+        var aElem = document.createElement('a');
+       // aElem.href="javascript:Tesssst();";
+        aElem.href="downloadUploadDoc.action?type=AcademicMaterial&fileName="+academicFileName;
+       // aElem.href="http://www.google.com";
+       
+       
+        //Create a text node to hold the text of the <a>
+        var aElemTN = document.createTextNode('Click here');
+        //Append the <a> text node to the <a> element
+        aElem.appendChild(aElemTN);
+        //Append the new link to the existing <div>
+        divEl.appendChild(aElem);
+		
+		$("#myModalLabelAcademics").text(academicDesc); 
+		//$("#academicacademic").text(academicFileWithMsg); 
+		$("#academicsBodyID1").text(academicFileWithMsg); 
+
+		}
+		
+		
 </script>
  <div class="reg_mainCon">
   <div style="padding:20px;">
@@ -222,8 +358,19 @@ System.out.println(subData+"#-----#"+data);
       <div class="span12">
         <div style="padding:0px 10px; border:1px #CCCCCC solid;margin-bottom:10px;">
           <h4>Assignments</h4>          
-          <div id="noAssignments" class="alert">No new Assignments</div>
+          <div id="noAssignments" class="alert">No  Assignments found</div>
            <div id="assignmentDynamicTable"></div>          
+        </div>
+      </div>
+      <!--/span-->
+    </div>		<!--Assignment End-->
+    
+ <div class="row-fluid" id="AcademicMainDiv">						<!--Assignment Start-->
+      <div class="span12">
+        <div style="padding:0px 10px; border:1px #CCCCCC solid;margin-bottom:10px;">
+          <h4>Academic</h4>          
+          <div id="noAcademics" class="alert">No Academic Metirial found</div>
+           <div id="academicsDynamicTable"></div>          
         </div>
       </div>
       <!--/span-->
@@ -261,6 +408,22 @@ System.out.println(subData+"#-----#"+data);
 	  </div>
 	</div>
 	<!-- AssignMenet Modal-1 End-->
+	
+		<!-- Academic Modal-4 -->
+	<div id="myModal_4" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabelAcademics">Holiday Homework</h3>
+	  </div>
+	  <div class="modal-body">
+		<p id="academicsBodyID" style="display:inline"></p>&nbsp;&nbsp;<p id="academicsBodyID1" style="display:inline"></p>
+	<!-- 	<p id="assignBodyID"><a href="#">Click here</a> to download the Holiday Home work for Summer Vacation 2013</p> -->
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	  </div>
+	</div>
+	<!-- Academic Modal-4 End-->
 	
 		<!-- Notification Modal-1 -->
 	<div id="myModal_1" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

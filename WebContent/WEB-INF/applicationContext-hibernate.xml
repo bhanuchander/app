@@ -119,6 +119,9 @@
 				<value>com/schooltrix/hibernate/FranchiseMaster.hbm.xml</value>
 				<value>com/schooltrix/hibernate/NotificationMaster.hbm.xml</value>
 				<value>com/schooltrix/hibernate/QuickSms.hbm.xml</value>
+				
+				<value>com/schooltrix/hibernate/UploadDocument.hbm.xml</value>
+				<value>com/schooltrix/hibernate/UploadDocumentClassBranchMap.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

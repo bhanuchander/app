@@ -16,13 +16,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import com.schooltrix.hibernate.UploadDocumentClassBranchMap;
 import com.schooltrix.hibernate.UploadDocuments;
-import com.schooltrix.hibernate.UploadDocuments;
+import com.schooltrix.hibernate.UploadDocument;
 
 public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDocDAO{
 	
 	@Override
-	public boolean save(UploadDocuments transientInstance) throws Exception {
+	public boolean save(UploadDocument transientInstance) throws Exception {
 		
 			getHibernateTemplate().saveOrUpdate(transientInstance);
 			System.out.println("in saveee");
@@ -30,7 +31,7 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 		
 	}
 	@Override
-	public boolean update(UploadDocuments transientInstance) throws Exception {
+	public boolean update(UploadDocument transientInstance) throws Exception {
 		try {
 			getHibernateTemplate().update(transientInstance);
 			return true;
@@ -40,7 +41,7 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 		}
 	}
 	@Override
-	public boolean delete(UploadDocuments persistentInstance) throws Exception {
+	public boolean delete(UploadDocument persistentInstance) throws Exception {
 		try {
 			getHibernateTemplate().delete(persistentInstance);
 			return true;
@@ -50,13 +51,13 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 		}
 	}
 	@Override
-	public UploadDocuments findByProperty(final String filed,final String value) throws Exception {
+	public UploadDocument findByProperty(final String filed,final String value) throws Exception {
 		try {
-			return (UploadDocuments) getHibernateTemplate().execute(
+			return (UploadDocument) getHibernateTemplate().execute(
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)
 								throws HibernateException, SQLException{							
-							Criteria isExpiredCrit = session.createCriteria(UploadDocuments.class);
+							Criteria isExpiredCrit = session.createCriteria(UploadDocument.class);
 							isExpiredCrit.add(Restrictions.eq(filed, value));
 							List list = isExpiredCrit.list();
 							if(list.size()>0)
@@ -75,12 +76,12 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 	
 	@Override
 	public List findByPropertyList(final String filed,final String value) throws Exception {
-		List UploadDocumentsList=null;
+		List UploadDocumentList=null;
 		try {
-			UploadDocumentsList = (List) getHibernateTemplate().execute(
+			UploadDocumentList = (List) getHibernateTemplate().execute(
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)throws HibernateException, SQLException {
-							Criteria crit = session.createCriteria(UploadDocuments.class);
+							Criteria crit = session.createCriteria(UploadDocument.class);
 							crit.add(Restrictions.eq(filed, value));
 							//crit.addOrder(Order.desc("sno"));
 							return crit.list();
@@ -90,22 +91,22 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 			ex_.printStackTrace();
 			return null;
 		}
-		return UploadDocumentsList;
+		return UploadDocumentList;
 	}
 	
 	
 	
 	@Override
-	public UploadDocuments findById(java.lang.Long id) throws Exception {
+	public UploadDocument findById(java.lang.Long id) throws Exception {
 		try {
-			UploadDocuments instance = (UploadDocuments) getHibernateTemplate().get("com.schooltrix.hibernate.UploadDocuments", id);
+			UploadDocument instance = (UploadDocument) getHibernateTemplate().get("com.schooltrix.hibernate.UploadDocument", id);
 			return instance;
 		} catch (Exception re) {
 			throw re;
 		}
 	}
 	
-	public List getAssignemets(final String bm_id,final String cm_id)throws Exception {
+/*	public List getAssignemets(final String bm_id,final String cm_id)throws Exception {
 
 		
 		List assignList=null;
@@ -115,8 +116,8 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)throws HibernateException, SQLException {
 						
-						/*	select * from upload_documents where ((to_which like '%,4,%') or
-									(to_which like '4,%') or (to_which like '%,4') or (to_which like '4') );*/
+							select * from upload_documents where ((to_which like '%,4,%') or
+									(to_which like '4,%') or (to_which like '%,4') or (to_which like '4') );
 							
 							String qu = "select upload_date,assign_type ,subject,assg_desc,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
 									"or (to_which like '%,"+cm_id+"') or (to_which like '"+cm_id+"'))  and ((bm_id like '%,"+bm_id+",%') or	(bm_id like '"+bm_id+",%') " +
@@ -141,6 +142,83 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 		}
 		return assignList;
 	}
+	*/
+
+	public List getAssignemets(final String bm_id,final String cm_id)throws Exception {		
+		
+		List assignList=null;
+		try {
+			//System.out.println("in branchMasterList DAOIMPL");
+			assignList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							
+/*							String qu = "select upload_date,assign_type ,subject,assg_desc,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
+									"or (to_which like '%,"+cm_id+"') or (to_which like '"+cm_id+"'))  and ((bm_id like '%,"+bm_id+",%') or	(bm_id like '"+bm_id+",%') " +
+									"or (bm_id like '%,"+bm_id+"') or (bm_id like '"+bm_id+"'))  and    to_whome in ('Parents','0') and upload_type='Assignment'  order by upload_date desc";
+*/							
+							String qu ="select ud.upload_date as upload_date,ud.assign_type as assign_type ,ud.subject as subject,ud.assg_desc as assg_desc,ud.file_name as file_name " +
+									"from upload_document ud inner join upload_document_class_branch_map udbc on ud.ud_id=udbc.ud_id  " +
+									"where  ud.subject in (select subm_id from subject_class_map where cm_id = '"+cm_id+"') " +
+									"and udbc.bm_id='"+bm_id+"' and udbc.cm_id='"+cm_id+"' and    ud.to_whome in ('Parents','0') and ud.upload_type='Assignment'  order by ud.upload_date desc";
+							
+							System.out.println("##"+qu);
+							StringType st = new StringType();
+							SQLQuery sqlqu = session.createSQLQuery(qu);	
+							sqlqu.addScalar("upload_date", st);
+							sqlqu.addScalar("assign_type",st );
+							sqlqu.addScalar("subject", st);
+							sqlqu.addScalar("assg_desc",st);
+							sqlqu.addScalar("file_name", st);
+							
+							System.out.println("in SIZE"+sqlqu.list().size());
+							return sqlqu.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return assignList;
+		}
+		return assignList;
+	}
+	
+	public List getAcademics(final String bm_id,final String cm_id)throws Exception {		
+		
+		List assignList=null;
+		try {
+			//System.out.println("in branchMasterList DAOIMPL");
+			assignList = (List) getHibernateTemplate().execute(
+					new HibernateCallback() {
+						public Object doInHibernate(Session session)throws HibernateException, SQLException {
+							
+/*							String qu = "select upload_date,assign_type ,subject,assg_desc,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
+									"or (to_which like '%,"+cm_id+"') or (to_which like '"+cm_id+"'))  and ((bm_id like '%,"+bm_id+",%') or	(bm_id like '"+bm_id+",%') " +
+									"or (bm_id like '%,"+bm_id+"') or (bm_id like '"+bm_id+"'))  and    to_whome in ('Parents','0') and upload_type='Assignment'  order by upload_date desc";
+*/							
+							String qu ="select ud.upload_date as upload_date,ud.subject as subject,ud.assg_desc as assg_desc,ud.file_name as file_name " +
+									"from upload_document ud inner join upload_document_class_branch_map udbc on ud.ud_id=udbc.ud_id  " +
+									"where  ud.subject in (select subm_id from subject_class_map where cm_id = '"+cm_id+"') " +
+									"and udbc.bm_id='"+bm_id+"' and udbc.cm_id='"+cm_id+"' and    ud.to_whome in ('Parents','0') and ud.upload_type='AcademicMaterial'  order by ud.upload_date desc";
+							
+							System.out.println("##"+qu);
+							StringType st = new StringType();
+							SQLQuery sqlqu = session.createSQLQuery(qu);	
+							sqlqu.addScalar("upload_date", st);
+							sqlqu.addScalar("subject", st);
+							sqlqu.addScalar("assg_desc",st);
+							sqlqu.addScalar("file_name", st);
+							
+							System.out.println("in SIZE"+sqlqu.list().size());
+							return sqlqu.list();
+						}
+					});
+		} catch (Exception ex_) {
+			ex_.printStackTrace();
+			return assignList;
+		}
+		return assignList;
+	}
+	
 	
 	//this is same like getAssignemets....
 	public List getUtilities(final String bm_id,final String cm_id,final String uptype)throws Exception {
@@ -153,14 +231,16 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 					new HibernateCallback() {
 						public Object doInHibernate(Session session)throws HibernateException, SQLException {
 						
-						/*	select * from upload_documents where ((to_which like '%,4,%') or
-									(to_which like '4,%') or (to_which like '%,4') or (to_which like '4') );*/
 							
-							String qu = "select upload_date,upload_type ,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
+						/*	String qu = "select upload_date,upload_type ,file_name  from upload_documents where ((to_which like '%,"+cm_id+",%') or	(to_which like '"+cm_id+",%') " +
 									"or (to_which like '%,"+cm_id+"') or (to_which like '"+cm_id+"'))  and ((bm_id like '%,"+bm_id+",%') or	(bm_id like '"+bm_id+",%') " +
 									"or (bm_id like '%,"+bm_id+"') or (bm_id like '"+bm_id+"'))  and    to_whome in ('Parents','0') and upload_type='"+uptype+"'  order by upload_date desc limit 1";
+						*/	
+							String qu ="select ud.upload_date as upload_date,ud.upload_type as upload_type ,ud.file_name as file_name " +
+									"from upload_document ud inner join upload_document_class_branch_map udbc on ud.ud_id=udbc.ud_id  " +
+									"where  udbc.bm_id='"+bm_id+"' and udbc.cm_id='"+cm_id+"' and    ud.to_whome in ('Parents','0') and ud.upload_type='"+uptype+"' order by ud.upload_date desc limit 1";
 							
-							System.out.println("getUtilities#"+qu);
+							System.out.println(uptype+"getUtilities#"+qu);
 							StringType st = new StringType();
 							SQLQuery sqlqu = session.createSQLQuery(qu);	
 							sqlqu.addScalar("upload_date", st);
@@ -178,12 +258,24 @@ public class UploadDocDAOImpl extends STHibernateDAOSupport implements UploadDoc
 		return assignList;
 	}
 	
+	public boolean saveUploadClassBranchMap(UploadDocumentClassBranchMap transientInstance) throws Exception {
+		
+		getHibernateTemplate().save(transientInstance);
+		//System.out.println("in saveee");
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	@Override
 	public List findAll() throws Exception {
 		try {
-			String queryString = "from UploadDocuments";
+			String queryString = "from UploadDocument";
 			return getHibernateTemplate().find(queryString);
 		} catch (Exception re) {
 			re.printStackTrace();

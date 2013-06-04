@@ -13,12 +13,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.schooltrix.daos.InstitutionMasterDAO;
 import com.schooltrix.daos.UploadDocDAO;
 import com.schooltrix.daos.UserMasterDAO;
 import com.schooltrix.hibernate.InstitutionMaster;
+import com.schooltrix.hibernate.UploadDocument;
+import com.schooltrix.hibernate.UploadDocumentClassBranchMap;
 import com.schooltrix.hibernate.UploadDocuments;
 import com.schooltrix.managers.ServiceFinder;
 
@@ -39,8 +44,166 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 	public String exeString() {
 		return null;
 	}
+	//new method after..major DB change ..respect to details tables...
+	public String uploadDocument() {
+
+	if (fileUPFileName != null) {
+		
+		if(fileValidation()){
+				
+		try {
+			 String filePath 				= request.getSession().getServletContext().getRealPath("/")+"UploadDoc/";			
+			 String im_id 					=	(String)session.get("IM_ID");
+			 String institutionName = (String)session.get("IM_SN");
+
+			 String sm_id[] 				=	request.getParameterValues("schoolNames");
+			 String bm_id[] 				=	request.getParameterValues("branchNames");
+			 String cm_ids[] 			=	request.getParameterValues("selectClass");
+			 
+			 String cmBMJson 		=	(String)request.getParameter("classBMIds");//hiden field*******************
+			 
+			// JSONArray jsonMainArrayq = new JSONArray(cmBMJson.toString());
+			// System.out.println(jsonMainArrayq+"*********"+jsonMainArrayq.length());
+			 System.out.println("cmBMJson::"+cmBMJson);
+			 
+			 JSONTokener jsonTokener = new JSONTokener(cmBMJson);
+			 
+		/*	    JSONArray totalObject = new JSONArray(jsonTokener);
+		        System.out.println(totalObject);
+		        for(int i=0;i<totalObject.length();i++){
+		            JSONObject obj = totalObject.getJSONObject(i);
+		            System.out.println(obj.getString("A"));
+		            System.out.println(obj.getString("B"));
+		            JSONArray arr =obj.getJSONArray("C");
+		            for(int k=0;k<arr.length();k++){
+		                System.out.println(arr.getString(k));
+		            }
+			 */
+			 
+			 String selectSubject		=	request.getParameter("selectSubject");
+			 
+			 String classIds 		=  "";
+			 String smIds		 	=  "";
+			 String bmIds 			=  "";
+			 
+			 String selectType 			=	request.getParameter("selectType");
+			 String uploadType 		=	request.getParameter("uploadType");
+			 String assignmentType =	request.getParameter("assignmentType");
+			 String assdesc 					=	request.getParameter("desc");
+			 String fileUP 				=	request.getParameter("fileUP");
+			 String nty_email 			=	request.getParameter("nty_email");
+			
+			 System.out.println("selectClass--"+cm_ids.length+"--"+selectType+"--"+uploadType+"-assignmentType-"
+			 +assignmentType+"--"+assdesc+"--"+selectSubject+"--"+fileUPFileName+"--"+nty_email);
+			 
+			 
+			 if(assignmentType == null){ 
+				 assignmentType = "";
+				}
+	/*		
+		 if(selectSubject == null){ 
+				 selectSubject = new String[1];
+			 }*/
+			 
+			 if(nty_email == null || nty_email == "null"){
+				 nty_email = "N";
+			 }else{
+				 nty_email = "Y";
+			 }
+
+			 String uniqueFileName ="";
+			 
+			 File fileToCreate = null;
+			 UploadDocument uploadDocData = new UploadDocument();
+			 UploadDocDAO uploadDocDao = null;
+			 
+			 filePath = filePath+"/"+institutionName+"/"+uploadType+"/";//change ?
+				
+			 uploadDocData.setImId(im_id);
+			 uploadDocData.setToWhome(selectType);
+			 uploadDocData.setUploadType(uploadType);
+			 
+			 uniqueFileName = getFileUniqueName();	
+			 uploadDocData.setFileName(uniqueFileName);
+
+			 uploadDocData.setAssignType(assignmentType);
+			 uploadDocData.setAssgDesc(assdesc);
+			 uploadDocData.setSubject(selectSubject);
+
+			 uploadDocData.setNotifyPaEmail(nty_email);
+			 uploadDocData.setNotifyPaEmailFlag("0");
+			 
+			 SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			 uploadDocData.setUploadDate(java.sql.Timestamp.valueOf(sdf.format(new Date())));
+				
+			 uploadDocData.setProcessedDate(java.sql.Timestamp.valueOf(sdf.format(new Date())));
+			 
+			 try {
+				 uploadDocDao = (UploadDocDAO)ServiceFinder.getContext(request).getBean("UploadDocHibernateDao"); 		
+				 uploadDocDao.save(uploadDocData);
+				fileToCreate = new File(filePath,uniqueFileName);// unique file name
+					FileUtils.copyFile(this.fileUP, fileToCreate);
+					
+					UploadDocumentClassBranchMap uploClassBranchMap = null;
+					
+					// System.out.println("jsonTokener:"+jsonTokener);
+					 
+					 JSONArray jsonMainArray = new JSONArray(jsonTokener);
+					 
+					// System.out.println("jsonMainArray::"+jsonMainArray.length());
+					 for (int i = 0; i < jsonMainArray.length(); i++) {
+						 
+						 JSONObject jsonObject =  jsonMainArray.getJSONObject(i);						 
+						String class_ID = jsonObject.getString("class_id");
+						if (isClassIDAccess(class_ID,cm_ids)) {					
+							JSONArray bm_IDs = jsonObject.getJSONArray("bms");
+				            for(int k=0;k<bm_IDs.length();k++){
+				            	uploClassBranchMap = new UploadDocumentClassBranchMap();
+				              //  System.out.println(bm_IDs.getString(k)+"**"+class_ID);
+				    			uploClassBranchMap.setBmId(bm_IDs.getString(k));
+				    			uploClassBranchMap.setCmId(class_ID);
+								uploClassBranchMap.setUdId(uploadDocData.getUdId()+"");
+								uploadDocDao.saveUploadClassBranchMap(uploClassBranchMap);			                
+				            }
+						}
+					}
+					
+					session.put("msg","Success");
+					
+					System.out.println("success");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				session.put("msg","File Not Uploaded");
+				return "success";
+				
+			}
+			 
+				return "success";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			session.put("msg","File Not Uploaded");
+			return "success";
+		}
+		
+		
+		}else{
+			session.put("msg","Please select File");
+			return "success";
+	}
 	
-	public String uploadDoc() {
+	
+	
+	
+	}else{
+		session.put("msg","Please select File");
+		return "success";
+	}
+	}
+	
+	
+	/*public String uploadDoc() {
 
 	if (fileUPFileName != null) {
 		
@@ -110,10 +273,10 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 			 if(assignmentType == null){ 
 				 assignmentType = "";
 				}
-	/*		
+			
 		 if(selectSubject == null){ 
 				 selectSubject = new String[1];
-			 }*/
+			 }
 			 
 			 
 			 if(nty_email == null || nty_email == "null"){
@@ -194,7 +357,7 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 		return "success";
 	}
 	}
-	
+	*/
 /*	private String getinstitutionName(String im_id) {
 		try {
 			// TODO Auto-generated method stub
@@ -218,6 +381,16 @@ public class UploadDocAction extends ActionSupport implements ServletRequestAwar
 		return "";
 	}*/
 
+	private boolean isClassIDAccess(String class_ID, String[] cm_ids) {
+		
+		for (int i = 0; i < cm_ids.length; i++) {
+			if (class_ID.equalsIgnoreCase(cm_ids[i])) {
+				return true;				
+			}
+		}
+		
+		return false;
+	}
 	private boolean fileValidation() {
 		// TODO Auto-generated method stub
 		

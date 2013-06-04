@@ -106,7 +106,7 @@
 					filterPlaceholder: 'Search'
 				});
 				
-        	$('#selectSubject').multiselect({
+/*         	$('#selectSubject').multiselect({
 						buttonText: function(options, select) {
 							if (options.length == 0) {
 								return 'Select Subject <b class="caret"></b>';
@@ -126,7 +126,7 @@
 						},														
 					buttonWidth: '300px',
 					filterPlaceholder: 'Search'
-				});
+				}); */
 				
 		 });
 			        
@@ -160,8 +160,8 @@
 					    document.getElementById('selectSubject').display = 'none';
 					//	jQuery('.multiselect dropdown-toggle btn[data-toggle="dropdown"]').addClass('disabled');
 
-					var $spans = $('button[data-toggle="dropdown"]')[4];
-					$(".btn-group").find( $spans ).addClass('disabled');	
+					/* var $spans = $('button[data-toggle="dropdown"]')[4];
+					$(".btn-group").find( $spans ).addClass('disabled');	 */
 	
 			  }
 			  
@@ -266,21 +266,41 @@
 			var listofclasses = document.getElementById('selectClass');					
 	
 			    ClassMasterDWR.getMultiClassMasterList(branchID,function(data){
+			   // alert( "data***"+data);
 				                                if (data == null) {
 				                                  alert("error");
 												} else {
 												//alert(data+":::"+data.length+data[1]);	                                 
-				                               for(var i = 0; i < data.length; i++) {
-													  var opt = document.createElement("option");
-													    var temp = data[i];
-													    	var  innerHtml= "<option value="+ temp[0]+">"+ temp[1]+"</option>)";
-													    	$('#selectClass').append(innerHtml);
+				                               var classListJson  =  jQuery.parseJSON(data);
+				                               
+				          /*                       for (var key in classListJson) {
+													  if (classListJson.hasOwnProperty(key)) {
+													    alert(classListJson[key].class_name+"@@"+key + " -> " + classListJson[key].class_id);
+													  }
+												} */
+				                               
+				                               //alert(classListJson+"classList***"+classListJson.length);
+				                               if(classListJson != null && classListJson.length > 0){
+				                               
+				                               jQuery('#classBMIds').val(data);//hidden value
+				                              	 var tttt = '';
+				                                 for(var i = 0; i < classListJson.length; i++) {
+				                               //  alert(classListJson[i].class_name+"@@"+i + " -> " + classListJson[i].class_id);
+					                                 if (tttt != classListJson[i].class_name) {
+					                                 	tttt = classListJson[i].class_name;
+					                               		var opt = document.createElement("option");
+												    	var  innerHtml= "<option value="+ classListJson[i].class_id+">"+ classListJson[i].class_name+"</option>)";
+												    	$('#selectClass').append(innerHtml);
 													}
-												}
+				                               	}
+				                               }
+											}
 													$('#selectClass').multiselect('rebuild');
+													jQuery("#selectClass").focus();
 				                         }
 				      ) ;
 						
+													jQuery("#selectClass").focus();
 		   		 }catch(e){
 						 alert("incatch::"+e);
 						        jQuery.log.info(e.message);
@@ -310,25 +330,25 @@
 				var im_id = "<%=session.getAttribute("IM_ID")%>";					
 	   			var schoolIDs = jQuery("#schoolNames").val();
 	   			
-				removeAllOptions("#selectSubject");
+				removeAllOptionsOne("selectSubject");
 			
 					//	alert(listofSubjects+":::"+im_id+"--"+schoolID+"--"+branchID);
+					var listofSubjects = document.getElementById('selectSubject');			
 				     ClassMasterDWR.getMultiSubjectMasterList(schoolIDs,branchIDs,classIDs,function(data){
-					                                if (data == null) {												
-					                                  alert("error");					                                 
-													} else {		
+					                                if (data == null) {
+					                                  alert("error");
+													} else {
 									//alert(data+"**"+data.length);
 													    for(var i = 0; i < data.length; i++) {
-													  var opt = document.createElement("option");
+											    		 var opt = document.createElement("option");
 													    var temp = data[i];
-													    	var  innerHtml= "<option value="+ temp[1]+">"+ temp[0]+"</option>)";
-													    	$('#selectSubject').append(innerHtml);
+													    opt.innerHTML = temp[0];
+													    opt.value = temp[1];
+													    listofSubjects.appendChild(opt);
 													}
-													$('#selectSubject').multiselect('rebuild');												
 												}
 					                         }
-					      ) ;
-					  }
+					      ) ;}
 					 }catch(e){
 					 alert("incatch::"+e);
 					        jQuery.log.info(e.message);
@@ -347,7 +367,30 @@
 				$(whichOption).multiselect('rebuild');	
 	
 		}
-
+		
+    	 function removeAllOptionsOne(whichOption)
+		{
+	//	var listofSubjects =  document.getElementById("selectSubject");
+		var listofSubjects =  document.getElementById(whichOption);
+		
+			var i;
+			for(i=listofSubjects.options.length-1;i>=0;i--)
+			{
+			listofSubjects.remove(i);
+			}
+			
+			 var opt = document.createElement("option");
+		    opt.value = "-1";
+		    opt.innerHTML = "Select";
+		    listofSubjects.appendChild(opt);
+			
+		
+/* 	 var opt = document.createElement("option");
+		    opt.value = "0";
+		    opt.innerHTML = "All";
+		    listofSubjects.appendChild(opt);  */
+			
+		}
 
 
 		
@@ -538,7 +581,7 @@
 						<select class="multiselect" multiple="multiple"  id="schoolNames" name="schoolNames">			
 							<option value="0" >Select All </option>
 						</select>
-					  <button class="btn " type="button" style="width:30px;padding: 4px; "  id="schoolNamesGo" name="schoolNamesGo" onblur="return selectSchoolforBranches();" onclick="return selectSchoolforBranches();">Go!</button> 
+					  <button class="btn " type="button" style="width:30px;padding: 4px; "  id="schoolNamesGo" onclick="return selectSchoolforBranches();"  name="schoolNamesGo" >Go!</button> <!--onblur="return selectSchoolforBranches();" onclick="return selectSchoolforBranches();"  -->
 				 </div><!-- btn-primary -->                
 			</td>                 
             <td>
@@ -546,7 +589,8 @@
 					<select class="multiselect" multiple="multiple"  id="branchNames" name="branchNames">		
 						<option value="0" >Select All </option>	
 					</select>
-				    <button class="btn " type="button" style="width:30px;padding: 4px; "  id="branchNamesGo" name="branchNamesGo" onblur=" selectBranchesforClasses();" onclick="selectBranchesforClasses();">Go!</button> 
+				    <button class="btn " type="button" style="width:30px;padding: 4px; "  id="branchNamesGo" name="branchNamesGo"  onclick="selectBranchesforClasses();">Go!</button><!-- onblur=" selectBranchesforClasses();" --> 
+			  		<input type="hidden" id = "classBMIds" name = "classBMIds"/>
 			   </div>
 			</td>
         </tr>
@@ -557,7 +601,7 @@
               		<select class="multiselect" multiple="multiple"  id="selectClass" name="selectClass">		
 						<option value="0" >Select All </option>	
 					</select>
-				  	<button class="btn " type="button" style="width:30px;padding: 4px; "  id="classNamesGo" name="classNamesGo"  onblur=" selectSubjectsForClasses();"  >Go!</button>  </div>				          
+				  	<button class="btn " type="button" style="width:30px;padding: 4px; "  id="classNamesGo" name="classNamesGo"  onclick=" selectSubjectsForClasses();"  >Go!</button>  </div>				          
             </td>
             <td>
 					<select class="multiselect" multiple="multiple"  id="selectType" name="selectType">		
@@ -605,8 +649,8 @@
           <tr>
          <td><label style="color:#000;"><b>Subject</b></label></td>
                 <td>
-                 <select class="multiselect" multiple="multiple"  id="selectSubject" name="selectSubject" disabled="disabled">		
-						<option value="0" >Select All </option>	
+                 <select class="span4"  id="selectSubject" name="selectSubject" disabled="disabled">		
+						<!-- <option value="0" >Select All </option>	 -->
 					</select>
                  </td>
               <td>&nbsp;</td> 
@@ -628,7 +672,7 @@
              <td colspan="3">
              <div style="float: left;">
                 <input class="span4" style="width:55px;padding-top: 3px;" type="checkbox" placeholder=""  name="nty_email" id="nty_email" onclick="showEmailSub();"></div>
-               <div style="float: left;"><label style="color:#000;vertical-align: 14px;"><b>Notify parents by email</b></label></div>
+               <div style="float: left;"><label for="nty_email" style="color:#000;vertical-align: 14px;"><b>Notify parents by email</b></label></div>
                <div style="width:100%;height:1px; clear:both;">&nbsp;</div>   
                 </td>
         </tr>

@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.directwebremoting.WebContextFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.BeansException;
 import com.schooltrix.daos.ClassMasterDAO;
 import com.schooltrix.hibernate.ClassMaster;
@@ -100,21 +103,16 @@ public class ClassMasterDWR {
 	 }	 
 	 
 	 
-	 public List<Object[]> getMultiClassMasterList(String[] bmIDString) {
+	 public String getMultiClassMasterList(String[] bmIDString) {
 
 			ClassMasterDAO classMasterdao =null;
-			List<Object[]> userList= new ArrayList<Object[]>();
+			List<String[]> classList= new ArrayList<String[]>();
 			try {
-				
 				
 				StringBuffer inString =new StringBuffer();
 				//in('2','3')
 				
 				for (int i = 0; i < bmIDString.length; i++) {
-			/*		if(bmIDString[i].equalsIgnoreCase("0")){
-						inString = new StringBuffer("0");
-						break;
-					}			*/			
 					inString.append(bmIDString[i]);
 					if(i<bmIDString.length-1)
 					inString.append(",");
@@ -122,17 +120,80 @@ public class ClassMasterDWR {
 				}
 				//System.out.println("inString**********"+inString);
 				
+/*					String inQuery = inString+"";
+					System.out.println("in getMultiClassMasterList DWR ******"+bmIDString.length);
+					classMasterdao = (ClassMasterDAO)ServiceFinder.getContext(request).getBean("ClassMasterHibernateDao"); 		
+					userList = classMasterdao.getMultiClassMasterList(inQuery);
+*/					
+				
 				String inQuery = inString+"";
 				System.out.println("in getMultiClassMasterList DWR ******"+bmIDString.length);
 				classMasterdao = (ClassMasterDAO)ServiceFinder.getContext(request).getBean("ClassMasterHibernateDao"); 		
-					userList = classMasterdao.getMultiClassMasterList(inQuery);					
-					return userList;
+				classList = classMasterdao.getMultiClassMasterList(inQuery);
+					System.out.println(classList.size()+"************");
+			
+//					JSONArray jArray		=	new JSONArray();
+				/*	String temp=""; 
+				//	cm_id ,class_name ,bm_id  
+					int y= 0;
+					for (int i = 0; i < classList.size(); i++) {
+						Object[] row = (Object[])classList.get(i);
+						
+						String classID = (String) row[0];
+						if (!temp.equalsIgnoreCase(classID)) {
+							temp	= 	classID;
+							jsonObject1.put("bm_id"+y, row[2]);
+						}else{
+							jsonObject1.put("bm_id"+y, row[2]);
+						}
+						jsonObject1.put("class_name",row[1]);
+						System.out.println("classID-->"+classID+"**"+row[1]+"**"+row[2]);
+						
+						//jsonObject.put(key, value)
+						
+						
+					}*/
+					String temp = "";
+					JSONArray jsonArr = new JSONArray();
+					for (int i = 0; i < classList.size(); i++) {
+						JSONObject jsonObject = new JSONObject();
+						Object[] row1 = (Object[])classList.get(i);
+						String class_id = (String) row1[0];
+						String class_name = (String) row1[1];
+						JSONArray jsArrayBM = new JSONArray();
+						JSONArray jsArrayCBM = new JSONArray();
+						System.out.println(class_id+"***"+class_name);
+						
+						if (!class_id.equalsIgnoreCase(temp)) {
+							temp = class_id;
+						}else{
+							continue;
+						}
+					//	for (int p = 0; p <classList.size(); p++) {
+							for (int p = i; p <classList.size(); p++) {
+							Object[] row = (Object[])classList.get(p);
+							if (class_id.equalsIgnoreCase( (String) row[0])) {
+								jsArrayBM.put(row[2]);
+								jsArrayCBM.put(row[3]);
+							}
+							//System.out.println(jsArrayBM+"jsArrayBM");
+						}
+						
+						System.out.println(class_id+"jsArrayBM-->"+jsArrayBM);
+						jsonObject.put("class_name", class_name);
+						jsonObject.put("bms", jsArrayBM);
+						jsonObject.put("cbm_id", jsArrayCBM);
+						jsonObject.put("class_id", class_id);
+						
+						System.out.println(jsonObject+"&&&&");
+						jsonArr.put(jsonObject);
+					}
+					System.out.println(jsonArr+"<--jsonObject1");
+					return jsonArr.toString();
 			} catch (BeansException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 			} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 			}

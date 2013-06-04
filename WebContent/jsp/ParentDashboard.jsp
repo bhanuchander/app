@@ -24,6 +24,7 @@ function alertDialog (prompt) {
 	$("#idAlertDialog").modal ("show");
 	}
     
+    	var subjectMasterList = null;
     
 		 jQuery(document).ready(function () {
 			studentDataLoad();
@@ -31,6 +32,7 @@ function alertDialog (prompt) {
 			assignmentLoad();
 			getParentsDetailsLoad();
 			utilitiesLoad();
+			academicsLoad();
 				// resultPopUp();
 				 // schoolMasterList();
 		});
@@ -45,7 +47,7 @@ function alertDialog (prompt) {
 							var mainPath = '<%=request.getContextPath()%>';
 							
 								if (gg.photoID.indexOf("noImage") !== -1) {
-									$("#photoID").attr("src",mainPath+"/noImage1.jpg");
+									$("#photoID").attr("src",mainPath+"/noImage.jpg");
 								}else{
 									$("#photoID").attr("src",mainPath+gg.photoID);
 								}
@@ -188,7 +190,7 @@ function alertDialog (prompt) {
 							var classID 	= "<%=session.getAttribute("ClassID")%>";
 							
 							//alert(classID+"**"+branchID+"**"+schoolID);
-								var subjectMasterList = null;
+							
 							 ClassMasterDWR.getSubjectMasterList(schoolID,branchID,classID,function(dataR){
 							 										subjectMasterList = dataR;
 																		//jQuery('#subText').val(dataR);
@@ -196,11 +198,10 @@ function alertDialog (prompt) {
 										                                  alert("error");					                                 
 																		} else {
 																	//subjectMasterList = dataR;
-																//	alert(subjectMasterList+"***After setting subjectMasterList");
+																	//alert(subjectMasterList+"***After setting subjectMasterList");
 																	}
 										                         }
 										      ) ;
-							
 							
 								var newAssignmentGrid  	 = jQuery('#assignmentDynamicTable');
 								var newAssignmentAllGrid  	 = jQuery('#assignmentDynamicTableAll');
@@ -259,10 +260,6 @@ function alertDialog (prompt) {
 														subTData+="~";
 													}
 										   }	   
-					                      
-					                      
-					                    //  alert(subTData.length+"*******"+subTData);
-					                      
 					                      
 					                      var EE = 0;
 					                      //alert(subjectMasterList+"*********subjectMasterList"+data.length);
@@ -420,8 +417,8 @@ function alertDialog (prompt) {
 												
 											
 											}else{
-												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Exam Schedule " class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(0);">';
-												newUtilityStr += '<i class="icon-calendar"></i><input type="hidden"  id="'+utilesFileNameID+'" value="No Exam Schedule ">  Exam Schedule&nbsp;&nbsp;</a>';
+												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Exam Schedule  found" class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(0);">';
+												newUtilityStr += '<i class="icon-calendar"></i><input type="hidden"  id="'+utilesFileNameID+'" value="No Exam Schedule  found">  Exam Schedule&nbsp;&nbsp;</a>';
 												
 											}
 										
@@ -433,7 +430,7 @@ function alertDialog (prompt) {
 												
 											
 											}else{
-												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No School Calendar " class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(1);">';
+												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No School Calendar  found" class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(1);">';
 												newUtilityStr += '<i class="icon-calendar"></i><input type="hidden" id="'+utilesFileNameID+'" value="No School Calendar">  School Calendar</a>';
 												
 											}
@@ -446,7 +443,7 @@ function alertDialog (prompt) {
 												
 											
 											}else{
-												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Class Timetable" class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(2);">';
+												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Class Timetable  found" class="btn" data-toggle="modal" style="display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(2);">';
 												newUtilityStr += '<i class="icon-time"></i><input type="hidden" id='+utilesFileNameID+' value="No Class Timetable"> Class Timetable</a>';
 												
 											}
@@ -458,7 +455,7 @@ function alertDialog (prompt) {
 												newUtilityStr += '<i class="icon-list"></i><input type="hidden" id='+utilesFileNameID+' value="'+ty[2]+'">  Canteen Menu</a>';
 											
 											}else{
-												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Canteen Menu" class="btn" data-toggle="modal" style= "display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(3);">';
+												newUtilityStr += '<a href="#myModal_2" id= "'+utilID+'" value="No Canteen Menu  found" class="btn" data-toggle="modal" style= "display:block; margin:8px auto;  text-align:left;" onclick="openModelWithUtilityData(3);">';
 												newUtilityStr += '<i class="icon-list"></i><input type="hidden" id="'+utilesFileNameID+'" value="No Canteen Menu">  Canteen Menu</a>';
 											
 											}
@@ -691,6 +688,216 @@ function alertDialog (prompt) {
 			});
 	}
 	
+	function academicsLoad(){
+		
+		AssignmentGetDWR.getAcademics(function(data) {
+				          if (data == null) {													
+                                alert("error");						                                 
+						} else {				
+						//	alert(data+":::");	 
+					        // getSubjectMasterListBM_CM_ID();
+					         
+							if ( data.length>0) {
+							
+							var schoolID 	= "<%=session.getAttribute("SM_ID")%>";
+							var branchID 	= "<%=session.getAttribute("BM_ID")%>";
+							var classID 	= "<%=session.getAttribute("ClassID")%>";
+							
+							//alert(classID+"**"+branchID+"**"+schoolID);
+								var subjectMasterList2 = null;
+							 ClassMasterDWR.getSubjectMasterList(schoolID,branchID,classID,function(dataR){
+							 										subjectMasterList2 = dataR;
+																		//jQuery('#subText').val(dataR);
+										                                if (dataR == null) {
+										                                  alert("error");					                                 
+																		} else {
+																	//subjectMasterList = dataR;
+																	//alert(subjectMasterList+"***After setting subjectMasterList");
+																	}
+										                         }
+										      ) ;
+							
+								var newAcademicsGrid  	 = jQuery('#academicsDynamicTable');
+								var newAcademicsAllGrid  	 = jQuery('#academicsDynamicTableAll');
+							   	var newAcademicsStr = '';     
+				   						newAcademicsStr += '<table class="table table-bordered" width="100%" style="margin-bottom:0px;">';
+										newAcademicsStr += '<tr><th width="19%">Date</th><th width="20%">Subject</th><th width="30%">Description</th><th width="12%" style="text-align:center;">View</th></tr>';
+					                     //showHideMsgNew('processing....'); //Need implete if posible best one..............
+					                      //get subject master ...based on classID and BM_ID    
+					                 alert("processing....");
+					                 
+					                    //   setTimeout(function() {  alertDialog("processing....");}, 1)  ;
+					                  //setTimeout(function() { alert('hello world'); }, 1);
+					                     // setTimeout(alert("processing...."),1000);
+					                      
+					                     //    var displayOption1 = data.length >4 ? 4:data.length;
+					                      //     alert(displayOption1);
+					                      
+					                      //alert("***Jquuu*"+jQuery('#subText').val());
+					                      //*********for next page --sampleeeee
+					                     // var dataTData = data.join('~'); 
+					                      //alert(dataTData+"**$$$**");
+					                     // alert(subjectMasterList2+"subjectMasterList"+subjectMasterList2.length);
+					                  	  var subdataList = subjectMasterList2.join('~'); 
+					                      //*********for next page --sampleeeee---END
+					                      //
+					                      var dataTDataAC='' ;
+					                      for ( var int = 0; int < data.length; int++) {
+						                      var innerArra ='' ;
+												var teby = data[int];
+												 for ( var int2 = 0; int2 < teby.length; int2++) {
+													innerArra+=teby[int2];
+													if (int2<teby.length-1) {
+														innerArra+="*";
+													}
+												 }
+												dataTDataAC+=innerArra;
+												// alert(innerArra.length+"**"+innerArra);
+												 	if (int<data.length-1) {
+														dataTDataAC+="~";
+													}
+										   }
+										   
+									          var subTDataAC='' ;
+					                      for ( var int = 0; int < subjectMasterList2.length; int++) {
+						                      var innerSubArra ='' ;
+												var teby1 = subjectMasterList2[int];
+												 for ( var int2 = 0; int2 < teby1.length; int2++) {
+													innerSubArra+=teby1[int2];
+													if (int2<teby1.length-1) {
+														innerSubArra+="*";
+													}
+												 }
+												subTDataAC+=innerSubArra;
+											//	 alert(innerSubArra.length+"**"+innerSubArra);
+												 	if (int<subjectMasterList2.length-1) {
+														subTDataAC+="~";
+													}
+										   }	   
+					                      
+					                      var EE = 0;
+					                      //alert(subjectMasterList+"*********subjectMasterList"+data.length);
+				                           MM:for(var i = 0; i < data.length; i++) {
+				                           // upload_date,assign_type ,					subject,assg_desc,file_name
+				                           var academicSubjID 			= i+"academic_s";
+			                           	   var academicDescID 			= i+"academic_d";
+				                           var academicFileNameID 	=	i+"academic_f"; 
+												var temp = data[i];
+						 						//here required subject wise split
+						 						var subjectsSplit = temp[1].split(',');
+						 						
+						 						var subjectNAem = null;
+						 						
+						 						//alert(subjectsSplit.length+"-------"+subjectsSplit);
+						 						for ( var p = 0; p < subjectsSplit.length; p++) {//Subject wise.................................
+						 							if (EE>3) {
+														break MM;
+													}
+													//alert(subjectsSplit[p]);//assume	2
+													if (subjectsSplit[p] != 0) {
+													
+														//alert(subjectMasterList.length+"--->subjectMasterList.length");
+													    for(var qq = 0; qq < subjectMasterList2.length; qq++) {
+															    var tempS = subjectMasterList2[qq];
+															    	//alert(tempS+"##tempS##"+subjectsSplit[p]);
+															    if (tempS[0] == subjectsSplit[p]) {
+																	subjectNAem = tempS[1];
+																	EE++;
+																	break;
+																}	
+															    	
+															}
+															
+													newAcademicsStr += '<tr>';
+							 						
+													newAcademicsStr += '<td>'+temp[0]+'</td>';		//2										
+													//	subject,	assg_desc,	file_name
+													//here actually not doing anything with subject name.....
+													newAcademicsStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicSubjID+'" value="'+temp[1]+'">'+subjectNAem+'</label ></td>';
+	/* 												newacademicmentStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicSubjID+'" value="'+temp[2]+'">'+temp[2]+'</label ></td>'; */
+													
+													newAcademicsStr += '<td><label style = "color:#666666;font-weight: bold; font-size: 12px;" id ="'+academicDescID+'" value="'+temp[2]+'">'+temp[2]+'</label >	</td>';
+													
+													newAcademicsStr += '<td><a href="#myModal_4" id= "'+i+'"  value="yuyu" style="color:#666; text-decoration:none; padding-left:26px;" data-toggle="modal" onclick="openModelWithAcademicsData(id);"><i class="icon-eye-open"></i> <input type="hidden" id='+academicFileNameID+' value="'+temp[3]+'"></a></td>';
+													
+													newAcademicsStr += '</tr> ';	
+															
+														}
+															
+													//here based on this thid get subject name from above method
+													
+												}
+						 				
+											}
+								newAcademicsStr += '</table>'; 
+					   		 newAcademicsGrid.html(newAcademicsStr);  
+					   		 
+					   		 //var hhhhr = "C:\Program Files\Apache Software Foundation\Tomcat 7.0\webapps\Schooltrix\First.html";
+					   		 newAcademicsAllGrid.html('<form method="post" id="allForm3" name="allForm3" action="ViewAllListParent.action"><a href="#" id= "66"  value="yuyu" style="color:#666; text-decoration:none; padding-left:26px;" data-toggle="modal" onclick="document.allForm3.submit()"><i class="icon-eye-open"></i><input type="hidden" id="acadAlldata" name="acadAlldata"  value="'+dataTDataAC+'"><input type="hidden" id="acadAllSubdata" name="acadAllSubdata"  value="'+subTDataAC+'">View  All</a></form>');
+					   		 
+					   	   document.getElementById("academicsDynamicTable").style.display='block';
+					       document.getElementById("academicsDynamicTableAll").style.display='block';//these r required??
+					       document.getElementById("noAcademics").style.display='none';
+					       }else{
+					       //noNotification			notificationDynamicTable	
+					       document.getElementById("academicsDynamicTable").style.display='none';
+					       document.getElementById("academicsDynamicTableAll").style.display='none';
+					       document.getElementById("noAcademics").style.display='block';
+
+					       }
+						}
+		
+		});		
+		
+		
+		}
+	
+	function openModelWithAcademicsData(vall){
+
+		var academicTypeID 	= '#'+vall+"academic_t";//for notif body
+		var academicSubjID 	= '#'+vall+"academic_s";//for notif body
+		var academicDescID 		= '#'+vall+"academic_d";//for sub 
+		var academicFileNameID 		= '#'+vall+"academic_f";//for sub 
+		
+		var academicFileName 		= jQuery(academicFileNameID).val();		//text || hidden field value
+		var academicDesc 			= $(academicDescID).attr('value');	//fetch lable value
+			
+		//var academicFileWithMsg ='      to download the  '+academicDesc;//sir said not req file desc here..
+		var academicFileWithMsg ='      to download the  academic metirial.';
+		//	<a href="#">Click here</a> to download the Holiday Home work for Summer Vacation 2013
+			
+	/* 		var p = document.getElementById('academicBodyID');
+			if (p != null) {
+				
+			p.parentNode.removeChild(p);
+			} */
+			
+			
+		 //Get the element that we want to append to
+         var divEl = document.getElementById('academicsBodyID');
+     //    alert(divEl);
+        document.getElementById('academicsBodyID').innerHTML = "";
+         //divEl.text('');
+         
+        //Create the new <a>
+        var aElem = document.createElement('a');
+       // aElem.href="javascript:Tesssst();";
+        aElem.href="downloadUploadDoc.action?type=AcademicMaterial&fileName="+academicFileName;
+       // aElem.href="http://www.google.com";
+       
+       
+        //Create a text node to hold the text of the <a>
+        var aElemTN = document.createTextNode('Click here');
+        //Append the <a> text node to the <a> element
+        aElem.appendChild(aElemTN);
+        //Append the new link to the existing <div>
+        divEl.appendChild(aElem);
+		
+		$("#myModalLabelAcademics").text(academicDesc); 
+		//$("#academicacademic").text(academicFileWithMsg); 
+		$("#academicsBodyID1").text(academicFileWithMsg); 
+
+		}
 	
 			var errorDisp1=null;
        function setError1(errElement, msg,errorplace){
@@ -896,8 +1103,15 @@ function alertDialog (prompt) {
       <!--/span-->
       <div class="span6">
         <div style="padding:0px 10px; border:1px #CCCCCC solid;margin-bottom:10px;min-height: 279px;">
-          <h4>Academics</h4>
-          <div style="text-align:center;height:136px; padding-top:84px; font-size:30px;">Coming Soon</div>
+          <h4>Academics</h4>          
+          <div id="noAcademics" class="alert">No new Assignments</div>
+           <div id="academicsDynamicTable"></div>          
+          <div  id="academicsDynamicTableAll" style="text-align:right; margin-bottom:10px; margin-right:13px; margin-top:10px;">
+          <a href="#" style="color:#666; text-decoration:none;"><i class="icon-eye-open"></i> View All</a></div>          
+        </div>
+      </div>
+      <!--/span-->
+          
         </div>
       </div>
       <!--/span-->
@@ -990,8 +1204,26 @@ function alertDialog (prompt) {
 	<!-- Utilities Modal-1 End-->
 
 
-<!-- Notification Modal-4 -->
-<div id="myModal_4" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- Academic Modal-4 -->
+	<div id="myModal_4" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabelAcademics">Holiday Homework</h3>
+	  </div>
+	  <div class="modal-body">
+		<p id="academicsBodyID" style="display:inline"></p>&nbsp;&nbsp;<p id="academicsBodyID1" style="display:inline"></p>
+	<!-- 	<p id="assignBodyID"><a href="#">Click here</a> to download the Holiday Home work for Summer Vacation 2013</p> -->
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	  </div>
+	</div>
+	<!-- Academic Modal-4 End-->
+
+
+
+<!-- Notification Modal-5 -->
+<div id="myModal_5" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Weekend Assignment - 15th February</h3>

@@ -39,20 +39,7 @@ public List getAssignmenet() {
 			String BM_ID = (String)session.getAttribute("BM_ID");
 
 			classID 		= (String)session.getAttribute("ClassID");
-			studentID 	= (String)session.getAttribute("StuID");//these two value set by NotificationDWr class....
-			
-			
-/*			if (classID == null || studentID == null) {		//if in notification dwr..session r not dr...here i put it		
-				StudentDetailsAnalysis studentDetailsAnalysis = new StudentDetailsAnalysis();
-				studentDetails = studentDetailsAnalysis.getStudentDetails(request, pdID, BM_ID);
-			
-				if (studentDetails != null) {
-					studentID = studentDetails.getStuId()+"";	
-					classID  =  studentDetailsAnalysis.getCurrentClassID(request,studentID,BM_ID);//method changeddddddd-2013-05-24
-					session.setAttribute("StuID", studentDetails.getStuId()+"");
-					session.setAttribute("ClassID", classID);
-				}				
-			}	*/				
+			studentID 	= (String)session.getAttribute("StuID");//these two value set by NotificationDWr class....		
 					
 					try {
 						uploadDocDAO = (UploadDocDAO)ServiceFinder.getContext(request).getBean("UploadDocHibernateDao");
@@ -76,6 +63,47 @@ public List getAssignmenet() {
 		return null;
 	}
 	
+public List getAcademics() {
+	
+	try {
+		UploadDocDAO uploadDocDAO = null;
+		
+		StudentDetails studentDetails = null;
+		String classID = null;
+		String studentID = null;
+		
+		String UM_ID = (String)session.getAttribute("UM_ID");
+		String pdID = (String)session.getAttribute("pdID");
+		
+		String IM_ID = (String)session.getAttribute("IM_ID");
+		String SM_ID = (String)session.getAttribute("SM_ID");
+		String BM_ID = (String)session.getAttribute("BM_ID");
+
+		classID 		= (String)session.getAttribute("ClassID");
+		studentID 	= (String)session.getAttribute("StuID");//these two value set by NotificationDWr class....		
+				
+				try {
+					uploadDocDAO = (UploadDocDAO)ServiceFinder.getContext(request).getBean("UploadDocHibernateDao");
+					List assignDataList = new ArrayList();
+					assignDataList =	uploadDocDAO.getAcademics(BM_ID, classID);
+					System.out.println("assignDataList.sizz"+assignDataList.size());
+					return assignDataList;
+					
+				} catch (BeansException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return null;
+}
+
 public List getUtilites() {
 	
 	List utilitiesDataListMain = new ArrayList();
@@ -104,17 +132,17 @@ public List getUtilites() {
 						utilitiesDataListMain.add(uploadDocDAO.getUtilities(BM_ID, classID,uploadTypes[i]));
 						}
 				System.out.println(utilitiesDataListMain.size()+"-->Main sizee");
-				
+				//testing
 					for (Iterator iterator = utilitiesDataListMain.iterator(); iterator	.hasNext();) {
 						ArrayList eee = (ArrayList) iterator.next();
 						if (eee.size()>0) {
-							System.out.println("***"+eee.get(0));
+						//	System.out.println("***"+eee.get(0));
 							Object[] dd =(Object[]) eee.get(0);							
-							System.out.println("@@@@"+dd[0]);								
+							//System.out.println("@@@@"+dd[0]);								
 							
 							
 						}
-						System.out.println("outside***");
+						//System.out.println("outside***");
 					}
 					
 					

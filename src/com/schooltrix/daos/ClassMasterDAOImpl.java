@@ -167,17 +167,21 @@ public class ClassMasterDAOImpl extends STHibernateDAOSupport implements ClassMa
 		}	
 		
 		@Override
-		public List getMultiClassMasterList(final String BM_IDs) throws Exception {
-			List ClassMasterList=null;
+		public List<String> getMultiClassMasterList(final String BM_IDs) throws Exception {
+			List<String> ClassMasterList=null;
 			try {
-				ClassMasterList = (List) getHibernateTemplate().execute(
+				ClassMasterList = (List<String>) getHibernateTemplate().execute(
 						new HibernateCallback() {
 							public Object doInHibernate(Session session)throws HibernateException, SQLException {
-								String qu= "select cm_id,class_name from class_master where cm_id in(select cm_id  from class_branch_map where Active='Y' and bm_id in ("+BM_IDs+"))";
-							//	System.out.println("in getMultiClassMasterList DAOIMPL*&"+qu);
+								String qu = "select cm.cm_id as cm_id,cm.class_name as class_name,cbm.bm_id as bm_id,cbm.cbm_id as cbm_id  from class_master cm inner join class_branch_map cbm on " +
+										"cm.cm_id=cbm.cm_id where cbm.Active='Y' and cbm.bm_id in  ("+BM_IDs+") order by cm.cm_id";
+							//	String qu= "select cm_id,class_name from class_master where cm_id in(select cm_id  from class_branch_map where Active='Y' and bm_id in ("+BM_IDs+"))";
+								System.out.println("in getMultiClassMasterList DAOIMPL*&"+qu);
 								SQLQuery sqlqu = session.createSQLQuery(qu);							
 								sqlqu.addScalar("cm_id", new StringType());
 								sqlqu.addScalar("class_name", new StringType());
+								sqlqu.addScalar("bm_id", new StringType());
+								sqlqu.addScalar("cbm_id", new StringType());
 								System.out.println("in SIZE"+sqlqu.list().size());
 								return sqlqu.list();
 							}
